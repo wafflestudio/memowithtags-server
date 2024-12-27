@@ -1,0 +1,42 @@
+name: Build and Push Docker Image to AWS ECR
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. AWS 인증
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # 3. 도커 이미지 빌드
+      - name: Build Docker image
+        run: |
+          docker build -t memo-with-tags-backend .
+
+      # 4. 도커 이미지를 ECR로 푸시
+      - name: Push Docker image to ECR
+        run: |
+          # ECR 리포지토리 URI
+          REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
+          TAG=$(echo $GITHUB_SHA | cut -c1-7)  # 커밋 해시 앞 7자리로 태그 생성
+          
+          # ECR에 태그 추가
+          docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
+          
+          # ECR에 푸시
+          docker push $REPOSITORY_URI:$TAG
