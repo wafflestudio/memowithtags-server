@@ -1,9 +1,8 @@
-name: Build and Push Docker Image to AWS ECR
+name: Build, Push, and Deploy Docker Image to EC2
 
 on:
   pull_request:
     branches:
-      - main
       - develop
 
 jobs:
@@ -26,7 +25,7 @@ jobs:
       # 3. 도커 이미지 빌드
       - name: Build Docker image
         run: |
-          docker build -t memo-with-tags-backend .
+          docker build -t memo-with-tags-backend:latest .
 
       # 4. 도커 이미지를 ECR로 푸시
       - name: Push Docker image to ECR
@@ -40,3 +39,20 @@ jobs:
           
           # ECR에 푸시
           docker push $REPOSITORY_URI:$TAG
+
+      # 5. EC2 서버에서 Docker 이미지 실행
+      - name: Deploy to EC2
+        run: |
+          # EC2 서버 접속
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            # ECR 로그인
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
+
+            # 기존 컨테이너 중지 및 삭제
+            docker stop memo-with-tags-backend || true
+            docker rm memo-with-tags-backend || true
+
+            # 새 컨테이너 실행
+            docker pull $REPOSITORY_URI:$TAG
+            docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
+          EOF
