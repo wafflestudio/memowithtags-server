@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Main-Class: org.springframework.boot.loader.launch.JarLauncher
+Start-Class: com.wafflestudio.toyproject.memo_with_tags.MemoWithTagsAppl
+ icationKt
+Spring-Boot-Version: 3.4.1
+Spring-Boot-Classes: BOOT-INF/classes/
+Spring-Boot-Lib: BOOT-INF/lib/
+Spring-Boot-Classpath-Index: BOOT-INF/classpath.idx
+Spring-Boot-Layers-Index: BOOT-INF/layers.idx
+Build-Jdk-Spec: 17
+Implementation-Title: memo-with-tags
+Implementation-Version: 0.0.1-SNAPSHOT
+
