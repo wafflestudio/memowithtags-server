@@ -9,11 +9,11 @@ class TagController(
     }
 
     @PostMapping("/api/v1/tag")
-    fun createTag(@RequestBody request: CreateTagRequest): CreateTagResponse {
+    fun createTag(@RequestBody request: CreateTagRequest): TagDto {
     }
 
     @PutMapping("/api/v1/tag/{tagId}")
-    fun updateTag(@PathVariable id: Long, @RequestBody request: UpdateTagRequest): UpdateTagResponse {
+    fun updateTag(@PathVariable id: Long, @RequestBody request: UpdateTagRequest): TagDto {
     }
 
     @DeleteMapping("/api/v1/tag/{tagId}")
@@ -32,19 +32,7 @@ data class CreateTagRequest(
     val color: String
 )
 
-data class CreateTagResponse(
-    val id: Long,
-    val name: String,
-    val color: String,
-)
-
 data class UpdateTagRequest(
     val name: String,
     val color: String
-)
-
-data class UpdateTagResponse(
-    val id: Long,
-    val name: String,
-    val color: String,
 )

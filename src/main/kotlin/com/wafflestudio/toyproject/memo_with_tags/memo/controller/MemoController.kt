@@ -5,11 +5,11 @@ class MemoController(
     private val memoService: MemoService
 ) {
     @PostMapping("/api/v1/memo")
-    fun createMemo(@RequestBody request: CreateMemoRequest): CreateMemoResponse {
+    fun createMemo(@RequestBody request: CreateMemoRequest): MemoDto {
     }
 
     @PutMapping("/api/v1/memo/{memoId}")
-    fun updateMemo(@PathVariable memoId: Long, @RequestBody request: UpdateMemoRequest): UpdateMemoResponse {
+    fun updateMemo(@PathVariable memoId: Long, @RequestBody request: UpdateMemoRequest): MemoDto {
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}")
@@ -17,7 +17,7 @@ class MemoController(
     }
 }
 
-data class CreateMemoRequest(
+data class MemoDto(
     val content: String,
     val tags: List<Long>
 )
@@ -28,11 +28,6 @@ data class CreateMemoResponse(
     val tags: List<Long>,
     val createdAt: Instant,
     val updatedAt: Instant
-)
-
-data class UpdateMemoRequest(
-    val content: String,
-    val tags: List<Long>
 )
 
 data class UpdateMemoResponse(
