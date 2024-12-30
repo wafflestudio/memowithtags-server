@@ -1,3 +1,0 @@
-spring:
-  profiles:
-    active: dev # 기본 활성화 프로파일 (개발 환경)
