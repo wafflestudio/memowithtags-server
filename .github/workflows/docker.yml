@@ -66,19 +66,28 @@ jobs:
       # 9. EC2 서버에서 Docker 이미지 실행
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          # 개인 키를 파일로 저장하고 권한 설정
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+          # EC2 인스턴스에 SSH 접속하여 배포 작업 수행
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
             TAG=$(echo $GITHUB_SHA | cut -c1-7)
 
+            # AWS ECR 로그인
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
 
+            # 이전 컨테이너 중지 및 제거
             docker stop memo-with-tags-backend || true
             docker rm memo-with-tags-backend || true
 
+            # 새 이미지 가져오기 및 컨테이너 실행
             docker pull $REPOSITORY_URI:$TAG
             docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
           EOF
-          
+      
+      
 
       - name: Stop Database
         run: |
