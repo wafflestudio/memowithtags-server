@@ -60,6 +60,8 @@ jobs:
           REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
           TAG=$(echo $GITHUB_SHA | cut -c1-7)  # 커밋 해시 앞 7자리로 태그 생성
           
+          echo "Pushing Docker image with TAG: $TAG"
+          
           docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
           docker push $REPOSITORY_URI:$TAG
 
@@ -74,6 +76,8 @@ jobs:
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
             TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          
+            echo "Deploying Docker image with TAG: $TAG"  # TAG 값 출력
 
             # AWS ECR 로그인
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
