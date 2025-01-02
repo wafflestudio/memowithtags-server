@@ -20,13 +20,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # 1. Docker Compose로 DB 시작
+      # 1. Docker 및 Docker Compose 설치
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # 2. Docker Compose로 DB 시작
       - name: Start Database with Docker Compose
         run: |
-          docker-compose up -d db
+          docker-compose up -d mysql
         working-directory: .
 
-      # 2. DB 준비 시간 대기
+      # 3. DB 준비 시간 대기
       - name: Wait for Database
         run: |
           until nc -z localhost 3306; do
@@ -34,18 +40,14 @@ jobs:
             sleep 5
           done
 
-      # 3. Java 환경 설정
+      # 4. Java 환경 설정
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
 
-      # 4. Gradle 의존성 설치 및 빌드
-      - name: Install dependencies
-        run: ./gradlew clean build
-
-      # 5. Ktlint 검사 실행
+      # 5. Gradle 의존성 설치 및 Ktlint 검사 실행
       - name: Run Ktlint
         run: ./gradlew ktlintCheck
 
