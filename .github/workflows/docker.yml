@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Docker Image to EC2
 
 on:
   workflow_run:
-    workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행dfd
+    workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
     types:
       - completed
 
@@ -15,7 +15,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. AWS 자격 증명 설정
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # 2. Docker Compose로 DB 시작
+      - name: Start Database with Docker Compose
+        run: |
+          docker-compose up -d mysql
+        working-directory: .
+
+      # 2. Gradle 빌드
+      - name: Build project
+        run: ./gradlew build
+
+      # 3. 빌드 결과 확인
+      - name: Verify build artifacts
+        run: ls -R build/libs
+
+      # 4. Docker 빌드 컨텍스트 준비
+      - name: Prepare Docker context
+        run: cp build/libs/*.jar .
+
+      # 5. AWS 자격 증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -23,16 +46,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # 3. AWS ECR 로그인
+      # 6. AWS ECR 로그인
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      # 4. 도커 이미지 빌드
+      # 7. 도커 이미지 빌드
       - name: Build Docker image
-        run: |
-          docker build -t memo-with-tags-backend:latest .
+        run: docker build -t memo-with-tags-backend:latest .
 
-      # 5. 도커 이미지를 ECR로 푸시
+      # 8. 도커 이미지를 ECR로 푸시
       - name: Push Docker image to ECR
         run: |
           REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
@@ -41,7 +63,7 @@ jobs:
           docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
           docker push $REPOSITORY_URI:$TAG
 
-      # 6. EC2 서버에서 Docker 이미지 실행
+      # 9. EC2 서버에서 Docker 이미지 실행
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
@@ -56,3 +78,9 @@ jobs:
             docker pull $REPOSITORY_URI:$TAG
             docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
           EOF
+          
+
+      - name: Stop Database
+        run: |
+          docker-compose down
+        working-directory: .

@@ -10,3 +10,4 @@ COPY build/libs/memo-with-tags-0.0.1-SNAPSHOT.jar /app/memo-with-tags-0.0.1-SNAP
 
 # 컨테이너가 시작될 때 실행될 명령어 설정
 CMD ["java", "-jar", "your-app.jar"]
+
