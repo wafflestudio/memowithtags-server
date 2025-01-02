@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memo_with_tags.tag.controller
+package com.wafflestudio.toyproject.memoWithTags.tag.controller
 
 @RestController
 class TagController(

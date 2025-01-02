@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memo_with_tags.user.contoller
+package com.wafflestudio.toyproject.memoWithTags.user.contoller
 
 @RestController
 class UserController(
