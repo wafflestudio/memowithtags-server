@@ -1,21 +1,26 @@
-package com.wafflestudio.toyproject.memo_with_tags.memo.controller
+package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
-import com.wafflestudio.toyproject.memo_with_tags.memo.service.MemoService
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
+import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import java.time.Instant
 
 @RestController
 class MemoController(
     private val memoService: MemoService
 ) {
     @PostMapping("/api/v1/memo")
-    fun createMemo(@RequestBody request: CreateMemoRequest): MemoDto {
+    fun createMemo(@RequestBody request: CreateMemoResponse): MemoDto {
+        return MemoDto("", emptyList())
     }
 
     @PutMapping("/api/v1/memo/{memoId}")
-    fun updateMemo(@PathVariable memoId: Long, @RequestBody request: UpdateMemoRequest): MemoDto {
+    fun updateMemo(@PathVariable memoId: Long, @RequestBody request: UpdateMemoResponse): MemoDto {
+        return MemoDto("", emptyList())
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}")

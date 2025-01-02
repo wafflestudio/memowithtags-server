@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memo_with_tags
+package com.wafflestudio.toyproject.memoWithTags
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class MemoWithTagsApplication
 
 fun main(args: Array<String>) {
-	runApplication<MemoWithTagsApplication>(*args)
+    runApplication<MemoWithTagsApplication>(*args)
 }

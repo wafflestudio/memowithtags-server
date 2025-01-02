@@ -3,10 +3,12 @@ name: Kotlin Lint Check
 on:
   push:
     branches:
+      - actions
       - main
       - develop
   pull_request:
     branches:
+      - actions
       - main
       - develop
 
@@ -18,14 +20,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 1. Docker 및 Docker Compose 설치
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # 2. Docker Compose로 DB 시작
+      - name: Start Database with Docker Compose
+        run: |
+          docker-compose up -d mysql
+        working-directory: .
+
+      # 3. DB 준비 시간 대기
+      - name: Wait for Database
+        run: |
+          until nc -z localhost 3306; do
+            echo "Waiting for the database to be ready..."
+            sleep 5
+          done
+
+      # 4. Java 환경 설정
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'amazon-corretto'# 필요한 Java 버전 설정
+          distribution: 'corretto'
 
-      - name: Install dependencies
-        run: ./gradlew clean build  # Gradle 의존성 설치 및 빌드
-
+      # 5. Gradle 의존성 설치 및 Ktlint 검사 실행
       - name: Run Ktlint
-        run: ./gradlew ktlintCheck  # Ktlint 검사 실행
+        run: ./gradlew ktlintCheck
+
+      # 6. Docker Compose 정리
+      - name: Stop Database
+        run: |
+          docker-compose down
+        working-directory: .
