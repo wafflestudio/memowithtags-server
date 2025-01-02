@@ -5,6 +5,7 @@ on:
     workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
     types:
       - completed
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,45 +15,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. AWS 인증
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+      # 2. AWS 자격 증명 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # 3. 도커 이미지 빌드
+      # 3. AWS ECR 로그인
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # 4. 도커 이미지 빌드
       - name: Build Docker image
         run: |
           docker build -t memo-with-tags-backend:latest .
 
-      # 4. 도커 이미지를 ECR로 푸시
+      # 5. 도커 이미지를 ECR로 푸시
       - name: Push Docker image to ECR
         run: |
-          # ECR 리포지토리 URI
           REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
           TAG=$(echo $GITHUB_SHA | cut -c1-7)  # 커밋 해시 앞 7자리로 태그 생성
           
-          # ECR에 태그 추가
           docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
-          
-          # ECR에 푸시
           docker push $REPOSITORY_URI:$TAG
 
-      # 5. EC2 서버에서 Docker 이미지 실행
+      # 6. EC2 서버에서 Docker 이미지 실행
       - name: Deploy to EC2
         run: |
-          # EC2 서버 접속
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            # ECR 로그인
+            REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
+            TAG=$(echo $GITHUB_SHA | cut -c1-7)
+
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
 
-            # 기존 컨테이너 중지 및 삭제
             docker stop memo-with-tags-backend || true
             docker rm memo-with-tags-backend || true
 
-            # 새 컨테이너 실행
             docker pull $REPOSITORY_URI:$TAG
             docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
           EOF
