@@ -3,10 +3,12 @@ name: Kotlin Lint Check
 on:
   push:
     branches:
+      - actions
       - main
       - develop
   pull_request:
     branches:
+      - actions
       - main
       - develop
 
