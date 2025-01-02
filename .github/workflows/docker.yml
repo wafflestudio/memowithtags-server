@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Docker Image to EC2
 
 on:
   workflow_run:
-    workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
+    workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행dfd
     types:
       - completed
 
