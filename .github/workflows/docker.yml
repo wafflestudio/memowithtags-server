@@ -84,10 +84,12 @@ jobs:
 
             # 새 이미지 가져오기 및 컨테이너 실행
             docker pull $REPOSITORY_URI:$TAG
-            docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
+            docker run -d \
+              --name memo-with-tags-backend \
+              -p 80:80 \
+              -e SPRING_PROFILES_ACTIVE=prod \  # 환경 변수 추가
+              $REPOSITORY_URI:$TAG
           EOF
-      
-      
 
       - name: Stop Database
         run: |
