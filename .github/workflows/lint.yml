@@ -24,7 +24,7 @@ jobs:
       - name: Start Database with Docker Compose
         run: |
           docker-compose up -d db
-        working-directory: ./your-docker-compose-directory
+        working-directory: .
 
       # 2. DB 준비 시간 대기
       - name: Wait for Database
@@ -53,4 +53,4 @@ jobs:
       - name: Stop Database
         run: |
           docker-compose down
-        working-directory: ./your-docker-compose-directory
+        working-directory: .
