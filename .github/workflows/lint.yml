@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'amazon-corretto'# 필요한 Java 버전 설정
+          distribution: 'corretto'# 필요한 Java 버전 설정
 
       - name: Install dependencies
         run: ./gradlew clean build  # Gradle 의존성 설치 및 빌드
