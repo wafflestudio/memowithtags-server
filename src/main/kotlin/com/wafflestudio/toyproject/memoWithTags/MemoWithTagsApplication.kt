@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class MemoWithTagsApplication
 
 fun main(args: Array<String>) {
-	runApplication<MemoWithTagsApplication>(*args)
+    runApplication<MemoWithTagsApplication>(*args)
 }
