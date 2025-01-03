@@ -91,7 +91,7 @@ jobs:
               -e DB_NAME=memowithtags_db \
               -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              --name memowithtags-app \
+              --name memowithtags-backend \
               $REPOSITORY_URI:$TAG" > deploy.sh
       
           # 배포 스크립트 EC2로 전송
