@@ -90,7 +90,7 @@ jobs:
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_NAME=memowithtags_db \
               -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
               --name memowithtags-app \
               $REPOSITORY_URI:$TAG" > deploy.sh
       
