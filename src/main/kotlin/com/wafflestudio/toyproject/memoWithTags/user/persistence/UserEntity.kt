@@ -1,3 +1,5 @@
 package com.wafflestudio.toyproject.memoWithTags.user.persistence
 
-class UserEntity
+
+class UserEntity(
+)
