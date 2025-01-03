@@ -5,6 +5,7 @@ on:
     workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
     types:
       - completed
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,45 +15,94 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. AWS 인증
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+#      # 2. Docker Compose로 DB 시작
+#      - name: Start Database with Docker Compose
+#        run: |
+#          docker-compose up -d mysql
+#        working-directory: .
+
+      # 2. Gradle 빌드
+      - name: Build project
+        run: |
+          SPRING_PROFILES_ACTIVE=prod ./gradlew build
+
+      # 3. 빌드 결과 확인
+      - name: Verify build artifacts
+        run: ls -R build/libs
+
+      # 4. Docker 빌드 컨텍스트 준비
+      - name: Prepare Docker context
+        run: cp build/libs/*.jar .
+
+      # 5. AWS 자격 증명 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # 3. 도커 이미지 빌드
-      - name: Build Docker image
-        run: |
-          docker build -t memo-with-tags-backend:latest .
+      # 6. AWS ECR 로그인
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-      # 4. 도커 이미지를 ECR로 푸시
+      # 7. 도커 이미지 빌드
+      - name: Build Docker image
+        run: docker build -t memo-with-tags-backend:latest .
+
+      # 8. 도커 이미지를 ECR로 푸시
       - name: Push Docker image to ECR
         run: |
-          # ECR 리포지토리 URI
           REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
           TAG=$(echo $GITHUB_SHA | cut -c1-7)  # 커밋 해시 앞 7자리로 태그 생성
           
-          # ECR에 태그 추가
-          docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
+          echo "Pushing Docker image with TAG: $TAG"
           
-          # ECR에 푸시
+          docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
           docker push $REPOSITORY_URI:$TAG
 
-      # 5. EC2 서버에서 Docker 이미지 실행
+      # 9. EC2 서버에서 Docker 이미지 실행
       - name: Deploy to EC2
         run: |
-          # EC2 서버 접속
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            # ECR 로그인
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REPOSITORY_URI
+          # 개인 키를 파일로 저장하고 권한 설정
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          
+          # 배포 스크립트 작성
+          echo "#!/bin/bash
+          REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
+          TAG=$(echo $GITHUB_SHA | cut -c1-7)
+      
+          echo \"Deploying Docker image with TAG: \$TAG\"
+          echo \"Deploying Docker image with REPOSITORY_URI: \$REPOSITORY_URI\"
+      
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin \$REPOSITORY_URI
+      
+          docker stop memo-with-tags-backend || true
+          docker rm memo-with-tags-backend || true
+      
+          docker pull \$REPOSITORY_URI:\$TAG
+          docker run -d \
+              -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DB_NAME=memowithtags_db \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              --name memowithtags-backend \
+              \$REPOSITORY_URI:\$TAG" > deploy.sh
+      
+          # 배포 스크립트 EC2로 전송
+          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
+      
+          # EC2에서 스크립트 실행
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
 
-            # 기존 컨테이너 중지 및 삭제
-            docker stop memo-with-tags-backend || true
-            docker rm memo-with-tags-backend || true
-
-            # 새 컨테이너 실행
-            docker pull $REPOSITORY_URI:$TAG
-            docker run -d --name memo-with-tags-backend -p 80:80 $REPOSITORY_URI:$TAG
-          EOF
+#      - name: Stop Database
+#        run: |
+#          docker-compose down
+#        working-directory: .
