@@ -20,11 +20,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      # 2. Docker Compose로 DB 시작
-      - name: Start Database with Docker Compose
-        run: |
-          docker-compose up -d mysql
-        working-directory: .
+#      # 2. Docker Compose로 DB 시작
+#      - name: Start Database with Docker Compose
+#        run: |
+#          docker-compose up -d mysql
+#        working-directory: .
 
       # 2. Gradle 빌드
       - name: Build project
@@ -93,7 +93,7 @@ jobs:
           # EC2에서 스크립트 실행
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
 
-      - name: Stop Database
-        run: |
-          docker-compose down
-        working-directory: .
+#      - name: Stop Database
+#        run: |
+#          docker-compose down
+#        working-directory: .
