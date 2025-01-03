@@ -85,7 +85,14 @@ jobs:
           docker rm memo-with-tags-backend || true
       
           docker pull \$REPOSITORY_URI:\$TAG
-          docker run -d --name memo-with-tags-backend -p 80:80 -e SPRING_PROFILES_ACTIVE=prod \$REPOSITORY_URI:\$TAG" > deploy.sh
+          docker run -d \
+              -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DB_NAME=memowithtags_db \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              --name memowithtags-app \
+              $REPOSITORY_URI:$TAG" > deploy.sh
       
           # 배포 스크립트 EC2로 전송
           scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
