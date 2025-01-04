@@ -11,11 +11,11 @@ import org.springframework.web.method.support.ModelAndViewContainer
 
 @Component
 class UserArgumentResolver(
-    private val userService : UserService
+    private val userService: UserService
 ) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.parameterType == User::class.java &&
-                parameter.hasParameterAnnotation(AuthUser::class.java)
+            parameter.hasParameterAnnotation(AuthUser::class.java)
     }
 
     override fun resolveArgument(
@@ -26,8 +26,8 @@ class UserArgumentResolver(
     ): Any? {
         return runCatching {
             val accessToken = requireNotNull(
-                webRequest.getHeader("Authorization")?.split(" ")?.let{
-                    if(it.getOrNull(0) == "Bearer") it.getOrNull(1) else null
+                webRequest.getHeader("Authorization")?.split(" ")?.let {
+                    if (it.getOrNull(0) == "Bearer") it.getOrNull(1) else null
                 }
             )
 
@@ -37,4 +37,3 @@ class UserArgumentResolver(
         }
     }
 }
-

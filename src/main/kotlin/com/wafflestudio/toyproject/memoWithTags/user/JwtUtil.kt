@@ -40,24 +40,24 @@ object JwtUtil {
                     .build()
                     .parseClaimsJws(accessToken)
                     .body
-            if (claims.expiration.before(Date())){
+            if (claims.expiration.before(Date())) {
                 null
-            } else{
+            } else {
                 claims.subject
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
     }
 }
 
-//catch (e: ExpiredJwtException) {
+// catch (e: ExpiredJwtException) {
 //    // 토큰 만료 처리
 //    null
-//} catch (e: MalformedJwtException) {
+// } catch (e: MalformedJwtException) {
 //    // 잘못된 토큰 처리
 //    null
-//} catch (e: Exception) {
+// } catch (e: Exception) {
 //    // 기타 예외 처리
 //    null
-//} 예외 분리해서 이후 처리
+// } 예외 분리해서 이후 처리
