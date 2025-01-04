@@ -1,3 +1,6 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev} # 기본값 dev
+
+
+# 이후 jwt도 yml에 넣어서 관리 예정

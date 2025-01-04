@@ -1,3 +1,5 @@
+package com.wafflestudio.toyproject.memoWithTags.user
+
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
@@ -10,9 +12,9 @@ object JwtUtil {
     private const val REFRESH_TOKEN_EXPIRATION: Long = 1000 * 60 * 60 * 24 * 14 // 14일
 
     // Access Token 생성
-    fun generateAccessToken(userId: String): String {
+    fun generateAccessToken(userEmail: String): String {
         return Jwts.builder()
-            .setSubject(userId)
+            .setSubject(userEmail)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
             .signWith(secretKey)
@@ -20,35 +22,42 @@ object JwtUtil {
     }
 
     // Refresh Token 생성
-    fun generateRefreshToken(userId: String): String {
+    fun generateRefreshToken(userEmail: String): String {
         return Jwts.builder()
-            .setSubject(userId)
+            .setSubject(userEmail)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
             .signWith(secretKey)
             .compact()
     }
 
-    // Access Token 검증
-    fun validateToken(token: String): Boolean {
+    // Access Token 검증 및 userEmail
+    fun validateAccessTokenGetUserId(accessToken: String): String? {
         return try {
-            Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-            true
-        } catch (e: Exception) {
-            false
+            val claims =
+                Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .body
+            if (claims.expiration.before(Date())){
+                null
+            } else{
+                claims.subject
+            }
+        } catch (e: Exception){
+            null
         }
     }
-
-    // 사용자 Id
-    fun extractUserId(token: String): String {
-        return Jwts.parserBuilder()
-            .setSigningKey(secretKey)
-            .build()
-            .parseClaimsJws(token)
-            .body
-            .subject
-    }
 }
+
+//catch (e: ExpiredJwtException) {
+//    // 토큰 만료 처리
+//    null
+//} catch (e: MalformedJwtException) {
+//    // 잘못된 토큰 처리
+//    null
+//} catch (e: Exception) {
+//    // 기타 예외 처리
+//    null
+//} 예외 분리해서 이후 처리

@@ -1,11 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.user.service
 
+import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.*
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.UserDTO
+import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.mindrot.jbcrypt.BCrypt
+import org.springframework.stereotype.Service
 
+@Service
 class UserService(
     private val userRepository: UserRepository
 ) {
@@ -34,8 +37,14 @@ class UserService(
     fun login(
         email: String,
         password: String,
-    ): UserDTO {
+    ): User {
         val user = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
-        return UserDTO.fromEntity(user)
+        return User.fromEntity(user)
+    }
+
+    fun authenticate(token : String) : User {
+        val userEmail = JwtUtil.validateAccessTokenGetUserId(token) ?: throw AuthenticationFailedException()
+        val user = userRepository.findByEmail(userEmail) ?: throw AuthenticationFailedException()
+        return User.fromEntity(user)
     }
 }
