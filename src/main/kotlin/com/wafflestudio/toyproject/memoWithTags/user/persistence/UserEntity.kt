@@ -8,6 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import java.time.Instant
 
+
 @Entity(name = "users")
 class UserEntity(
     @Id

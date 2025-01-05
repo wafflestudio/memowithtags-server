@@ -6,4 +6,5 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
     fun findByEmail(username: String): UserEntity?
 
     fun deleteByVerified(verified: Boolean)
+
 }

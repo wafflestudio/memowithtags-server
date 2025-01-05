@@ -1,4 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.controller
 
-class Tag {
-}
+data class Tag(
+    val id: Long,
+    val name: String,
+    val color: String
+)
