@@ -1,7 +1,12 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.persistence
 
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import java.time.Instant
 
 @Entity(name = "tags")
