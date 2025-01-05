@@ -18,11 +18,6 @@ class UserController {
         return LoginResponse("", "", 0L) // 기본값으로 LoginResponse 반환
     }
 
-    @PostMapping("/api/v1/auth/logout")
-    fun logout(@RequestBody request: LogoutRequest) {
-        // 반환 타입이 Unit이므로 아무 작업 없이 비워 둬도 OK
-    }
-
     @PostMapping("/api/v1/auth/verify-email")
     fun verifyEmail(@RequestBody request: VerifyEmailRequest) {
         // 반환 타입이 Unit이므로 아무 작업 없이 비워 둬도 OK
