@@ -16,10 +16,10 @@ class EmailConfig(
     @Value("\${spring.mail.port}")
     private val port: Int,
 
-    @Value("\${spring.mail.username}")
+    @Value("kybs0627@snu.ac.kr")
     private val username: String,
 
-    @Value("\${spring.mail.password}")
+    @Value("Dlsms27!8")
     private val password: String,
 
     @Value("\${spring.mail.properties.mail.smtp.auth}")

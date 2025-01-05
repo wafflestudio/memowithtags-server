@@ -20,7 +20,9 @@ class Memo(
                 content = entity.content,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
-                tags = entity
+                tags = entity.memoTags.map {memoTagEntity ->
+                    Tag.fromEntity(memoTagEntity.tag)
+                }
             )
         }
     }

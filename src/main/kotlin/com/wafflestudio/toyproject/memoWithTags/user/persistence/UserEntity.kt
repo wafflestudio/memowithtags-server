@@ -1,5 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.user.persistence
 
+import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -24,6 +26,6 @@ class UserEntity(
     var verified: Boolean = false,
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
-    @OneToMany(mappedBy = "user", )
-    val memos: MutableList<UserEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val memos: MutableList<MemoEntity> = mutableListOf(),
 )
