@@ -1,0 +1,22 @@
+### 회원가입
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "wafflestudio",
+  "password": "spring",
+  "nickname": "examplename"
+}
+
+### 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "wafflestudio",
+  "password": "spring"
+}
+
+### 인증 토큰으로 유저 프로필 조회
+GET http://localhost:8080/api/v1/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3YWZmbGVzdHVkaW8iLCJpYXQiOjE3MjcyODE1NzEsImV4cCI6MTcyODE0NTU3MX0.4R-lg5x6eOzK8YQaE47lrJviUDOuUlciIEYbMhOrM8w
