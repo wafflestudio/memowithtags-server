@@ -3,4 +3,23 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev} # 기본값 dev
 
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000 # 30분
+
+
+
 # 이후 jwt도 yml에 넣어서 관리 예정

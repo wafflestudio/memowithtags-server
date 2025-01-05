@@ -1,5 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.user
 
+import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import org.springframework.core.MethodParameter

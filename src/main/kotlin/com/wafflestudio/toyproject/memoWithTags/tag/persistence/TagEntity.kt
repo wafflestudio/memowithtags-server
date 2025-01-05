@@ -1,5 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.persistence
 
+
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -29,4 +30,4 @@ class TagEntity(
 
     @Column(name = "updated_at")
     var updatedAt: Instant? = null
-)
+
