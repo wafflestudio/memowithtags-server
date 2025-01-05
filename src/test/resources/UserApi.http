@@ -3,9 +3,8 @@ POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "username": "wafflestudio",
-  "password": "spring",
-  "nickname": "examplename"
+  "email": "kybs6672@gmail.com",
+  "password": "spring"
 }
 
 ### 로그인
@@ -13,7 +12,7 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "username": "wafflestudio",
+  "email": "inho524890@gmail.com",
   "password": "spring"
 }
 
