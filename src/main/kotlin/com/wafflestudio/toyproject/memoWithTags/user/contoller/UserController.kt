@@ -43,8 +43,9 @@ class UserController(
     }
 
     @PostMapping("/auth/refresh-token")
-    fun refreshToken(): RefreshTokenResponse {
-        return RefreshTokenResponse("", "", 0L) // 기본값으로 RefreshTokenResponse 반환
+    fun refreshToken(@RequestBody request: RefreshTokenRequest): RefreshTokenResponse {
+        val refreshToken = request.refreshToken
+        return userService.refreshToken(refreshToken)
     }
 }
 
@@ -80,6 +81,10 @@ data class ForgotPasswordRequest(
 data class ResetPasswordRequest(
     val email: String,
     val password: String
+)
+
+data class RefreshTokenRequest(
+    val refreshToken: String
 )
 
 data class RefreshTokenResponse(

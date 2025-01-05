@@ -1,12 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.user.service
 
-import com.wafflestudio.toyproject.memoWithTags.user.AuthenticationFailedException
-import com.wafflestudio.toyproject.memoWithTags.user.EmailNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.user.EmailVerificationFailureException
+import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailVerificationFailureException
+import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
+import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidPasswordException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
-import com.wafflestudio.toyproject.memoWithTags.user.SignInInvalidPasswordException
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import com.wafflestudio.toyproject.memoWithTags.user.controller.RefreshTokenResponse
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
@@ -100,9 +102,10 @@ class UserService(
 
     @Transactional
     fun authenticate(
-        accessToken: String,
+        accessToken: String
     ): User {
-        val email = JwtUtil.validateAccessTokenGetUserId(accessToken) ?: throw AuthenticationFailedException()
+        if (!JwtUtil.isValidToken(accessToken)) throw AuthenticationFailedException()
+        val email = JwtUtil.extractUserEmail(accessToken) ?: throw AuthenticationFailedException()
         val userEntity = userRepository.findByEmail(email) ?: throw AuthenticationFailedException()
         return User.fromEntity(userEntity)
     }
@@ -117,5 +120,21 @@ class UserService(
     @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 미인증 사용자 삭제
     fun deleteUnverifiedUser() {
         userRepository.deleteByVerified(false)
+    }
+
+    fun refreshToken(refreshToken: String): RefreshTokenResponse {
+        if (!JwtUtil.isValidToken(refreshToken)) {
+            throw InValidTokenException()
+        }
+        val userEmail = JwtUtil.extractUserEmail(refreshToken) ?: throw InValidTokenException()
+        val user = userRepository.findByEmail(userEmail) ?: throw EmailNotFoundException()
+
+        val newAccessToken = JwtUtil.generateAccessToken(userEmail)
+
+        return RefreshTokenResponse(
+            accessToken = newAccessToken,
+            refreshToken = refreshToken,
+            expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
+        )
     }
 }
