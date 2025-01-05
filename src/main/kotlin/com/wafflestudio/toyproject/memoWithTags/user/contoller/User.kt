@@ -4,7 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import java.time.Instant
 
 class User(
-    val id: Long,
+    val id: String,
     val email: String,
     val nickname: String,
     val verified: Boolean,
