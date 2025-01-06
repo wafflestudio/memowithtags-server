@@ -2,6 +2,7 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailVerificationFailureException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidPasswordException
@@ -57,10 +58,11 @@ class UserService(
             "</body>" +
             "</html>"
         try {
+            println("code: $verification")
             emailService.sendEmail(email, title, content)
         } catch (e: Exception) {
             e.printStackTrace()
-            throw RuntimeException("Failed to send verification code", e)
+            throw EmailSendingException()
         }
     }
 
@@ -110,18 +112,6 @@ class UserService(
         return User.fromEntity(userEntity)
     }
 
-    @Transactional
-    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
-    fun deleteExpiredVerificationCode() {
-        emailVerificationRepository.deleteByExpiryTimeBefore(LocalDateTime.now())
-    }
-
-    @Transactional
-    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 미인증 사용자 삭제
-    fun deleteUnverifiedUser() {
-        userRepository.deleteByVerified(false)
-    }
-
     fun refreshToken(refreshToken: String): RefreshTokenResponse {
         if (!JwtUtil.isValidToken(refreshToken)) {
             throw InValidTokenException()
@@ -136,5 +126,16 @@ class UserService(
             refreshToken = refreshToken,
             expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
         )
+    }
+    @Transactional
+    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
+    fun deleteExpiredVerificationCode() {
+        emailVerificationRepository.deleteByExpiryTimeBefore(LocalDateTime.now())
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 미인증 사용자 삭제
+    fun deleteUnverifiedUser() {
+        userRepository.deleteByVerified(false)
     }
 }

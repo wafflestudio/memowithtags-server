@@ -25,7 +25,6 @@ class UserController(
         userService.verifyEmail(request.email, request.verificationCode)
         return ResponseEntity.ok().build()
     }
-
     @PostMapping("/auth/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val (_, accessToken, refreshToken) = userService.login(request.email, request.password)

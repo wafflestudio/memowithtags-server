@@ -1,6 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.persistence
 
 
+
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.CascadeType

@@ -10,12 +10,13 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import java.time.Instant
 
+import java.time.Instant
 
 @Entity(name = "users")
 class UserEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    val id: String? = null,
     @Column(name = "email", nullable = false)
     val email: String,
     @Column(name = "nickname", nullable = false)

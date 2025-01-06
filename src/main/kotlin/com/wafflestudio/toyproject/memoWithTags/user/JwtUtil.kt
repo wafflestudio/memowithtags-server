@@ -31,7 +31,6 @@ object JwtUtil {
             .signWith(secretKey)
             .compact()
     }
-
     fun isValidToken(token: String): Boolean {
         return try {
             Jwts.parserBuilder()
