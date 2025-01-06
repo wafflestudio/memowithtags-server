@@ -9,6 +9,14 @@ sealed class UserException(
     msg: String
 ) : CustomException(httpErrorCode, errorCode, msg)
 
+// 회원가입 시 이메일이 이미 존재하는 경우
+class EmailAlreadyExistsException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "이미 등록된 이메일입니다."
+)
+
+
 // 이메일을 찾을 수 없는 경우
 class EmailNotFoundException : UserException(
     errorCode = 0,
