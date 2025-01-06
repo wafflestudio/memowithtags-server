@@ -1,7 +1,6 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev} # 기본값 dev
-
   mail:
     host: smtp.gmail.com
     port: 587

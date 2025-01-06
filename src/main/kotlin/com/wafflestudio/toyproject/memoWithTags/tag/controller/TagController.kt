@@ -1,7 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.controller
 
+import com.wafflestudio.toyproject.memoWithTags.tag.TagNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.tag.WrongUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.service.TagService
+import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
+import com.wafflestudio.toyproject.memoWithTags.user.AuthenticationFailedException
+import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,31 +21,38 @@ class TagController(
     private val tagService: TagService
 ) {
     @GetMapping("/api/v1/tag")
-    fun getTags(): List<TagDto> {
-        return emptyList() // 빈 리스트 반환
+    fun getTags(@AuthUser user: User): List<Tag> {
+        return tagService.getTags(user)
     }
 
     @PostMapping("/api/v1/tag")
-    fun createTag(@RequestBody request: CreateTagRequest): TagDto {
-        return TagDto(0L, "", "") // 기본값으로 TagDto 반환
+    fun createTag(@RequestBody request: CreateTagRequest, @AuthUser user: User): Tag {
+        val tag = tagService.createTag(request.name, request.color, user)
+        return tag
     }
 
     @PutMapping("/api/v1/tag/{tagId}")
-    fun updateTag(@PathVariable id: Long, @RequestBody request: UpdateTagRequest): TagDto {
-        return TagDto(0L, "", "") // 기본값으로 TagDto 반환
+    fun updateTag(@PathVariable tagId: Long, @RequestBody request: UpdateTagRequest, @AuthUser user: User): Tag {
+        return tagService.updateTag(tagId, request.name, request.color, user)
     }
 
     @DeleteMapping("/api/v1/tag/{tagId}")
-    fun deleteTag(@PathVariable id: Long) {
-        // 반환 타입이 Unit이므로 아무 작업 없이 비워 둬도 OK
+    fun deleteTag(@PathVariable tagId: Long, @AuthUser user: User): ResponseEntity<Unit> {
+        tagService.deleteTag(tagId, user)
+        return ResponseEntity.noContent().build()
+    }
+
+    @ExceptionHandler
+    fun handleTagNotFoundException(e: Exception): ResponseEntity<Unit> {
+        val status = when (e) {
+            is TagNotFoundException -> 404
+            is WrongUserException -> 403
+            is AuthenticationFailedException -> 401
+            else -> 404
+        }
+        return ResponseEntity.status(status).build()
     }
 }
-
-data class TagDto(
-    val id: Long,
-    val name: String,
-    val color: String
-)
 
 data class CreateTagRequest(
     val name: String,
