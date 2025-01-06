@@ -34,6 +34,7 @@ class UserArgumentResolver(
 
             userService.authenticate(accessToken)
         }.getOrElse { _ ->
+            println("failed....")
             throw AuthenticationFailedException()
         }
     }

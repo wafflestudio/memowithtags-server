@@ -23,8 +23,6 @@ class UserEntity(
     var nickname: String = "Writer",
     @Column(name = "hashed_password", nullable = false)
     var hashedPassword: String,
-    @Column(name = "verified", nullable = false)
-    var verified: Boolean = false,
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
