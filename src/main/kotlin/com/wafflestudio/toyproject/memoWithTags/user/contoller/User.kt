@@ -2,9 +2,10 @@ package com.wafflestudio.toyproject.memoWithTags.user.contoller
 
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import java.time.Instant
+import java.util.UUID
 
 class User(
-    val id: String,
+    val id: UUID,
     val email: String,
     val nickname: String,
     val verified: Boolean,
