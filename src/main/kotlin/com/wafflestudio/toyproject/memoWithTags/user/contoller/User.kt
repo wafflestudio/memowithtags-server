@@ -8,7 +8,6 @@ class User(
     val id: UUID,
     val email: String,
     val nickname: String,
-    val verified: Boolean,
     val createdAt: Instant
 ) {
     companion object {
@@ -17,7 +16,6 @@ class User(
                 id = entity.id!!,
                 email = entity.email,
                 nickname = entity.nickname,
-                verified = entity.verified,
                 createdAt = entity.createdAt
             )
         }

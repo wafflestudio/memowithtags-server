@@ -1,8 +1,11 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
+import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
+import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,14 +19,7 @@ class UserController(
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Unit> {
         userService.register(request.email, request.password)
-        userService.sendCodeToEmail(request.email)
         return ResponseEntity.status(HttpStatus.CREATED).build()
-    }
-
-    @PostMapping("/auth/verify-email")
-    fun verifyEmail(@RequestBody request: VerifyEmailRequest): ResponseEntity<Unit> {
-        userService.verifyEmail(request.email, request.verificationCode)
-        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/auth/login")
@@ -47,6 +43,14 @@ class UserController(
         val refreshToken = request.refreshToken
         return userService.refreshToken(refreshToken)
     }
+
+    @GetMapping("/auth/me")
+    fun me(
+        @AuthUser user: User,
+    ): ResponseEntity<User> {
+        println("authme start!!!!")
+        return ResponseEntity.ok(user)
+    }
 }
 
 data class RegisterRequest(
@@ -62,16 +66,6 @@ data class LoginRequest(
 data class LoginResponse(
     val accessToken: String,
     val refreshToken: String
-)
-
-data class LogoutRequest(
-    val Authorization: String,
-    val refreshToken: String
-)
-
-data class VerifyEmailRequest(
-    val email: String,
-    val verificationCode: String
 )
 
 data class ForgotPasswordRequest(
