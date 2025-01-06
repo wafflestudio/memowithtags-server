@@ -1,10 +1,10 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.controller
 
+import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.WrongUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.service.TagService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
-import com.wafflestudio.toyproject.memoWithTags.user.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
