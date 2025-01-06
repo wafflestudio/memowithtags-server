@@ -11,6 +11,8 @@ object JwtUtil {
     private const val ACCESS_TOKEN_EXPIRATION: Long = 1000 * 60 * 120 // 2시간
     private const val REFRESH_TOKEN_EXPIRATION: Long = 1000 * 60 * 60 * 24 * 14 // 14일
 
+    fun getAccessTokenExpiration(): Long { return ACCESS_TOKEN_EXPIRATION }
+
     // Access Token 생성
     fun generateAccessToken(userEmail: String): String {
         return Jwts.builder()
@@ -30,21 +32,39 @@ object JwtUtil {
             .signWith(secretKey)
             .compact()
     }
-
-    // Access Token 검증 및 userEmail
-    fun validateAccessTokenGetUserId(accessToken: String): String? {
+    fun isValidToken(token: String): Boolean {
         return try {
-            val claims =
-                Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .body
-            if (claims.expiration.before(Date())) {
-                null
-            } else {
-                claims.subject
-            }
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun isTokenExpired(token: String): Boolean {
+        return try {
+            val claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .body
+            claims.expiration.before(Date())
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    fun extractUserEmail(token: String): String? {
+        return try {
+            val claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .body
+            claims.subject
         } catch (e: Exception) {
             null
         }
