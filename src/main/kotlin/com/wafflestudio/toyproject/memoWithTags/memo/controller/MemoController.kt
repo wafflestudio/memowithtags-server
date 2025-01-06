@@ -29,7 +29,7 @@ class MemoController(
     }
 
     @GetMapping("/api/test")
-    fun test(){
+    fun test() {
         println(Instant.now())
     }
 }

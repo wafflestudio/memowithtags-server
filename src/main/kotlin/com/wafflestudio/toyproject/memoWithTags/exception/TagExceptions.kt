@@ -1,11 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.exception
 
+import org.springframework.http.HttpStatus
 
 class TagNotFoundException : CustomException(
-    "TAG_NOT_FOUND",
-    "태그를 찾을 수 없습니다",
+    errorCode = 0,
+    httpErrorCode = HttpStatus.UNAUTHORIZED,
+    msg = "토큰이 만료되었습니다."
 )
 class WrongUserException : CustomException(
-    "WRONG_USER_EXCEPTION",
-    "잘못된 유저입니다",
+    errorCode = 0,
+    httpErrorCode = HttpStatus.UNAUTHORIZED,
+    msg = "토큰이 만료되었습니다."
 )

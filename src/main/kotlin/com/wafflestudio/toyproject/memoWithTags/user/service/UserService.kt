@@ -127,6 +127,7 @@ class UserService(
             expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
         )
     }
+
     @Transactional
     @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
     fun deleteExpiredVerificationCode() {

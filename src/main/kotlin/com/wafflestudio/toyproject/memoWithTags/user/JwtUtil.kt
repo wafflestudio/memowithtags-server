@@ -12,6 +12,7 @@ object JwtUtil {
     private const val REFRESH_TOKEN_EXPIRATION: Long = 1000 * 60 * 60 * 24 * 14 // 14일
 
     fun getAccessTokenExpiration(): Long { return ACCESS_TOKEN_EXPIRATION }
+
     // Access Token 생성
     fun generateAccessToken(userEmail: String): String {
         return Jwts.builder()

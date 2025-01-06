@@ -8,9 +8,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MemoService(
     private val memoRepository: MemoRepository
-){
+) {
     @Transactional
-    fun createMemo(memo: Memo){
-
+    fun createMemo(memo: Memo) {
     }
 }

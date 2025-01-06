@@ -1,7 +1,5 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.persistence
 
-
-
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.CascadeType
@@ -10,6 +8,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import java.time.Instant
@@ -27,6 +26,7 @@ class TagEntity(
     var color: String,
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     var user: UserEntity,
 
     @Column(name = "created_at", nullable = false)
@@ -38,4 +38,3 @@ class TagEntity(
     @OneToMany(mappedBy = "tag", cascade = [CascadeType.ALL], orphanRemoval = true)
     val memoTags: MutableSet<MemoTagEntity> = mutableSetOf()
 )
-

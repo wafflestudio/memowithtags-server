@@ -15,22 +15,6 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
-  spring:
-    image: memo-with-tags:latest
-    container_name: memo-app
-    restart: on-failure
-    depends_on:
-      - mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/testdb
-      SPRING_DATASOURCE_USERNAME: testuser
-      SPRING_DATASOURCE_PASSWORD: testpassword
-      SPRING_PROFILES_ACTIVE: dev
-    ports:
-      - "8080:8080"
-    networks:
-      - test-network
-
 volumes:
   mysql-data:
 
