@@ -1,5 +1,4 @@
 package com.wafflestudio.toyproject.memoWithTags.exception
-
 import org.springframework.http.HttpStatus
 
 class TokenExpiredException : CustomException(

@@ -117,7 +117,7 @@ class UserService(
             throw InValidTokenException()
         }
         val userEmail = JwtUtil.extractUserEmail(refreshToken) ?: throw InValidTokenException()
-        userRepository.findByEmail(userEmail) ?: throw EmailNotFoundException()
+        val user = userRepository.findByEmail(userEmail) ?: throw EmailNotFoundException()
 
         val newAccessToken = JwtUtil.generateAccessToken(userEmail)
 
@@ -127,7 +127,6 @@ class UserService(
             expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
         )
     }
-
     @Transactional
     @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
     fun deleteExpiredVerificationCode() {

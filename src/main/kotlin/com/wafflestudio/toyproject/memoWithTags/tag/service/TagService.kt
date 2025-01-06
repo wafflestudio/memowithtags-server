@@ -1,11 +1,11 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.service
 
-import com.wafflestudio.toyproject.memoWithTags.tag.TagNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.tag.WrongUserException
+import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
+import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.WrongUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
-import com.wafflestudio.toyproject.memoWithTags.user.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.springframework.stereotype.Service

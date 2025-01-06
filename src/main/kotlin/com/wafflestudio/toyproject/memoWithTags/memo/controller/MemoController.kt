@@ -2,6 +2,7 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -14,8 +15,8 @@ class MemoController(
     private val memoService: MemoService
 ) {
     @PostMapping("/api/v1/memo")
-    fun createMemo(@RequestBody request: CreateMemoResponse): MemoDto {
-        return MemoDto("", emptyList())
+    fun createMemo(@RequestBody request: CreateMemoRequest): CreateMemoResponse {
+        TODO()
     }
 
     @PutMapping("/api/v1/memo/{memoId}")
@@ -26,9 +27,19 @@ class MemoController(
     @DeleteMapping("/api/v1/memo/{memoId}")
     fun deleteMemo(@PathVariable memoId: Long) {
     }
+
+    @GetMapping("/api/test")
+    fun test(){
+        println(Instant.now())
+    }
 }
 
 data class MemoDto(
+    val content: String,
+    val tags: List<Long>
+)
+
+data class CreateMemoRequest(
     val content: String,
     val tags: List<Long>
 )
