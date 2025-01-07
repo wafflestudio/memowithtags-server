@@ -17,13 +17,13 @@ class SecurityConfig(
             .csrf { it.disable() } // CSRF 비활성화
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll() // 인증 없이 허용
+                    .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/refresh-token").permitAll() // 인증 없이 허용
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요
             }
             .sessionManagement {
-                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 사용 X
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용 X
             }
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)  // JWT 필터 추가
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java) // JWT 필터 추가
         return http.build()
     }
 }

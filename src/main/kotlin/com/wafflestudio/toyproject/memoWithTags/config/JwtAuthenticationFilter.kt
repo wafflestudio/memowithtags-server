@@ -1,5 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.config
 
+import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import jakarta.servlet.FilterChain
@@ -14,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthenticationFilter(
     private val userService: UserService
-): OncePerRequestFilter() {
+) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -38,14 +39,16 @@ class JwtAuthenticationFilter(
                 val userDetails = userService.loadUserByUsername(userEmail)
                 if (JwtUtil.isValidToken(jwtToken)) {
                     val authToken = UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.authorities
+                        userDetails,
+                        null,
+                        userDetails.authorities
                     )
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = authToken
                 }
             }
         } catch (e: Exception) {
-            logger.error("JWT Authentication failed: ${e.message}")
+            throw AuthenticationFailedException()
         }
 
         filterChain.doFilter(request, response)
