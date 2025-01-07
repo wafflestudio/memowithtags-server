@@ -31,14 +31,13 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
 }
 
 kotlin {

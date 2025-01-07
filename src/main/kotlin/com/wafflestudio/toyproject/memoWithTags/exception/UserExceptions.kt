@@ -16,7 +16,6 @@ class EmailAlreadyExistsException : UserException(
     msg = "이미 등록된 이메일입니다."
 )
 
-
 // 이메일을 찾을 수 없는 경우
 class EmailNotFoundException : UserException(
     errorCode = 0,
@@ -24,6 +23,12 @@ class EmailNotFoundException : UserException(
     msg = "이메일을 찾을 수 없습니다."
 )
 
+// 인증 이메일을 보낼 수 없는 경우
+class EmailSendingException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.FORBIDDEN,
+    msg = "인증 이메일 전송에 실패했습니다."
+)
 
 // 잘못된 비밀번호로 로그인 시도
 class SignInInvalidPasswordException : UserException(
