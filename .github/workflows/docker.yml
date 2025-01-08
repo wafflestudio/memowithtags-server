@@ -53,7 +53,7 @@ jobs:
 
       # 7. 도커 이미지 빌드
       - name: Build Docker image
-        run: docker build -t memo-with-tags-backend:latest .
+        run: docker build -t memowithtags-backend:latest .
 
       # 8. 도커 이미지를 ECR로 푸시
       - name: Push Docker image to ECR
@@ -63,7 +63,7 @@ jobs:
           
           echo "Pushing Docker image with TAG: $TAG"
           
-          docker tag memo-with-tags-backend:latest $REPOSITORY_URI:$TAG
+          docker tag memowithtags-backend:latest $REPOSITORY_URI:$TAG
           docker push $REPOSITORY_URI:$TAG
 
       # 9. EC2 서버에서 Docker 이미지 실행
@@ -83,8 +83,10 @@ jobs:
       
           aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin \$REPOSITORY_URI
       
-          docker stop memo-with-tags-backend || true
-          docker rm memo-with-tags-backend || true
+          echo \"Container exists: $(docker ps -aq -f name=memowithtags-backend)\"
+      
+          docker stop memowithtags-backend || true
+          docker rm memowithtags-backend || true
       
           docker pull \$REPOSITORY_URI:\$TAG
           docker run -d \
