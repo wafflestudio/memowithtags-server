@@ -5,4 +5,5 @@ import java.util.UUID
 
 interface UserRepository : JpaRepository<UserEntity, UUID> {
     fun findByEmail(username: String): UserEntity?
+    fun deleteByVerified(verified: Boolean)
 }

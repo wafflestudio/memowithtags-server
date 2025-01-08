@@ -6,8 +6,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
 
   config:
     import: "optional:file:.env[.properties]"
+
+logging:
+  level:
+    root: debug
+    com.wafflestudio.toyproject.memoWithTags: debug

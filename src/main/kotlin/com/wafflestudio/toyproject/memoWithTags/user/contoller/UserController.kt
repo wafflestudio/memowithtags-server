@@ -19,7 +19,14 @@ class UserController(
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Unit> {
         userService.register(request.email, request.password)
+        // userService.sendCodeToEmail(request.email)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/auth/verify-email")
+    fun verifyEmail(@RequestBody request: VerifyEmailRequest): ResponseEntity<Unit> {
+        userService.verifyEmail(request.email, request.verificationCode)
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/auth/login")
@@ -56,6 +63,11 @@ class UserController(
 data class RegisterRequest(
     val email: String,
     val password: String
+)
+
+data class VerifyEmailRequest(
+    val email: String,
+    val verificationCode: String
 )
 
 data class LoginRequest(
