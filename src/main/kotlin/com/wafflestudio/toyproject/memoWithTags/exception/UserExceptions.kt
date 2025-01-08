@@ -22,6 +22,7 @@ class EmailNotFoundException : UserException(
     httpErrorCode = HttpStatus.NOT_FOUND,
     msg = "이메일을 찾을 수 없습니다."
 )
+
 // 인증 이메일을 보낼 수 없는 경우
 class EmailSendingException : UserException(
     errorCode = 0,
