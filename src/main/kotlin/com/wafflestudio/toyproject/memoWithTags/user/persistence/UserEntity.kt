@@ -28,5 +28,5 @@ class UserEntity(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var memos: MutableList<MemoEntity> = mutableListOf(),
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var tags: MutableList<TagEntity> = mutableListOf(),
+    var tags: MutableList<TagEntity> = mutableListOf()
 )

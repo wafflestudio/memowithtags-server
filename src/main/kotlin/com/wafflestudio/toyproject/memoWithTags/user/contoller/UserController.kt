@@ -46,7 +46,7 @@ class UserController(
 
     @GetMapping("/auth/me")
     fun me(
-        @AuthUser user: User,
+        @AuthUser user: User
     ): ResponseEntity<User> {
         println("authme start!!!!")
         return ResponseEntity.ok(user)

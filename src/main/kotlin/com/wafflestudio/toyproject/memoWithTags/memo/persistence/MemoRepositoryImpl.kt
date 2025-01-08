@@ -20,8 +20,8 @@ class MemoRepositoryImpl(
         tags: List<Long>?,
         startDate: Instant?,
         endDate: Instant?,
-        page: Int,           // 몇 번째 페이지인지 (1부터 시작)
-        pageSize: Int        // 한 페이지에 몇 개를 가져올지
+        page: Int, // 몇 번째 페이지인지 (1부터 시작)
+        pageSize: Int // 한 페이지에 몇 개를 가져올지
     ): List<MemoEntity> {
         val cb = em.criteriaBuilder
         val query = cb.createQuery(MemoEntity::class.java)

@@ -10,16 +10,14 @@ import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.controller.RefreshTokenResponse
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
-import java.time.Instant
 import org.mindrot.jbcrypt.BCrypt
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
-import kotlin.jvm.optionals.getOrElse
+import java.time.Instant
 
 @Service
 class UserService(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) {
     @Transactional
     fun register(

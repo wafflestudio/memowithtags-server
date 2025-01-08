@@ -22,7 +22,6 @@ class UserNotFoundException : UserException(
     msg = "User not found."
 )
 
-
 // 잘못된 비밀번호로 로그인 시도
 class SignInInvalidPasswordException : UserException(
     errorCode = 0,

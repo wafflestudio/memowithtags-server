@@ -1,11 +1,9 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -36,14 +34,15 @@ class MemoController(
     @PostMapping("/api/v1/memo")
     fun createMemo(
         @RequestBody request: CreateMemoRequest,
-        @AuthUser user : User): CreateMemoResponse {
+        @AuthUser user: User
+    ): CreateMemoResponse {
         val memo = memoService.createMemo(user, request.content, request.tags)
         return CreateMemoResponse(
             id = memo.id,
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tags = memo.tags,
+            tags = memo.tags
         )
     }
 
@@ -51,40 +50,48 @@ class MemoController(
     fun updateMemo(
         @PathVariable memoId: Long,
         @RequestBody request: UpdateMemoRequest,
-        @AuthUser user : User): UpdateMemoResponse {
+        @AuthUser user: User
+    ): UpdateMemoResponse {
         val memo = memoService.updateMemo(userId = user.id, content = request.content, memoId = memoId)
         return UpdateMemoResponse(
             id = memo.id,
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tags = memo.tags,
+            tags = memo.tags
         )
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}")
-    fun deleteMemo(@PathVariable memoId: Long, @AuthUser user : User): ResponseEntity<Void> {
-        memoService.deleteMemo(memoId = memoId, userId = user.id )
+    fun deleteMemo(@PathVariable memoId: Long, @AuthUser user: User): ResponseEntity<Void> {
+        memoService.deleteMemo(memoId = memoId, userId = user.id)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/api/v1/search-memo")
     fun searchMemo(@ModelAttribute request: MemoSearchRequest, @AuthUser user: User): PagedResponse<Memo> {
-        val results = memoService.searchMemo(userId = user.id, content = request.content, tags = request.tags, startDate = request.startDate
-        , endDate = request.endDate, page = request.page, pageSize = 10)
+        val results = memoService.searchMemo(
+            userId = user.id,
+            content = request.content,
+            tags = request.tags,
+            startDate = request.startDate,
+            endDate = request.endDate,
+            page = request.page,
+            pageSize = 10
+        )
         return PagedResponse(request.page, results)
     }
 
     @PostMapping("/api/v1/memo/{memoId}/tag")
-    fun addTagToMemo(@PathVariable memoId: Long, @AuthUser user : User, @RequestBody addTagRequest: UpdateTagRequest): AddTagResponse {
+    fun addTagToMemo(@PathVariable memoId: Long, @AuthUser user: User, @RequestBody addTagRequest: UpdateTagRequest): AddTagResponse {
         memoService.addTag(userId = user.id, memoId = memoId, tagId = addTagRequest.tagId)
         return AddTagResponse(
-            tagId = addTagRequest.tagId,
+            tagId = addTagRequest.tagId
         )
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}/tag")
-    fun deleteTagFromMemo(@PathVariable memoId: Long, @AuthUser user : User, @RequestBody deleteTagRequest: UpdateTagRequest): ResponseEntity<Void> {
+    fun deleteTagFromMemo(@PathVariable memoId: Long, @AuthUser user: User, @RequestBody deleteTagRequest: UpdateTagRequest): ResponseEntity<Void> {
         memoService.deleteTag(userId = user.id, memoId = memoId, tagId = deleteTagRequest.tagId)
         return ResponseEntity.noContent().build()
     }
@@ -94,9 +101,6 @@ class MemoController(
         println(Instant.now())
     }
 }
-
-
-
 
 data class CreateMemoRequest(
     val content: String,
@@ -108,7 +112,7 @@ data class UpdateTagRequest(
 )
 
 data class AddTagResponse(
-    val tagId: Long,
+    val tagId: Long
 )
 
 data class CreateMemoResponse(
@@ -120,7 +124,7 @@ data class CreateMemoResponse(
 )
 
 data class UpdateMemoRequest(
-    val content: String,
+    val content: String
 )
 
 data class UpdateMemoResponse(
@@ -132,23 +136,22 @@ data class UpdateMemoResponse(
 )
 
 data class MemoSearchRequest(
-    val content: String? = null,        // 검색할 텍스트 (optional)
-    val tags: List<Long>? = null,       // 태그 ID 배열 (optional, 콤마로 구분된 문자열 처리)
-    val startDate: Instant? = null,    // 검색 시작 날짜 (optional, ISO 8601 형식)
-    val endDate: Instant? = null,      // 검색 종료 날짜 (optional, ISO 8601 형식)
-    val page: Int                      // 페이지 번호 (required)
+    val content: String? = null, // 검색할 텍스트 (optional)
+    val tags: List<Long>? = null, // 태그 ID 배열 (optional, 콤마로 구분된 문자열 처리)
+    val startDate: Instant? = null, // 검색 시작 날짜 (optional, ISO 8601 형식)
+    val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
+    val page: Int // 페이지 번호 (required)
 )
 
 data class MemoResponse(
-    val id: Long,            // 메모 ID
-    val content: String,     // 메모 내용
-    val tags: List<Long>,    // 태그 ID 리스트
-    val createdAt: String,   // 생성 시간 (ISO 8601 포맷)
-    val updatedAt: String    // 수정 시간 (ISO 8601 포맷)
+    val id: Long, // 메모 ID
+    val content: String, // 메모 내용
+    val tags: List<Long>, // 태그 ID 리스트
+    val createdAt: String, // 생성 시간 (ISO 8601 포맷)
+    val updatedAt: String // 수정 시간 (ISO 8601 포맷)
 )
 
 data class PagedResponse<T>(
-    val page: Int,          // 현재 페이지 번호
-    val results: List<T>    // 결과 리스트 (제네릭으로 처리)
+    val page: Int, // 현재 페이지 번호
+    val results: List<T> // 결과 리스트 (제네릭으로 처리)
 )
-

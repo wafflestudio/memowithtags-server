@@ -1,7 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
-import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import java.time.Instant
 
 class Memo(
