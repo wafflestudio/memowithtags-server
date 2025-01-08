@@ -24,7 +24,7 @@ class UserArgumentResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ): Any? {
+    ): User? {
         return runCatching {
             val accessToken = requireNotNull(
                 webRequest.getHeader("Authorization")?.split(" ")?.let {

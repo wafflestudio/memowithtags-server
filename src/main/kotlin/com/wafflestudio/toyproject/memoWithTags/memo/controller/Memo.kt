@@ -1,7 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
-import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import java.time.Instant
 
 class Memo(
@@ -9,7 +8,7 @@ class Memo(
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val tags: List<Tag>
+    val tags: List<Long>
 ) {
     companion object {
         fun fromEntity(entity: MemoEntity): Memo {
@@ -19,7 +18,7 @@ class Memo(
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tags = entity.memoTags.map { memoTagEntity ->
-                    Tag.fromEntity(memoTagEntity.tag)
+                    memoTagEntity.tag.id!!
                 }
             )
         }
