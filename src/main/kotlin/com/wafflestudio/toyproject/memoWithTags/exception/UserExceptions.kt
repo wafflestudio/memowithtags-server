@@ -16,6 +16,12 @@ class EmailNotFoundException : UserException(
     msg = "이메일을 찾을 수 없습니다."
 )
 
+class UserNotFoundException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.NOT_FOUND,
+    msg = "User not found."
+)
+
 
 // 잘못된 비밀번호로 로그인 시도
 class SignInInvalidPasswordException : UserException(

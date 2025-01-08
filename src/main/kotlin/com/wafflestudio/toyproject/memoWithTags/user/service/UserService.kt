@@ -4,6 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedEx
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidPasswordException
+import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.controller.RefreshTokenResponse
@@ -13,6 +14,8 @@ import java.time.Instant
 import org.mindrot.jbcrypt.BCrypt
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserService(
@@ -72,5 +75,10 @@ class UserService(
             refreshToken = refreshToken,
             expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
         )
+    }
+
+    @Transactional
+    fun getUserEntityByEmail(userEmail: String): UserEntity {
+        return userRepository.findByEmail(userEmail) ?: throw UserNotFoundException()
     }
 }
