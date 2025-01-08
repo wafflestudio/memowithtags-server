@@ -153,4 +153,8 @@ class UserService(
         val user = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
         return CustomUserDetails(user)
     }
+
+    @Transactional fun getUserEntityByEmail(email: String): UserEntity {
+        return userRepository.findByEmail(email) ?: throw EmailNotFoundException()
+    }
 }
