@@ -93,10 +93,11 @@ jobs:
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_NAME=memowithtags_db \
-              -e DB_USERNAME=\${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD=\${{ secrets.DB_PASSWORD }} \
-              -e MAIL_USERNAME=\${{ secrets.MAIL_USERNAME }} \
-              -e MAIL_PASSWORD=\${{ secrets.MAIL_PASSWORD }} \
+              -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} \\
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
+              -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
               --name memowithtags-backend \
               \$REPOSITORY_URI:\$TAG" > deploy.sh
       
@@ -104,7 +105,7 @@ jobs:
           scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
       
           # EC2에서 스크립트 실행
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "chmod +x /home/ubuntu/deploy.sh && bash /home/ubuntu/deploy.sh"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
 
 #      - name: Stop Database
 #        run: |
