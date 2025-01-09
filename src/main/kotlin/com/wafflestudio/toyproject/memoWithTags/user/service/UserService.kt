@@ -16,6 +16,7 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificati
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.mindrot.jbcrypt.BCrypt
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.LocalDateTime
-import org.slf4j.LoggerFactory
 
 @Service
 class UserService(
