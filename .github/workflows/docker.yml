@@ -66,7 +66,7 @@ jobs:
           docker tag memowithtags-backend:latest $REPOSITORY_URI:$TAG
           docker push $REPOSITORY_URI:$TAG
 
-      # 9. EC2 서버에서 Docker 이미지 실행
+      # 9. Docker 이미지 실행 파일을 EC2로 전달
       - name: Deploy to EC2
         run: |
           # 개인 키를 파일로 저장하고 권한 설정
@@ -103,10 +103,12 @@ jobs:
       
           # 배포 스크립트 EC2로 전송
           scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
-      
+
+      # 10. EC2에서 도커 실행
+      - name: Deploy to EC2
+        run: |
           # EC2에서 스크립트 실행
           ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
-
 #      - name: Stop Database
 #        run: |
 #          docker-compose down
