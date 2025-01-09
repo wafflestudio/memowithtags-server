@@ -18,15 +18,15 @@ class MemoEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     @Column(name = "content", nullable = false)
-    val content: String,
+    var content: String,
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: Instant,
+    var updatedAt: Instant,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    var user: UserEntity,
+    val user: UserEntity,
 
     @OneToMany(mappedBy = "memo", cascade = [CascadeType.ALL], orphanRemoval = true)
     val memoTags: MutableSet<MemoTagEntity> = mutableSetOf()

@@ -16,6 +16,7 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificati
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.mindrot.jbcrypt.BCrypt
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -30,7 +31,7 @@ class UserService(
     private val emailVerificationRepository: EmailVerificationRepository,
     private val emailService: EmailService
 ) : UserDetailsService {
-    // private val logger = LoggerFactory.getLogger(UserService::class.java)
+    private val logger = LoggerFactory.getLogger(UserService::class.java)
 
     @Transactional
     fun register(
@@ -46,7 +47,7 @@ class UserService(
                 createdAt = Instant.now()
             )
         )
-        // logger.info("User registered: ${userEntity.id}, ${userEntity.email}")
+        logger.info("User registered: ${userEntity.id}, ${userEntity.email}")
         return User.fromEntity(userEntity)
     }
 
@@ -102,7 +103,7 @@ class UserService(
     ): Triple<User, String, String> {
         val userEntity = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
         if (!BCrypt.checkpw(password, userEntity.hashedPassword)) throw SignInInvalidPasswordException()
-        // logger.info("User logged in: ${userEntity.id}, ${userEntity.email}")
+        logger.info("User logged in: ${userEntity.id}, ${userEntity.email}")
         return Triple(
             User.fromEntity(userEntity),
             JwtUtil.generateAccessToken(userEntity.email),
@@ -117,7 +118,7 @@ class UserService(
         if (!JwtUtil.isValidToken(accessToken)) throw AuthenticationFailedException()
         val email = JwtUtil.extractUserEmail(accessToken) ?: throw AuthenticationFailedException()
         val userEntity = userRepository.findByEmail(email) ?: throw AuthenticationFailedException()
-        // logger.info("User authenticated: ${userEntity.id}, ${userEntity.email}")
+        logger.info("User authenticated: ${userEntity.id}, ${userEntity.email}")
         return User.fromEntity(userEntity)
     }
 
@@ -152,5 +153,9 @@ class UserService(
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
         return CustomUserDetails(user)
+    }
+
+    @Transactional fun getUserEntityByEmail(email: String): UserEntity {
+        return userRepository.findByEmail(email) ?: throw EmailNotFoundException()
     }
 }
