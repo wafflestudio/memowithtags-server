@@ -76,7 +76,7 @@ jobs:
           # 배포 스크립트 작성
           echo "#!/bin/bash
           REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
-          TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          TAG=\$(echo $GITHUB_SHA | cut -c1-7)
       
           echo \"Deploying Docker image with TAG: \$TAG\"
           echo \"Deploying Docker image with REPOSITORY_URI: \$REPOSITORY_URI\"
