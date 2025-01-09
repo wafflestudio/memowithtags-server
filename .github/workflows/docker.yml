@@ -69,43 +69,45 @@ jobs:
       # 9. EC2 서버에서 Docker 이미지 실행
       - name: Deploy to EC2
         run: |
-          # 개인 키를 파일로 저장하고 권한 설정
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-          
-          # 배포 스크립트 작성
-          echo '#!/bin/bash
-          REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
-          TAG=$(echo $GITHUB_SHA | cut -c1-7)
-      
-          echo \"Deploying Docker image with TAG: \$TAG\"
-          echo \"Deploying Docker image with REPOSITORY_URI: \$REPOSITORY_URI\"
-      
+            echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+            chmod 600 private_key.pem
+            
+            cat << EOF > deploy.sh
+      #!/bin/bash
+          REPOSITORY_URI="739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags"
+          TAG="\$(echo \$GITHUB_SHA | cut -c1-7)"
+
+          echo "Deploying Docker image with TAG: \$TAG"
+          echo "Deploying Docker image with REPOSITORY_URI: \$REPOSITORY_URI"
+
+      # ECR 로그인
           aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin \$REPOSITORY_URI
-      
-          echo \"Container exists: $(docker ps -aq -f name=memowithtags-backend)\"
-      
+
           docker stop memowithtags-backend || true
           docker rm memowithtags-backend || true
-      
+
           docker pull \$REPOSITORY_URI:\$TAG
+
           docker run -d \
-              -p 8080:8080 \
-              -e SPRING_PROFILES_ACTIVE=prod \
-              -e DB_NAME=memowithtags_db \
-              -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} \
-              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
-              -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
-              --name memowithtags-backend \
-              \$REPOSITORY_URI:\$TAG' > deploy.sh
+          -p 8080:8080 \
+          -e SPRING_PROFILES_ACTIVE=prod \
+          -e DB_NAME=memowithtags_db \
+          -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} \
+          -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
+          -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+          --name memowithtags-backend \
+          \$REPOSITORY_URI:\$TAG
+          EOF
       
-          # 배포 스크립트 EC2로 전송
-          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
+      # 3. EC2로 deploy.sh 전송
+          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh \
+          ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
       
-          # EC2에서 스크립트 실행
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
+      # 4. EC2에서 deploy.sh 실행
+          ssh -i private_key.pem -o StrictHostKeyChecking=no \
+          ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
 
 #      - name: Stop Database
 #        run: |
