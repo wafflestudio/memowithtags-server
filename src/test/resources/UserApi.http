@@ -12,10 +12,10 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "inho524890@gmail.com",
+  "email": "spring123@gmail.com",
   "password": "qwer"
 }
 
 ### 인증 토큰으로 유저 프로필 조회
 GET http://localhost:8080/api/v1/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbmhvNTI0ODkwQGdtYWlsLmNvbSIsImlhdCI6MTczNjQwOTk2MiwiZXhwIjoxNzM2NDE3MTYyfQ.8PX_8eu-tpOErGu7QRV2BnRgT8-kIBAlOGs_cjP07t0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcHJpbmcxMjNAZ21haWwuY29tIiwiaWF0IjoxNzM2MTc1MTU3LCJleHAiOjE3MzYxODIzNTd9.WocjvYbCgxPOsp2freVPlGM5lGHaOqJ3pMtZhrJwmbo
