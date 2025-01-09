@@ -93,10 +93,10 @@ jobs:
               -p 8080:8080 \
               -e SPRING_PROFILES_ACTIVE=prod \
               -e DB_NAME=memowithtags_db \
-              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
-              -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+              -e DB_USERNAME=\${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=\${{ secrets.DB_PASSWORD }} \
+              -e MAIL_USERNAME=\${{ secrets.MAIL_USERNAME }} \
+              -e MAIL_PASSWORD=\${{ secrets.MAIL_PASSWORD }} \
               --name memowithtags-backend \
               \$REPOSITORY_URI:\$TAG" > deploy.sh
       
