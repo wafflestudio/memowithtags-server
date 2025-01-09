@@ -104,7 +104,7 @@ jobs:
           scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
       
           # EC2에서 스크립트 실행
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "chmod +x /home/ubuntu/deploy.sh && bash /home/ubuntu/deploy.sh"
 
 #      - name: Stop Database
 #        run: |
