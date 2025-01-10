@@ -3,6 +3,8 @@ package com.wafflestudio.toyproject.memoWithTags.user.controller
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Tag(name = "user api", description = "사용자 관련 api")
 @RestController
 @RequestMapping("/api/v1")
 class UserController(
     private val userService: UserService
 ) {
+    @Operation(summary = "사용자 회원가입")
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Unit> {
         userService.register(request.email, request.password)
@@ -29,6 +33,7 @@ class UserController(
         return ResponseEntity.ok().build()
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/auth/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val (_, accessToken, refreshToken) = userService.login(request.email, request.password)
@@ -45,12 +50,14 @@ class UserController(
         // 반환 타입이 Unit이므로 아무 작업 없이 비워 둬도 OK
     }
 
+    @Operation(summary = "토큰 재발급")
     @PostMapping("/auth/refresh-token")
     fun refreshToken(@RequestBody request: RefreshTokenRequest): RefreshTokenResponse {
         val refreshToken = request.refreshToken
         return userService.refreshToken(refreshToken)
     }
 
+    @Operation(summary = "현재 로그인한 유저 조회")
     @GetMapping("/auth/me")
     fun me(
         @AuthUser user: User
