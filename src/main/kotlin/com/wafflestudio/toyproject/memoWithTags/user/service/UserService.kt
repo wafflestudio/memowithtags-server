@@ -2,10 +2,10 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
-import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
-import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidPasswordException
+import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
+import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.CustomUserDetails
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.EmailVerification
@@ -101,8 +101,8 @@ class UserService(
         email: String,
         password: String
     ): Triple<User, String, String> {
-        val userEntity = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
-        if (!BCrypt.checkpw(password, userEntity.hashedPassword)) throw SignInInvalidPasswordException()
+        val userEntity = userRepository.findByEmail(email) ?: throw SignInInvalidException()
+        if (!BCrypt.checkpw(password, userEntity.hashedPassword)) throw SignInInvalidException()
         logger.info("User logged in: ${userEntity.id}, ${userEntity.email}")
         return Triple(
             User.fromEntity(userEntity),
@@ -127,7 +127,7 @@ class UserService(
             throw InValidTokenException()
         }
         val userEmail = JwtUtil.extractUserEmail(refreshToken) ?: throw InValidTokenException()
-        userRepository.findByEmail(userEmail) ?: throw EmailNotFoundException()
+        userRepository.findByEmail(userEmail) ?: throw UserNotFoundException()
 
         val newAccessToken = JwtUtil.generateAccessToken(userEmail)
 
@@ -151,11 +151,12 @@ class UserService(
     }
 
     override fun loadUserByUsername(email: String): UserDetails {
-        val user = userRepository.findByEmail(email) ?: throw EmailNotFoundException()
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
         return CustomUserDetails(user)
     }
 
-    @Transactional fun getUserEntityByEmail(email: String): UserEntity {
-        return userRepository.findByEmail(email) ?: throw EmailNotFoundException()
+    @Transactional
+    fun getUserEntityByEmail(email: String): UserEntity {
+        return userRepository.findByEmail(email) ?: throw UserNotFoundException()
     }
 }
