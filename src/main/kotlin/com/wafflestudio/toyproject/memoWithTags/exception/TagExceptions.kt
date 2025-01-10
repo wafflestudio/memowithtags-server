@@ -9,6 +9,6 @@ class TagNotFoundException : CustomException(
 )
 class WrongUserException : CustomException(
     errorCode = 0,
-    httpErrorCode = HttpStatus.UNAUTHORIZED,
-    msg = "토큰이 만료되었습니다."
+    httpErrorCode = HttpStatus.FORBIDDEN,
+    msg = "유저가 가지고 있는 태그가 아닙니다."
 )

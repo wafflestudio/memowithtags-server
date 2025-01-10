@@ -40,17 +40,6 @@ class TagController(
         tagService.deleteTag(tagId, user)
         return ResponseEntity.noContent().build()
     }
-
-    @ExceptionHandler
-    fun handleTagNotFoundException(e: Exception): ResponseEntity<Unit> {
-        val status = when (e) {
-            is TagNotFoundException -> 404
-            is WrongUserException -> 403
-            is AuthenticationFailedException -> 401
-            else -> 404
-        }
-        return ResponseEntity.status(status).build()
-    }
 }
 
 data class CreateTagRequest(
