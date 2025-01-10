@@ -34,6 +34,7 @@ class MemoController(
     @PostMapping("/api/v1/memo")
     fun createMemo(
         @RequestBody request: CreateMemoRequest,
+
         @AuthUser user: User
     ): CreateMemoResponse {
         val memo = memoService.createMemo(user, request.content, request.tagIds)
