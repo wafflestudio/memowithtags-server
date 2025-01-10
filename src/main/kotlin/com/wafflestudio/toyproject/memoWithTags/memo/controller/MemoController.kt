@@ -36,13 +36,13 @@ class MemoController(
         @RequestBody request: CreateMemoRequest,
         @AuthUser user: User
     ): CreateMemoResponse {
-        val memo = memoService.createMemo(user, request.content, request.tags)
+        val memo = memoService.createMemo(user, request.content, request.tagIds)
         return CreateMemoResponse(
             id = memo.id,
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tags = memo.tags
+            tagIds = memo.tags
         )
     }
 
@@ -58,7 +58,7 @@ class MemoController(
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tags = memo.tags
+            tagIds = memo.tags
         )
     }
 
@@ -73,7 +73,7 @@ class MemoController(
         val results = memoService.searchMemo(
             userId = user.id,
             content = request.content,
-            tags = request.tags,
+            tags = request.tagIds,
             startDate = request.startDate,
             endDate = request.endDate,
             page = request.page,
@@ -104,7 +104,7 @@ class MemoController(
 
 data class CreateMemoRequest(
     val content: String,
-    val tags: List<Long>
+    val tagIds: List<Long>
 )
 
 data class UpdateTagRequest(
@@ -118,7 +118,7 @@ data class AddTagResponse(
 data class CreateMemoResponse(
     val id: Long,
     val content: String,
-    val tags: List<Long>,
+    val tagIds: List<Long>,
     val createdAt: Instant,
     val updatedAt: Instant
 )
@@ -130,14 +130,14 @@ data class UpdateMemoRequest(
 data class UpdateMemoResponse(
     val id: Long,
     val content: String,
-    val tags: List<Long>,
+    val tagIds: List<Long>,
     val createdAt: Instant,
     val updatedAt: Instant
 )
 
 data class MemoSearchRequest(
     val content: String? = null, // 검색할 텍스트 (optional)
-    val tags: List<Long>? = null, // 태그 ID 배열 (optional, 콤마로 구분된 문자열 처리)
+    val tagIds: List<Long>? = null, // 태그 ID 배열 (optional, 콤마로 구분된 문자열 처리)
     val startDate: Instant? = null, // 검색 시작 날짜 (optional, ISO 8601 형식)
     val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
     val page: Int // 페이지 번호 (required)
@@ -146,7 +146,7 @@ data class MemoSearchRequest(
 data class MemoResponse(
     val id: Long, // 메모 ID
     val content: String, // 메모 내용
-    val tags: List<Long>, // 태그 ID 리스트
+    val tagIds: List<Long>, // 태그 ID 리스트
     val createdAt: String, // 생성 시간 (ISO 8601 포맷)
     val updatedAt: String // 수정 시간 (ISO 8601 포맷)
 )
