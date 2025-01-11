@@ -43,7 +43,7 @@ class MemoController(
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tagIds = memo.tags
+            tagIds = memo.tagIds
         )
     }
 
@@ -59,7 +59,7 @@ class MemoController(
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tagIds = memo.tags
+            tagIds = memo.tagIds
         )
     }
 
@@ -142,14 +142,6 @@ data class MemoSearchRequest(
     val startDate: Instant? = null, // 검색 시작 날짜 (optional, ISO 8601 형식)
     val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
     val page: Int // 페이지 번호 (required)
-)
-
-data class MemoResponse(
-    val id: Long, // 메모 ID
-    val content: String, // 메모 내용
-    val tagIds: List<Long>, // 태그 ID 리스트
-    val createdAt: String, // 생성 시간 (ISO 8601 포맷)
-    val updatedAt: String // 수정 시간 (ISO 8601 포맷)
 )
 
 data class PagedResponse<T>(

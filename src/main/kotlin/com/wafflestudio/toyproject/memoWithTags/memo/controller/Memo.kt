@@ -8,7 +8,7 @@ class Memo(
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val tags: List<Long>
+    val tagIds: List<Long>
 ) {
     companion object {
         fun fromEntity(entity: MemoEntity): Memo {
@@ -17,7 +17,7 @@ class Memo(
                 content = entity.content,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
-                tags = entity.memoTags.map { memoTagEntity ->
+                tagIds = entity.memoTags.map { memoTagEntity ->
                     memoTagEntity.tag.id!!
                 }
             )
