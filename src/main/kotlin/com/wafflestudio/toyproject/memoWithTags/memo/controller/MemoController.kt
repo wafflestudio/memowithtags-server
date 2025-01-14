@@ -1,6 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
@@ -70,8 +71,8 @@ class MemoController(
     }
 
     @GetMapping("/api/v1/search-memo")
-    fun searchMemo(@ModelAttribute request: MemoSearchRequest, @AuthUser user: User): PagedResponse<Memo> {
-        val results = memoService.searchMemo(
+    fun searchMemo(@ModelAttribute request: MemoSearchRequest, @AuthUser user: User): SearchResult<Memo> {
+        return memoService.searchMemo(
             userId = user.id,
             content = request.content,
             tags = request.tagIds,
@@ -80,7 +81,6 @@ class MemoController(
             page = request.page,
             pageSize = 10
         )
-        return PagedResponse(request.page, results)
     }
 
     @PostMapping("/api/v1/memo/{memoId}/tag")
@@ -142,9 +142,4 @@ data class MemoSearchRequest(
     val startDate: Instant? = null, // 검색 시작 날짜 (optional, ISO 8601 형식)
     val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
     val page: Int // 페이지 번호 (required)
-)
-
-data class PagedResponse<T>(
-    val page: Int, // 현재 페이지 번호
-    val results: List<T> // 결과 리스트 (제네릭으로 처리)
 )
