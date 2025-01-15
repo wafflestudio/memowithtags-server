@@ -24,7 +24,7 @@ class UserController(
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Unit> {
         userService.register(request.email, request.password)
-        // userService.sendCodeToEmail(request.email)
+        userService.sendCodeToEmail(request.email)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

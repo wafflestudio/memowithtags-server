@@ -4,6 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.AccessDeniedException
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoRepository
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
@@ -82,8 +83,7 @@ class MemoService(
     }
 
     @Transactional
-    fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): List<Memo> {
-        val memoEntities = memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
-        return memoEntities.map { Memo.fromEntity(it) }
+    fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo> {
+        return memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
     }
 }

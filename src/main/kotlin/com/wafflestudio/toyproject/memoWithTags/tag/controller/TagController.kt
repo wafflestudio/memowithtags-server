@@ -1,13 +1,9 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.controller
-import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
-import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.exception.WrongUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.service.TagService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -39,17 +35,6 @@ class TagController(
     fun deleteTag(@PathVariable tagId: Long, @AuthUser user: User): ResponseEntity<Unit> {
         tagService.deleteTag(tagId, user)
         return ResponseEntity.noContent().build()
-    }
-
-    @ExceptionHandler
-    fun handleTagNotFoundException(e: Exception): ResponseEntity<Unit> {
-        val status = when (e) {
-            is TagNotFoundException -> 404
-            is WrongUserException -> 403
-            is AuthenticationFailedException -> 401
-            else -> 404
-        }
-        return ResponseEntity.status(status).build()
     }
 }
 
