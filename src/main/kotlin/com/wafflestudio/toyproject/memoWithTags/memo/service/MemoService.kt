@@ -9,7 +9,7 @@ import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoRepository
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

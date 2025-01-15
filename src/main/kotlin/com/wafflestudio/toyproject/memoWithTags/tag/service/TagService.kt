@@ -6,7 +6,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.WrongUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.springframework.stereotype.Service
 import java.time.Instant

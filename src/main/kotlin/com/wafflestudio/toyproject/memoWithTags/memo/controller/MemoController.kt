@@ -3,7 +3,7 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

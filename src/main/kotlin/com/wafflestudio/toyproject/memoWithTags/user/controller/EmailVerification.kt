@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user.contoller
+package com.wafflestudio.toyproject.memoWithTags.user.controller
 
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationEntity
 import java.time.LocalDateTime
