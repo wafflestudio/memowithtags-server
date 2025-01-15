@@ -4,6 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedEx
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
+import com.wafflestudio.toyproject.memoWithTags.exception.MailVerificationException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
@@ -64,7 +65,7 @@ class UserService(
             "</html>"
         try {
             logger.info("code: $verification")
-            mailService.sendEmail(email, title, content)
+            mailService.sendMail(email, title, content)
         } catch (e: Exception) {
             e.printStackTrace()
             throw EmailSendingException()
@@ -86,7 +87,7 @@ class UserService(
         email: String,
         code: String
     ): Boolean {
-        val verification = emailVerificationRepository.findByEmailAndCode(email, code) ?: return false
+        val verification = emailVerificationRepository.findByEmailAndCode(email, code) ?: throw MailVerificationException()
         if (verification.expiryTime.isBefore(LocalDateTime.now())) throw AuthenticationFailedException()
         val userEntity = userRepository.findByEmail(verification.email)
         userEntity!!.verified = true

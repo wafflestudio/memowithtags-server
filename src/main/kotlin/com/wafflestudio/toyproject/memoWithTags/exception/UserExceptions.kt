@@ -36,6 +36,13 @@ class SignInInvalidException : UserException(
     msg = "이메일이 존재하지 않거나 잘못된 비밀번호입니다."
 )
 
+// 잘못된 메일 인증 코드
+class MailVerificationException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.UNAUTHORIZED,
+    msg = "잘못된 인증 코드입니다."
+)
+
 // 인증 실패
 class AuthenticationFailedException : UserException(
     errorCode = 0,
