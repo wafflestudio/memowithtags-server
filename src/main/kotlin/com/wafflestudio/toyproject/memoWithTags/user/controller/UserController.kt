@@ -50,16 +50,6 @@ class UserController(
         return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
     }
 
-    @Operation(summary = "소셜 로그인")
-    @PostMapping("/auth/login/{socialType}")
-    fun loginSocial(
-        @RequestHeader(name = "Authorization") token: String,
-        @PathVariable("socialType") socialType: String
-    ): ResponseEntity<LoginResponse> {
-        // val (_, accessToken, refreshToken) = userService.loginSocial(token, socialType)
-        return ResponseEntity.ok(LoginResponse("", ""))
-    }
-
     @Operation(summary = "비밀번호 찾기 이메일 인증")
     @PostMapping("/auth/forgot-password")
     fun forgotPassword(@RequestBody request: ForgotPasswordRequest): ResponseEntity<Unit> {
