@@ -14,5 +14,5 @@ spring:
 
 logging:
   level:
-    root: info
-    com.wafflestudio.toyproject.memoWithTags: info
+    root: debug
+    com.wafflestudio.toyproject.memoWithTags: debug
