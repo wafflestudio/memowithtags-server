@@ -14,7 +14,7 @@ class SmtpMailService(
     private val mailSender: JavaMailSender,
     @Value("\${spring.mail.username}")
     private val fromMail: String
-): MailService {
+) : MailService {
     override fun sendMail(toEmail: String, title: String, content: String) {
         val message: MimeMessage = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true, "UTF-8")
