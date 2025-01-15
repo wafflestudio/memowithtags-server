@@ -3,15 +3,16 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev} # 기본값 dev
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
+            trust: smtp.gmail.com
         debug: true
 
 springdoc:

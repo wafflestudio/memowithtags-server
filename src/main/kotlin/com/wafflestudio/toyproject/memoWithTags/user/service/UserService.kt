@@ -6,11 +6,10 @@ import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.user.CustomUserDetails
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.EmailVerification
-import com.wafflestudio.toyproject.memoWithTags.user.contoller.User
+import com.wafflestudio.toyproject.memoWithTags.user.controller.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.user.controller.RefreshTokenResponse
+import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
@@ -18,8 +17,6 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -29,8 +26,8 @@ import java.time.LocalDateTime
 class UserService(
     private val userRepository: UserRepository,
     private val emailVerificationRepository: EmailVerificationRepository,
-    private val emailService: EmailService
-) : UserDetailsService {
+    private val mailService: MailService
+) {
     private val logger = LoggerFactory.getLogger(UserService::class.java)
 
     @Transactional
@@ -66,8 +63,8 @@ class UserService(
             "</body>" +
             "</html>"
         try {
-            println("code: $verification")
-            emailService.sendEmail(email, title, content)
+            logger.info("code: $verification")
+            mailService.sendEmail(email, title, content)
         } catch (e: Exception) {
             e.printStackTrace()
             throw EmailSendingException()
@@ -112,6 +109,18 @@ class UserService(
     }
 
     @Transactional
+    fun resetPassword(
+        email: String,
+        code: String,
+        newPassword: String
+    ) {
+        if (verifyEmail(email, code)) {
+            val userEntity = userRepository.findByEmail(email) ?: throw UserNotFoundException()
+            userEntity.hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        }
+    }
+
+    @Transactional
     fun authenticate(
         accessToken: String
     ): User {
@@ -139,6 +148,11 @@ class UserService(
     }
 
     @Transactional
+    fun getUserEntityByEmail(email: String): UserEntity {
+        return userRepository.findByEmail(email) ?: throw UserNotFoundException()
+    }
+
+    @Transactional
     @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
     fun deleteExpiredVerificationCode() {
         emailVerificationRepository.deleteByExpiryTimeBefore(LocalDateTime.now())
@@ -148,15 +162,5 @@ class UserService(
     @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 미인증 사용자 삭제
     fun deleteUnverifiedUser() {
         userRepository.deleteByVerified(false)
-    }
-
-    override fun loadUserByUsername(email: String): UserDetails {
-        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
-        return CustomUserDetails(user)
-    }
-
-    @Transactional
-    fun getUserEntityByEmail(email: String): UserEntity {
-        return userRepository.findByEmail(email) ?: throw UserNotFoundException()
     }
 }
