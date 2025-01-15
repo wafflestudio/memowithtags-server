@@ -8,8 +8,8 @@ import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.controller.EmailVerification
-import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.controller.RefreshTokenResponse
+import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
