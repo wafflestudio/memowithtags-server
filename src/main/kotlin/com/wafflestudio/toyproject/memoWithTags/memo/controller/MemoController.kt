@@ -1,6 +1,13 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.AddTagResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.CreateMemoResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.UpdateMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
@@ -102,44 +109,3 @@ class MemoController(
         println(Instant.now())
     }
 }
-
-data class CreateMemoRequest(
-    val content: String,
-    val tagIds: List<Long>
-)
-
-data class UpdateTagRequest(
-    val tagId: Long
-)
-
-data class AddTagResponse(
-    val tagId: Long
-)
-
-data class CreateMemoResponse(
-    val id: Long,
-    val content: String,
-    val tagIds: List<Long>,
-    val createdAt: Instant,
-    val updatedAt: Instant
-)
-
-data class UpdateMemoRequest(
-    val content: String
-)
-
-data class UpdateMemoResponse(
-    val id: Long,
-    val content: String,
-    val tagIds: List<Long>,
-    val createdAt: Instant,
-    val updatedAt: Instant
-)
-
-data class MemoSearchRequest(
-    val content: String? = null, // 검색할 텍스트 (optional)
-    val tagIds: List<Long>? = null, // 태그 ID 배열 (optional, 콤마로 구분된 문자열 처리)
-    val startDate: Instant? = null, // 검색 시작 날짜 (optional, ISO 8601 형식)
-    val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
-    val page: Int // 페이지 번호 (required)
-)

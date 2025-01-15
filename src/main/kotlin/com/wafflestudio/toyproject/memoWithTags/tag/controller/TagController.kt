@@ -1,4 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.controller
+import com.wafflestudio.toyproject.memoWithTags.tag.dto.TagRequest.CreateTagRequest
+import com.wafflestudio.toyproject.memoWithTags.tag.dto.TagResponse.UpdateTagRequest
 import com.wafflestudio.toyproject.memoWithTags.tag.service.TagService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
@@ -37,13 +39,3 @@ class TagController(
         return ResponseEntity.noContent().build()
     }
 }
-
-data class CreateTagRequest(
-    val name: String,
-    val color: String
-)
-
-data class UpdateTagRequest(
-    val name: String,
-    val color: String
-)

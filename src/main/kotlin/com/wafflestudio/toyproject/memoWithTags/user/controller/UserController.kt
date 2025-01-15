@@ -1,6 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ForgotPasswordRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.LoginRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RefreshTokenRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RegisterRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ResetPasswordRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.VerifyEmailRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.RefreshTokenResponse
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -82,43 +90,3 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 }
-
-data class RegisterRequest(
-    val email: String,
-    val password: String
-)
-
-data class VerifyEmailRequest(
-    val email: String,
-    val verificationCode: String
-)
-
-data class LoginRequest(
-    val email: String,
-    val password: String
-)
-
-data class LoginResponse(
-    val accessToken: String,
-    val refreshToken: String
-)
-
-data class ForgotPasswordRequest(
-    val email: String
-)
-
-data class ResetPasswordRequest(
-    val email: String,
-    val verificationCode: String,
-    val password: String
-)
-
-data class RefreshTokenRequest(
-    val refreshToken: String
-)
-
-data class RefreshTokenResponse(
-    val accessToken: String,
-    val refreshToken: String,
-    val expiresIn: Long
-)
