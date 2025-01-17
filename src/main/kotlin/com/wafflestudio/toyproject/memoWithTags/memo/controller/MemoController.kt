@@ -86,7 +86,7 @@ class MemoController(
             startDate = request.startDate,
             endDate = request.endDate,
             page = request.page,
-            pageSize = 10
+            pageSize = 15
         )
     }
 
