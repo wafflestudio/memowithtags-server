@@ -17,26 +17,26 @@ class TagService(
     private val userRepository: UserRepository
 ) {
     fun getTags(user: User): List<Tag> {
-        return tagRepository.findByUserId(user.id).map { Tag(it.id!!, it.name, it.color) }
+        return tagRepository.findByUserId(user.id).map { Tag(it.id!!, it.name, it.colorHex) }
     }
 
-    fun createTag(name: String, color: String, user: User): Tag {
+    fun createTag(name: String, colorHex: String, user: User): Tag {
         val userEntity = userRepository.findByEmail(user.email) ?: throw AuthenticationFailedException()
-        val tagEntity = TagEntity(name = name, color = color, user = userEntity)
+        val tagEntity = TagEntity(name = name, colorHex = colorHex, user = userEntity)
         val savedTagEntity = tagRepository.save(tagEntity)
-        return Tag(savedTagEntity.id!!, savedTagEntity.name, savedTagEntity.color)
+        return Tag(savedTagEntity.id!!, savedTagEntity.name, savedTagEntity.colorHex)
     }
 
-    fun updateTag(id: Long, name: String, color: String, user: User): Tag {
+    fun updateTag(id: Long, name: String, colorHex: String, user: User): Tag {
         val tagEntity = tagRepository.findById(id).orElseThrow { throw TagNotFoundException() }
         if (tagEntity.user.email != user.email) {
             throw WrongUserException()
         }
         tagEntity.name = name
-        tagEntity.color = color
+        tagEntity.colorHex = colorHex
         tagEntity.updatedAt = Instant.now()
         val savedTagEntity = tagRepository.save(tagEntity)
-        return Tag(savedTagEntity.id!!, savedTagEntity.name, savedTagEntity.color)
+        return Tag(savedTagEntity.id!!, savedTagEntity.name, savedTagEntity.colorHex)
     }
 
     fun deleteTag(tagId: Long, user: User) {
