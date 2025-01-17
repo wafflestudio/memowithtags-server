@@ -144,7 +144,7 @@ class UserService(
         return RefreshTokenResponse(
             accessToken = newAccessToken,
             refreshToken = refreshToken,
-            expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
+            expiresIn = JwtUtil.getAccessTokenExpiration()
         )
     }
 

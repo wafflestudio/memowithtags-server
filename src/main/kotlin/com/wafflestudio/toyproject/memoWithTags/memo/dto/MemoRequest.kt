@@ -5,7 +5,8 @@ import java.time.Instant
 sealed class MemoRequest {
     data class CreateMemoRequest(
         val content: String,
-        val tagIds: List<Long>
+        val tagIds: List<Long>,
+        val locked: Boolean
     ) : MemoRequest()
 
     data class UpdateTagRequest(
@@ -13,7 +14,10 @@ sealed class MemoRequest {
     ) : MemoRequest()
 
     data class UpdateMemoRequest(
-        val content: String
+        val id: Long,
+        val content: String,
+        val tagIds: List<Long>,
+        val locked: Boolean
     ) : MemoRequest()
 
     data class MemoSearchRequest(

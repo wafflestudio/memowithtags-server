@@ -44,19 +44,6 @@ object JwtUtil {
         }
     }
 
-    fun isTokenExpired(token: String): Boolean {
-        return try {
-            val claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .body
-            claims.expiration.before(Date())
-        } catch (e: Exception) {
-            true
-        }
-    }
-
     fun extractUserEmail(token: String): String? {
         return try {
             val claims = Jwts.parserBuilder()

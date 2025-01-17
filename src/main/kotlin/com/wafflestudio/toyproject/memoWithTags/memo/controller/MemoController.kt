@@ -42,16 +42,16 @@ class MemoController(
     @PostMapping("/api/v1/memo")
     fun createMemo(
         @RequestBody request: CreateMemoRequest,
-
         @AuthUser user: User
     ): CreateMemoResponse {
-        val memo = memoService.createMemo(user, request.content, request.tagIds)
+        val memo = memoService.createMemo(user, request.content, request.tagIds, locked = request.locked)
         return CreateMemoResponse(
             id = memo.id,
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tagIds = memo.tagIds
+            tagIds = memo.tagIds,
+            locked = memo.locked
         )
     }
 
@@ -61,13 +61,14 @@ class MemoController(
         @RequestBody request: UpdateMemoRequest,
         @AuthUser user: User
     ): UpdateMemoResponse {
-        val memo = memoService.updateMemo(userId = user.id, content = request.content, memoId = memoId)
+        val memo = memoService.updateMemo(userId = user.id, content = request.content, memoId = memoId, tagIds = request.tagIds, locked = request.locked)
         return UpdateMemoResponse(
             id = memo.id,
             content = memo.content,
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
-            tagIds = memo.tagIds
+            tagIds = memo.tagIds,
+            locked = memo.locked
         )
     }
 
