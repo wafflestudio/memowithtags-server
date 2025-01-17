@@ -32,7 +32,7 @@ class MemoService(
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
             user = userEntity,
-            locked = locked,
+            locked = locked
         )
 
         val memoTags = tags.map { tag ->

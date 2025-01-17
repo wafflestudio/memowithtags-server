@@ -9,7 +9,7 @@ class Memo(
     val createdAt: Instant,
     val updatedAt: Instant,
     val tagIds: List<Long>,
-    val locked: Boolean,
+    val locked: Boolean
 ) {
     companion object {
         fun fromEntity(entity: MemoEntity): Memo {
@@ -21,7 +21,7 @@ class Memo(
                 tagIds = entity.memoTags.map { memoTagEntity ->
                     memoTagEntity.tag.id!!
                 },
-                locked = entity.locked,
+                locked = entity.locked
             )
         }
     }
