@@ -19,6 +19,8 @@ class MemoEntity(
     val id: Long? = null,
     @Column(name = "content", nullable = false)
     var content: String,
+    @Column(name = "locked", nullable = false)
+    var locked: Boolean = false,
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
     @Column(name = "updated_at", nullable = false)

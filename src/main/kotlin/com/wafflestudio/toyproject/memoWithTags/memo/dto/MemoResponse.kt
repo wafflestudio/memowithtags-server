@@ -12,7 +12,8 @@ sealed class MemoResponse {
         val content: String,
         val tagIds: List<Long>,
         val createdAt: Instant,
-        val updatedAt: Instant
+        val updatedAt: Instant,
+        val locked: Boolean
     ) : MemoResponse()
 
     data class UpdateMemoResponse(
@@ -20,6 +21,7 @@ sealed class MemoResponse {
         val content: String,
         val tagIds: List<Long>,
         val createdAt: Instant,
-        val updatedAt: Instant
+        val updatedAt: Instant,
+        val locked: Boolean
     ) : MemoResponse()
 }

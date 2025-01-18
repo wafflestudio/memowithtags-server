@@ -24,14 +24,15 @@ class MemoService(
     private val userService: UserService
 ) {
     @Transactional
-    fun createMemo(user: User, content: String, tagIds: List<Long>): Memo {
+    fun createMemo(user: User, content: String, tagIds: List<Long>, locked: Boolean): Memo {
         val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
         val userEntity = userService.getUserEntityByEmail(user.email)
         val memoEntity = MemoEntity(
             content = content,
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
-            user = userEntity
+            user = userEntity,
+            locked = locked
         )
 
         val memoTags = tags.map { tag ->
@@ -43,15 +44,24 @@ class MemoService(
     }
 
     @Transactional
-    fun updateMemo(userId: UUID, content: String, memoId: Long): Memo {
+    fun updateMemo(userId: UUID, content: String, memoId: Long, tagIds: List<Long>, locked: Boolean): Memo {
         val memo = memoRepository.findById(memoId)
             .orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) {
             throw AccessDeniedException()
         }
+        val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
 
+        memo.memoTags.clear()
+
+        val memoTags = tags.map { tag ->
+            MemoTagEntity(memo = memo, tag = tag)
+        }
+
+        memo.memoTags.addAll(memoTags)
         memo.content = content
         memo.updatedAt = Instant.now()
+        memo.locked = locked
 
         return Memo.fromEntity(memoRepository.save(memo))
     }

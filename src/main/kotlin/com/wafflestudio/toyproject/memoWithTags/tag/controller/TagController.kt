@@ -24,13 +24,13 @@ class TagController(
 
     @PostMapping("/api/v1/tag")
     fun createTag(@RequestBody request: CreateTagRequest, @AuthUser user: User): Tag {
-        val tag = tagService.createTag(request.name, request.color, user)
+        val tag = tagService.createTag(request.name, request.colorHex, user)
         return tag
     }
 
     @PutMapping("/api/v1/tag/{tagId}")
     fun updateTag(@PathVariable tagId: Long, @RequestBody request: UpdateTagRequest, @AuthUser user: User): Tag {
-        return tagService.updateTag(tagId, request.name, request.color, user)
+        return tagService.updateTag(tagId, request.name, request.colorHex, user)
     }
 
     @DeleteMapping("/api/v1/tag/{tagId}")

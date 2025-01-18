@@ -23,7 +23,7 @@ class TagEntity(
     var name: String,
 
     @Column(name = "color", nullable = false)
-    var color: String,
+    var colorHex: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")

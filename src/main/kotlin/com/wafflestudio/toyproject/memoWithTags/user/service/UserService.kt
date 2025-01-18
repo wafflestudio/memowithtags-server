@@ -136,15 +136,17 @@ class UserService(
         if (!JwtUtil.isValidToken(refreshToken)) {
             throw InValidTokenException()
         }
+        logger.info("Refreshing token: $refreshToken 1")
         val userEmail = JwtUtil.extractUserEmail(refreshToken) ?: throw InValidTokenException()
+        logger.info("Refreshing token: $refreshToken 2")
         userRepository.findByEmail(userEmail) ?: throw UserNotFoundException()
-
+        logger.info("Refreshing token: $refreshToken 3")
         val newAccessToken = JwtUtil.generateAccessToken(userEmail)
-
+        logger.info("Refreshing token: $refreshToken, new Access token: $newAccessToken 4")
         return RefreshTokenResponse(
             accessToken = newAccessToken,
             refreshToken = refreshToken,
-            expiresIn = JwtUtil.getAccessTokenExpiration() / 1000
+            expiresIn = JwtUtil.getAccessTokenExpiration()
         )
     }
 
