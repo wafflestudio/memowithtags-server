@@ -15,6 +15,11 @@ spring:
             trust: smtp.gmail.com
         debug: true
 
+kakao:
+  auth:
+    client: ed92cd34690fb718013b559ebd98353a
+    redirect: http://localhost:8080/api/v1/oauth/kakao
+
 springdoc:
   override-with-generic-response: false
 # 이후 jwt도 yml에 넣어서 관리 예정

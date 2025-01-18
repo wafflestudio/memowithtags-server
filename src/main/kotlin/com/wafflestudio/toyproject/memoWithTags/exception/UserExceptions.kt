@@ -49,3 +49,10 @@ class AuthenticationFailedException : UserException(
     httpErrorCode = HttpStatus.UNAUTHORIZED,
     msg = "인증에 실패했습니다."
 )
+
+// 소셜 로그인 요청 실패
+class OAuthRequestException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "소셜 로그인 요청에 실패했습니다."
+)
