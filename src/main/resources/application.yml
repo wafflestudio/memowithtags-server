@@ -17,7 +17,7 @@ spring:
 
 kakao:
   auth:
-    client: ed92cd34690fb718013b559ebd98353a
+    client: ${KAKAO_CLIENT_ID}
     redirect: http://localhost:8080/api/v1/oauth/kakao
 
 springdoc:
