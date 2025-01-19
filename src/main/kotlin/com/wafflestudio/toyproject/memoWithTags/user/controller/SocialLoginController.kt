@@ -1,6 +1,5 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
-
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
 import com.wafflestudio.toyproject.memoWithTags.user.service.SocialLoginService
