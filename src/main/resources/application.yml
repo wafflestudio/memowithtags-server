@@ -20,6 +20,11 @@ kakao:
     client: ${KAKAO_CLIENT_ID}
     redirect: http://localhost:8080/api/v1/oauth/kakao
 
+naver:
+  auth:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+
 springdoc:
   override-with-generic-response: false
 # 이후 jwt도 yml에 넣어서 관리 예정

@@ -2,10 +2,13 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.KakaoUtil
+import com.wafflestudio.toyproject.memoWithTags.user.NaverUtil
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.dto.KakaoOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.user.dto.KakaoProfile
+import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.slf4j.LoggerFactory
@@ -15,9 +18,50 @@ import java.time.Instant
 @Service
 class SocialLoginService(
     private val userRepository: UserRepository,
-    private val kakaoUtil: KakaoUtil
+    private val kakaoUtil: KakaoUtil,
+    private val naverUtil: NaverUtil
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    fun naverCallback(accessCode: String): Triple<User, String, String> {
+        val oAuthToken: NaverOAuthToken = naverUtil.requestToken(accessCode)
+        val naverProfile: NaverProfile = naverUtil.requestProfile(oAuthToken)
+
+        val naverEmail = naverProfile.email
+        val userEntity = userRepository.findByEmail(naverEmail)
+        val user: User = if (userEntity != null && userEntity.socialType == SocialType.NAVER) {
+            logger.info("user already exists: ${userEntity.id}, ${userEntity.email}")
+            User.fromEntity(userEntity)
+        } else {
+            logger.info("creating user $naverEmail")
+            createNaverUser(naverProfile)
+        }
+
+        return Triple(
+            user,
+            JwtUtil.generateAccessToken(naverEmail),
+            JwtUtil.generateRefreshToken(naverEmail)
+        )
+    }
+
+    fun createNaverUser(naverProfile: NaverProfile): User {
+        val naverEmail = naverProfile.email
+        val naverNickname = naverProfile.nickname
+        val encryptedPassword = "naver_registered_user"
+
+        val userEntity = userRepository.save(
+            UserEntity(
+                email = naverEmail,
+                nickname = naverNickname,
+                hashedPassword = encryptedPassword,
+                verified = true,
+                socialType = SocialType.NAVER,
+                createdAt = Instant.now()
+            )
+        )
+
+        return User.fromEntity(userEntity)
+    }
 
     fun kakaoCallBack(accessCode: String): Triple<User, String, String> {
         val oAuthToken: KakaoOAuthToken = kakaoUtil.requestToken(accessCode)
