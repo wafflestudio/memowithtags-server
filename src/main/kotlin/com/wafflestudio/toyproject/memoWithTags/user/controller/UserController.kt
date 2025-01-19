@@ -15,10 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -48,16 +46,6 @@ class UserController(
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val (_, accessToken, refreshToken) = userService.login(request.email, request.password)
         return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
-    }
-
-    @Operation(summary = "소셜 로그인")
-    @PostMapping("/auth/login/{socialType}")
-    fun loginSocial(
-        @RequestHeader(name = "Authorization") token: String,
-        @PathVariable("socialType") socialType: String
-    ): ResponseEntity<LoginResponse> {
-        // val (_, accessToken, refreshToken) = userService.loginSocial(token, socialType)
-        return ResponseEntity.ok(LoginResponse("", ""))
     }
 
     @Operation(summary = "비밀번호 찾기 이메일 인증")
