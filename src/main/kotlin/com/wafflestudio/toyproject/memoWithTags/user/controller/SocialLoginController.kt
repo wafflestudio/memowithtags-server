@@ -1,5 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
+
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
 import com.wafflestudio.toyproject.memoWithTags.user.service.SocialLoginService
@@ -14,10 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 class SocialLoginController(
     private val socialLoginService: SocialLoginService
 ) {
-
-    @GetMapping("/auth/login/naver")
-    fun naverLogin() {
-    }
 
     @GetMapping("/oauth/naver")
     fun naverCallback(
