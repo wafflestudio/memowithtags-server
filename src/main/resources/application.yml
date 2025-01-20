@@ -18,7 +18,7 @@ spring:
 kakao:
   auth:
     client: ${KAKAO_CLIENT_ID}
-    redirect: http://localhost:8080/api/v1/oauth/kakao
+    redirect: ${KAKAO_REDIRECT_URL}
 
 naver:
   auth:
