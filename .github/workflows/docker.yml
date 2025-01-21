@@ -110,6 +110,7 @@ jobs:
           NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
           GOOGLE_CLIENT_ID=1234
+          GOOGLE_CLIENT_SECRET=1234
           GOOGLE_REDIRECT_URI=1234" > .env
       
           # 배포 스크립트 EC2로 전송
