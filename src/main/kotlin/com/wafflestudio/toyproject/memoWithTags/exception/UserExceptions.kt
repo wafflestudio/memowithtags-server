@@ -56,3 +56,15 @@ class OAuthRequestException : UserException(
     httpErrorCode = HttpStatus.BAD_REQUEST,
     msg = "소셜 로그인 요청에 실패했습니다."
 )
+
+class EmailNotMatchException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "업데이트 할 유저 이메일이 기존 이메일과 일치하지 않습니다"
+)
+
+class UserNotAdminException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "Admin 권한이 없습니다"
+)
