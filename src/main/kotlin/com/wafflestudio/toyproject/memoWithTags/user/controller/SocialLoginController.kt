@@ -38,6 +38,10 @@ class SocialLoginController(
     }
 
     @GetMapping("/oauth/google")
-    fun googleCallback() {
+    fun googleCallback(
+        @RequestParam("code") code: String
+    ): ResponseEntity<LoginResponse> {
+        val (_, accessToken, refreshToken) = socialLoginService.googleCallback(code)
+        return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
     }
 }

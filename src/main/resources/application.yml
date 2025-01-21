@@ -25,6 +25,12 @@ naver:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}
 
+google:
+  auth:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect: ${GOOGLE_REDIRECT_URI}
+
 springdoc:
   override-with-generic-response: false
 # 이후 jwt도 yml에 넣어서 관리 예정

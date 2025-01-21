@@ -1,10 +1,13 @@
 package com.wafflestudio.toyproject.memoWithTags.user.service
 
+import com.wafflestudio.toyproject.memoWithTags.user.GoogleUtil
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.KakaoUtil
 import com.wafflestudio.toyproject.memoWithTags.user.NaverUtil
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
+import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleProfile
 import com.wafflestudio.toyproject.memoWithTags.user.dto.KakaoOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.user.dto.KakaoProfile
 import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverOAuthToken
@@ -19,7 +22,8 @@ import java.time.Instant
 class SocialLoginService(
     private val userRepository: UserRepository,
     private val kakaoUtil: KakaoUtil,
-    private val naverUtil: NaverUtil
+    private val naverUtil: NaverUtil,
+    private val googleUtil: GoogleUtil
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -96,6 +100,46 @@ class SocialLoginService(
                 hashedPassword = encryptedPassword,
                 verified = true,
                 socialType = SocialType.KAKAO,
+                createdAt = Instant.now()
+            )
+        )
+
+        return User.fromEntity(userEntity)
+    }
+
+    fun googleCallback(accessCode: String): Triple<User, String, String> {
+        val oAuthToken: GoogleOAuthToken = googleUtil.requestToken(accessCode)
+        val googleProfile: GoogleProfile = googleUtil.requestProfile(oAuthToken)
+
+        val googleEmail = googleProfile.email
+        val userEntity = userRepository.findByEmail(googleEmail)
+        val user: User = if (userEntity != null && userEntity.socialType == SocialType.GOOGLE) {
+            logger.info("google user already exists: ${userEntity.id}, ${userEntity.email}")
+            User.fromEntity(userEntity)
+        } else {
+            logger.info("creating google user $googleEmail")
+            createGoogleUser(googleProfile)
+        }
+
+        return Triple(
+            user,
+            JwtUtil.generateAccessToken(googleEmail),
+            JwtUtil.generateRefreshToken(googleEmail)
+        )
+    }
+
+    fun createGoogleUser(profile: GoogleProfile): User {
+        val googleEmail = profile.email
+        val googleNickname = profile.name
+        val encryptedPassword = "google_registered_user"
+
+        val userEntity = userRepository.save(
+            UserEntity(
+                email = googleEmail,
+                nickname = googleNickname,
+                hashedPassword = encryptedPassword,
+                verified = true,
+                socialType = SocialType.GOOGLE,
                 createdAt = Instant.now()
             )
         )
