@@ -35,7 +35,9 @@ class SocialLoginController(
         @RequestParam("code") code: String
     ): ResponseEntity<Unit> {
         val appLink = "memowithtags://oauth/kakao?code=$code"
-        return ResponseEntity.status(HttpStatus.FOUND).build()
+        return ResponseEntity.status(HttpStatus.FOUND)
+            .header("Location", appLink)
+            .build()
     }
 
     @GetMapping("/oauth/kakao/login")
