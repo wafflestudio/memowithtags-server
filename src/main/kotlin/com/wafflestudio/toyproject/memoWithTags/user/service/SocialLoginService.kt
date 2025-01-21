@@ -23,7 +23,7 @@ class SocialLoginService(
     private val userRepository: UserRepository,
     private val kakaoUtil: KakaoUtil,
     private val naverUtil: NaverUtil,
-    private val googleUtil: GoogleUtil,
+    private val googleUtil: GoogleUtil
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 

@@ -1,6 +1,5 @@
 package com.wafflestudio.toyproject.memoWithTags.user
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleProfile
@@ -21,7 +20,7 @@ class GoogleUtil(
     @Value("\${google.auth.client-secret}")
     private val googleClientSecret: String,
     @Value("\${google.auth.redirect}")
-    private val googleRedirectUri: String,
+    private val googleRedirectUri: String
 ) {
     private val logger = LoggerFactory.getLogger(GoogleUtil::class.java)
 
