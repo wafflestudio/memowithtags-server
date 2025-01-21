@@ -3,7 +3,6 @@ package com.wafflestudio.toyproject.memoWithTags.user.persistence
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.RoleType
-import com.wafflestudio.toyproject.memoWithTags.user.RoleType.ROLE_USER
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -29,7 +28,7 @@ class UserEntity(
     @Column(name = "verified", nullable = false)
     var verified: Boolean = false,
     @Column(name = "role", nullable = false)
-    var role: RoleType = ROLE_USER,
+    var role: RoleType = RoleType.ROLE_USER,
     @Column(name = "social_type", nullable = true)
     var socialType: SocialType? = null,
     @Column(name = "created_at", nullable = false)
