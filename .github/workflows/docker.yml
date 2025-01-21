@@ -113,7 +113,7 @@ jobs:
           GOOGLE_REDIRECT_URI=1234" > .env
       
           # 배포 스크립트 EC2로 전송
-          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
+          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh .env ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
 
       # 10. EC2에서 도커 실행
       - name: Deploy to EC2
