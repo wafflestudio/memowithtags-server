@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user.dto
+package com.wafflestudio.toyproject.memoWithTags.social.dto
 
 data class GoogleOAuthToken(
     val access_token: String,

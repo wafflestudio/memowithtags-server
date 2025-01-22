@@ -14,6 +14,9 @@ import java.util.UUID
 class AdminService(
     private val userRepository: UserRepository
 ) {
+    /**
+     * 관리자 여부를 리턴하는 함수
+     */
     fun isAdmin(userId: UUID) {
         val userEntity = userRepository.findById(userId).orElseThrow { UserNotFoundException() }
         if (userEntity.role != RoleType.ROLE_ADMIN) {
@@ -21,15 +24,24 @@ class AdminService(
         }
     }
 
+    /**
+     * DB에 저장된 모든 User를 리턴하는 함수
+     */
     fun getUsers(): List<User> {
         return userRepository.findAll().map { User.fromEntity(it) }
     }
 
+    /**
+     * 해당하는 Id의 User를 삭제하는 함수
+     */
     fun deleteUser(userId: UUID) {
         val userEntity = userRepository.findById(userId).orElseThrow { UserNotFoundException() }
         userRepository.delete(userEntity)
     }
 
+    /**
+     * 해당하는 Id의 User를 userUpdateInfo에 따라 업데이트하는 함수
+     */
     fun updateUser(userId: UUID, userUpdateInfo: UserUpdateInfo): User {
         val userEntity = userRepository.findById(userId).orElseThrow { UserNotFoundException() }
         userEntity.nickname = userUpdateInfo.nickname

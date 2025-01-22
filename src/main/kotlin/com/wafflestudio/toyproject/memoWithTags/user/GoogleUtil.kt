@@ -1,8 +1,8 @@
 package com.wafflestudio.toyproject.memoWithTags.user
 
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
-import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.user.dto.GoogleProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleProfile
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
