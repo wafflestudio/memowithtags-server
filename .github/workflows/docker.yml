@@ -109,9 +109,9 @@ jobs:
           KAKAO_REDIRECT_URL=${{ secrets.KAKAO_REDIRECT_URL }}
           NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
-          GOOGLE_CLIENT_ID=1234
-          GOOGLE_CLIENT_SECRET=1234
-          GOOGLE_REDIRECT_URI=1234" > .env
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" > .env
       
           # 배포 스크립트 EC2로 전송
           scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh .env ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
