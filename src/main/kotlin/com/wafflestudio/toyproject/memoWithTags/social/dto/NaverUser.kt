@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.social_login.dto
+package com.wafflestudio.toyproject.memoWithTags.social.dto
 
 data class NaverOAuthToken(
     val token_type: String,

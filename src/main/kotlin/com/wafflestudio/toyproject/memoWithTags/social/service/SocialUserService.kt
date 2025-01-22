@@ -1,19 +1,19 @@
-package com.wafflestudio.toyproject.memoWithTags.social_login.service
+package com.wafflestudio.toyproject.memoWithTags.social.service
 
+import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.GoogleProfile
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.KakaoProfile
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
-import java.time.Instant
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class SocialUserService(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) {
     /**
      * 네이버 로그인 시 저장되어 있는 User 정보가 없을 경우, DB에 User를 생성하는 함수

@@ -1,9 +1,9 @@
-package com.wafflestudio.toyproject.memoWithTags.social_login.controller
+package com.wafflestudio.toyproject.memoWithTags.social.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
+import com.wafflestudio.toyproject.memoWithTags.social.service.SocialLoginService
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
-import com.wafflestudio.toyproject.memoWithTags.social_login.service.SocialLoginService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,18 +1,18 @@
-package com.wafflestudio.toyproject.memoWithTags.social_login.service
+package com.wafflestudio.toyproject.memoWithTags.social.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
+import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.user.GoogleUtil
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.KakaoUtil
 import com.wafflestudio.toyproject.memoWithTags.user.NaverUtil
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.GoogleOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.GoogleProfile
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.KakaoOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.KakaoProfile
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverProfile
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -42,7 +42,9 @@ class SocialLoginService(
         } else if (userEntity == null) {
             logger.info("creating naver user $naverEmail")
             socialUserService.createNaverUser(naverProfile)
-        } else throw EmailAlreadyExistsException()
+        } else {
+            throw EmailAlreadyExistsException()
+        }
 
         return Triple(
             user,
@@ -68,7 +70,9 @@ class SocialLoginService(
         } else if (userEntity == null) {
             logger.info("creating kakao user $kakaoEmail")
             socialUserService.createKakaoUser(kakaoProfile)
-        } else throw EmailAlreadyExistsException()
+        } else {
+            throw EmailAlreadyExistsException()
+        }
 
         return Triple(
             user,
@@ -94,7 +98,9 @@ class SocialLoginService(
         } else if (userEntity == null) {
             logger.info("creating google user $googleEmail")
             socialUserService.createGoogleUser(googleProfile)
-        } else throw EmailAlreadyExistsException()
+        } else {
+            throw EmailAlreadyExistsException()
+        }
 
         return Triple(
             user,
