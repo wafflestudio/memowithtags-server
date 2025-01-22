@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
-import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverProfile
-import com.wafflestudio.toyproject.memoWithTags.user.dto.NaverProfileResponse
+import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverProfile
+import com.wafflestudio.toyproject.memoWithTags.social_login.dto.NaverProfileResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity

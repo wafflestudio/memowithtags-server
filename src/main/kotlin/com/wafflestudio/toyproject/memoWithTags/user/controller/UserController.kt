@@ -74,7 +74,6 @@ class UserController(
     fun me(
         @AuthUser user: User
     ): ResponseEntity<User> {
-        println("authme start!!!!")
         return ResponseEntity.ok(user)
     }
 }

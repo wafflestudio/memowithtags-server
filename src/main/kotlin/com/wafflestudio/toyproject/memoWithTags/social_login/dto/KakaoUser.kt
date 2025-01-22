@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user.dto
+package com.wafflestudio.toyproject.memoWithTags.social_login.dto
 
 data class KakaoOAuthToken(
     val token_type: String,

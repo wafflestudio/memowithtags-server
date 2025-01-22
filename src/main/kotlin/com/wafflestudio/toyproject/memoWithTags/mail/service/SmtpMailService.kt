@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user.service
+package com.wafflestudio.toyproject.memoWithTags.mail.service
 
 import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
