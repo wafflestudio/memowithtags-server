@@ -4,7 +4,6 @@ import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.social.dto.SocialLoginResponse
 import com.wafflestudio.toyproject.memoWithTags.social.service.SocialLoginService
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
-import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
 import io.swagger.v3.oas.annotations.Operation
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

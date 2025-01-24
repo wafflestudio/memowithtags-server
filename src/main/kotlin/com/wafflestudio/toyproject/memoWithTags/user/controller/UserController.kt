@@ -1,13 +1,13 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
-import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdatePasswordRequest
-import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdateNicknameRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ForgotPasswordRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.LoginRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RefreshTokenRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RegisterRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ResetPasswordRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdateNicknameRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdatePasswordRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.VerifyEmailRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.RefreshTokenResponse
