@@ -6,6 +6,8 @@ import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.LoginReques
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RefreshTokenRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RegisterRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ResetPasswordRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdateNicknameRequest
+import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.UpdatePasswordRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.VerifyEmailRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.LoginResponse
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.RefreshTokenResponse
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -60,6 +63,24 @@ class UserController(
     fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<Unit> {
         userService.resetPassword(request.email, request.verificationCode, request.password)
         return ResponseEntity.ok().build()
+    }
+
+    @Operation(summary = "비밀번호 수정(로그인 상태에서)")
+    @PutMapping("/auth/password")
+    fun updatePassword(
+        @AuthUser user: User,
+        @RequestBody request: UpdatePasswordRequest
+    ): ResponseEntity<User> {
+        return ResponseEntity.ok(userService.updatePassword(user, request.password))
+    }
+
+    @Operation(summary = "닉네임 수정")
+    @PutMapping("/auth/nickname")
+    fun updateNickname(
+        @AuthUser user: User,
+        @RequestBody request: UpdateNicknameRequest
+    ): ResponseEntity<User> {
+        return ResponseEntity.ok(userService.updateNickname(user, request.nickname))
     }
 
     @Operation(summary = "토큰 재발급")
