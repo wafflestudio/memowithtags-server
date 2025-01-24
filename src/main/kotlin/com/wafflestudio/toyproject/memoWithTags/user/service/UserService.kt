@@ -157,6 +157,32 @@ class UserService(
     }
 
     /**
+     * 로그인 한 유저의 비밀번호를 변경하는 함수
+     */
+    @Transactional
+    fun updatePassword(
+        user: User,
+        newPassword: String
+    ): User {
+        val userEntity = userRepository.findByEmail(user.email) ?: throw UserNotFoundException()
+        userEntity.hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        return User.fromEntity(userRepository.save(userEntity))
+    }
+
+    /**
+     * 로그인 한 유저의 닉네임을 변경하는 함수
+     */
+    @Transactional
+    fun updateNickname(
+        user: User,
+        newNickname: String
+    ): User {
+        val userEntity = userRepository.findByEmail(user.email) ?: throw UserNotFoundException()
+        userEntity.nickname = newNickname
+        return User.fromEntity(userRepository.save(userEntity))
+    }
+
+    /**
      * accessToken 만료 시 refreshToken을 통해 유저를 확인하고 새로운 accessToken을 발급하는 함수
      */
     fun refreshToken(refreshToken: String): RefreshTokenResponse {

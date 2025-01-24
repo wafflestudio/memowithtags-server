@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service
 @Service
 class SmtpMailService(
     private val mailSender: JavaMailSender,
-    @Value("\${spring.mail.username}")
-    private val fromMail: String
 ) : MailService {
     override fun sendMail(toEmail: String, title: String, content: String) {
         val message: MimeMessage = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true, "UTF-8")
         try {
             helper.apply {
-                setFrom(fromMail)
+                setFrom("memowithtags@gmail.com")
                 setTo(toEmail)
                 setSubject(title)
                 setText(content, true)
