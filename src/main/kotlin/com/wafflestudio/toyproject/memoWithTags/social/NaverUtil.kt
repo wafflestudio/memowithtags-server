@@ -1,11 +1,12 @@
-package com.wafflestudio.toyproject.memoWithTags.user
+package com.wafflestudio.toyproject.memoWithTags.social
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
-import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoOAuthToken
-import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverOAuthToken
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfile
+import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfileResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
@@ -16,35 +17,38 @@ import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import java.util.UUID
 
 @Component
-class KakaoUtil(
-    @Value("\${kakao.auth.client}")
-    private val kakaoClient: String,
-    @Value("\${kakao.auth.redirect}")
-    private val kakaoRedirect: String
+class NaverUtil(
+    @Value("\${naver.auth.client-id}")
+    private val naverClientId: String,
+    @Value("\${naver.auth.client-secret}")
+    private val naverClientSecret: String
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun requestToken(accessCode: String): KakaoOAuthToken {
+    fun requestToken(accessCode: String): NaverOAuthToken {
         val restTemplate = RestTemplate()
         val headers = HttpHeaders()
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
 
+        val state = UUID.randomUUID().toString()
         val params: MultiValueMap<String, String> = LinkedMultiValueMap<String, String>().apply {
             add("grant_type", "authorization_code")
-            add("client_id", kakaoClient)
-            add("redirect_url", kakaoRedirect)
+            add("client_id", naverClientId)
+            add("client_secret", naverClientSecret)
             add("code", accessCode)
+            add("state", state)
         }
 
-        val kakaoTokenRequest = HttpEntity(params, headers)
-        logger.info("Token Request: $kakaoTokenRequest")
+        val naverTokenRequest = HttpEntity(params, headers)
+        logger.info("Token Request: $naverTokenRequest")
 
         val response: ResponseEntity<String> = restTemplate.exchange(
-            "https://kauth.kakao.com/oauth/token",
+            "https://nid.naver.com/oauth2.0/token",
             HttpMethod.POST,
-            kakaoTokenRequest,
+            naverTokenRequest,
             String::class.java
         )
         logger.info("Token Response: $response")
@@ -52,7 +56,7 @@ class KakaoUtil(
         val objectMapper = ObjectMapper().registerKotlinModule()
 
         return try {
-            val oAuthToken = objectMapper.readValue(response.body, KakaoOAuthToken::class.java)
+            val oAuthToken = objectMapper.readValue(response.body, NaverOAuthToken::class.java)
             logger.info("oAuthToken: ${oAuthToken.access_token}")
             oAuthToken
         } catch (e: JsonProcessingException) {
@@ -61,29 +65,29 @@ class KakaoUtil(
         }
     }
 
-    fun requestProfile(oAuthToken: KakaoOAuthToken): KakaoProfile {
+    fun requestProfile(oAuthToken: NaverOAuthToken): NaverProfile {
         val restTemplate = RestTemplate()
         val headers = HttpHeaders().apply {
             add("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
             add("Authorization", "Bearer ${oAuthToken.access_token}")
         }
 
-        val kakaoProfileRequest: HttpEntity<MultiValueMap<String, String>> = HttpEntity(headers)
-        logger.info("Profile Request: $kakaoProfileRequest")
+        val naverProfileRequest: HttpEntity<MultiValueMap<String, String>> = HttpEntity(headers)
+        logger.info("Profile Request: $naverProfileRequest")
 
         val response: ResponseEntity<String> = restTemplate.exchange(
-            "https://kapi.kakao.com/v2/user/me",
+            "https://openapi.naver.com/v1/nid/me",
             HttpMethod.GET,
-            kakaoProfileRequest,
+            naverProfileRequest,
             String::class.java
         )
         logger.info("Profile Response: $response")
 
         val objectMapper = ObjectMapper().registerKotlinModule()
         return try {
-            val kakaoProfile = objectMapper.readValue(response.body, KakaoProfile::class.java)
-            logger.info("kakao email: ${kakaoProfile.kakao_account.email}")
-            kakaoProfile
+            val naverProfile = objectMapper.readValue(response.body, NaverProfileResponse::class.java)
+            logger.info("naver email: $naverProfile")
+            naverProfile.response
         } catch (e: JsonProcessingException) {
             logger.info("Profile processing error: ${e.message}")
             throw OAuthRequestException()

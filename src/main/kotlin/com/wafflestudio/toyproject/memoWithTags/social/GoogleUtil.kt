@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user
+package com.wafflestudio.toyproject.memoWithTags.social
 
 import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleOAuthToken
