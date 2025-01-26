@@ -1,6 +1,9 @@
 package com.wafflestudio.toyproject.memoWithTags.social.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
+import com.wafflestudio.toyproject.memoWithTags.social.GoogleUtil
+import com.wafflestudio.toyproject.memoWithTags.social.KakaoUtil
+import com.wafflestudio.toyproject.memoWithTags.social.NaverUtil
 import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleProfile
 import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoOAuthToken
@@ -8,10 +11,7 @@ import com.wafflestudio.toyproject.memoWithTags.social.dto.KakaoProfile
 import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.social.dto.SocialLoginResponse
-import com.wafflestudio.toyproject.memoWithTags.user.GoogleUtil
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
-import com.wafflestudio.toyproject.memoWithTags.user.KakaoUtil
-import com.wafflestudio.toyproject.memoWithTags.user.NaverUtil
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import org.slf4j.LoggerFactory

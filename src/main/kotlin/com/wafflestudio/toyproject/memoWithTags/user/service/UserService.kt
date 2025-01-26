@@ -215,7 +215,7 @@ class UserService(
      * 메일 정오에 만료된 인증 코드 엔티티를 삭제하는 함수
      */
     @Transactional
-    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 만료 코드 삭제
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 정오에 만료 코드 삭제
     fun deleteExpiredVerificationCode() {
         emailVerificationRepository.deleteByExpiryTimeBefore(LocalDateTime.now())
     }
@@ -224,7 +224,7 @@ class UserService(
      * 매일 정오에 메일 인증이 되지 않은 유저를 삭제하는 함수
      */
     @Transactional
-    @Scheduled(cron = "0 0 12 * * ?") // 매일 정오에 미인증 사용자 삭제
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 정오에 미인증 사용자 삭제
     fun deleteUnverifiedUser() {
         userRepository.deleteByVerified(false)
     }
