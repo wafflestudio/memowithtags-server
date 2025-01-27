@@ -38,7 +38,8 @@ class UserService(
     @Transactional
     fun register(
         email: String,
-        password: String
+        password: String,
+        nickname: String
     ): User {
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
         val encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
@@ -46,6 +47,7 @@ class UserService(
         val userEntity = userRepository.save(
             UserEntity(
                 email = email,
+                nickname = nickname,
                 hashedPassword = encryptedPassword,
                 createdAt = Instant.now()
             )

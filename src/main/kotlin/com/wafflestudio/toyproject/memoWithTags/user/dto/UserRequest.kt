@@ -3,7 +3,8 @@ package com.wafflestudio.toyproject.memoWithTags.user.dto
 sealed class UserRequest {
     data class RegisterRequest(
         val email: String,
-        val password: String
+        val password: String,
+        val nickname: String
     ) : UserRequest()
 
     data class VerifyEmailRequest(
