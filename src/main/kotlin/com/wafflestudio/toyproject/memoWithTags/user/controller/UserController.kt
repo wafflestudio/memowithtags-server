@@ -32,7 +32,7 @@ class UserController(
     @Operation(summary = "사용자 회원가입")
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<Unit> {
-        userService.register(request.email, request.password)
+        userService.register(request.email, request.password, request.nickname)
         userService.sendCodeToEmail(request.email)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
