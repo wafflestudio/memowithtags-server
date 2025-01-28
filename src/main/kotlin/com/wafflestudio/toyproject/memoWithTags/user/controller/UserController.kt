@@ -71,7 +71,6 @@ class UserController(
         @AuthUser user: User,
         @RequestBody request: UpdatePasswordRequest
     ): ResponseEntity<User> {
-        userService.updatePassword(user, request.originalPassword, request.newPassword)
         return ResponseEntity.ok(userService.updatePassword(user, request.originalPassword, request.newPassword))
     }
 
