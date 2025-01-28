@@ -1,4 +1,4 @@
-package com.wafflestudio.toyproject.memoWithTags.user.persistence
+package com.wafflestudio.toyproject.memoWithTags.mail.persistence
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

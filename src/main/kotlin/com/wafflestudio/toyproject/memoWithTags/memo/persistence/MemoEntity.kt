@@ -17,7 +17,7 @@ class MemoEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
     var content: String,
     @Column(name = "locked", nullable = false)
     var locked: Boolean = false,

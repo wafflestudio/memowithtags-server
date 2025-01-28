@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service
 class CustomUserDetailsService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
+    /**
+     * SecurityConfig에서 쓰이는 쿼리 함수
+     */
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
         return CustomUserDetails(user)
