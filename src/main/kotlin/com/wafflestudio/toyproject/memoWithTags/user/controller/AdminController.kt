@@ -36,7 +36,7 @@ class AdminController(
     @PostMapping("/admin/user")
     fun createUser(@AuthUser user: User, @RequestBody request: CreateUserRequest): User {
         adminService.isAdmin(user.id)
-        return userService.register(request.email, request.password)
+        return userService.register(request.email, request.password, request.nickname)
     }
 
     @Operation(summary = "유저 계정 삭제하기")
