@@ -28,7 +28,8 @@ sealed class UserRequest {
     ) : UserRequest()
 
     data class UpdatePasswordRequest(
-        val password: String
+        val originalPassword: String,
+        val newPassword: String
     ) : UserRequest()
 
     data class UpdateNicknameRequest(

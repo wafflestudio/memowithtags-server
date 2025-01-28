@@ -133,7 +133,7 @@ class UserService(
      * 비밀번호 변경을 위해 보내진 메일 인증을 완료하고, 비밀번호를 변경하는 함수
      */
     @Transactional
-    fun resetPassword(
+    fun resetPasswordWithEmailVerification(
         email: String,
         code: String,
         newPassword: String
@@ -164,9 +164,11 @@ class UserService(
     @Transactional
     fun updatePassword(
         user: User,
+        originalPassword: String,
         newPassword: String
     ): User {
         val userEntity = userRepository.findByEmail(user.email) ?: throw UserNotFoundException()
+        if (!BCrypt.checkpw(originalPassword, userEntity.hashedPassword)) throw SignInInvalidException()
         userEntity.hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
         return User.fromEntity(userRepository.save(userEntity))
     }

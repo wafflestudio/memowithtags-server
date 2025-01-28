@@ -61,7 +61,7 @@ class UserController(
     @Operation(summary = "비밀번호 초기화")
     @PostMapping("/auth/reset-password")
     fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<Unit> {
-        userService.resetPassword(request.email, request.verificationCode, request.password)
+        userService.resetPasswordWithEmailVerification(request.email, request.verificationCode, request.password)
         return ResponseEntity.ok().build()
     }
 
@@ -71,7 +71,8 @@ class UserController(
         @AuthUser user: User,
         @RequestBody request: UpdatePasswordRequest
     ): ResponseEntity<User> {
-        return ResponseEntity.ok(userService.updatePassword(user, request.password))
+        userService.updatePassword(user, request.originalPassword, request.newPassword)
+        return ResponseEntity.ok(userService.updatePassword(user, request.originalPassword, request.newPassword))
     }
 
     @Operation(summary = "닉네임 수정")
