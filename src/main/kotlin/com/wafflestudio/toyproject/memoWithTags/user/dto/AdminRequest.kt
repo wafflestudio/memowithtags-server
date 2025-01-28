@@ -5,8 +5,8 @@ import java.util.UUID
 sealed class AdminRequest {
     data class CreateUserRequest(
         val email: String,
-        val nickname: String,
-        val password: String
+        val password: String,
+        val nickname: String
     ) : AdminRequest()
 
     data class UpdateUserRequest(
