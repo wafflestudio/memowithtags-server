@@ -2,7 +2,7 @@ package com.wafflestudio.toyproject.memoWithTags.tag.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.exception.WrongUserException
+import com.wafflestudio.toyproject.memoWithTags.exception.TagNotOwnedByUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
@@ -30,7 +30,7 @@ class TagService(
     fun updateTag(id: Long, name: String, colorHex: String, user: User): Tag {
         val tagEntity = tagRepository.findById(id).orElseThrow { throw TagNotFoundException() }
         if (tagEntity.user.email != user.email) {
-            throw WrongUserException()
+            throw TagNotOwnedByUserException()
         }
         tagEntity.name = name
         tagEntity.colorHex = colorHex
@@ -42,7 +42,7 @@ class TagService(
     fun deleteTag(tagId: Long, user: User) {
         val tagEntity = tagRepository.findById(tagId).orElseThrow { throw TagNotFoundException() }
         if (tagEntity.user.email != user.email) {
-            throw WrongUserException()
+            throw TagNotOwnedByUserException()
         }
         tagRepository.delete(tagEntity)
     }

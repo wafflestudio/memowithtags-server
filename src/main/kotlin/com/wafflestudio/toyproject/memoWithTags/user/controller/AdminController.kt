@@ -28,7 +28,7 @@ class AdminController(
     @Operation(summary = "유저 목록 가져오기")
     @GetMapping("/admin/user")
     fun getUsers(@AuthUser user: User): List<User> {
-        adminService.isAdmin(user.id)
+        adminService.assertAdminRole(user.id)
         return adminService.getUsers()
     }
 
@@ -42,7 +42,7 @@ class AdminController(
     @Operation(summary = "유저 계정 삭제하기")
     @DeleteMapping("/admin/user/{userId}")
     fun deleteUser(@AuthUser user: User, @PathVariable userId: UUID): ResponseEntity<Unit> {
-        adminService.isAdmin(user.id)
+        adminService.assertAdminRole(user.id)
         adminService.deleteUser(userId)
         return ResponseEntity.ok().build()
     }
@@ -50,7 +50,7 @@ class AdminController(
     @Operation(summary = "유저 계정 업데이트")
     @PutMapping("/admin/user")
     fun getUsers(@AuthUser user: User, @RequestBody request: UpdateUserRequest): User {
-        adminService.isAdmin(user.id)
+        adminService.assertAdminRole(user.id)
         return adminService.updateUser(request.id, request.userUpdateInfo)
     }
 }

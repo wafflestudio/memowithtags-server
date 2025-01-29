@@ -15,9 +15,9 @@ class AdminService(
     private val userRepository: UserRepository
 ) {
     /**
-     * 관리자 여부를 리턴하는 함수
+     * 관리자가 아닐경우 예외를 발생시키는 함수
      */
-    fun isAdmin(userId: UUID) {
+    fun assertAdminRole(userId: UUID) {
         val userEntity = userRepository.findById(userId).orElseThrow { UserNotFoundException() }
         if (userEntity.role != RoleType.ROLE_ADMIN) {
             throw UserNotAdminException()
