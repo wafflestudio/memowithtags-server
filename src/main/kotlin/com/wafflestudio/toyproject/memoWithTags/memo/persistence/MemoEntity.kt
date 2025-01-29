@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import java.time.Instant
@@ -17,7 +18,8 @@ class MemoEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
+    @Lob
+    @Column(name = "content", nullable = false)
     var content: String,
     @Column(name = "locked", nullable = false)
     var locked: Boolean = false,
