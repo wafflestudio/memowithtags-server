@@ -35,7 +35,7 @@ class AdminController(
     @Operation(summary = "유저 계정 생성")
     @PostMapping("/admin/user")
     fun createUser(@AuthUser user: User, @RequestBody request: CreateUserRequest): User {
-        adminService.isAdmin(user.id)
+        adminService.assertAdminRole(user.id)
         return userService.register(request.email, request.password, request.nickname)
     }
 
