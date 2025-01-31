@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     show-sql: true
 
   config:
@@ -14,5 +14,5 @@ spring:
 
 logging:
   level:
-    root: debug
-    com.wafflestudio.toyproject.memoWithTags: debug
+    root: info
+    com.wafflestudio.toyproject.memoWithTags: info

@@ -3,15 +3,34 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev} # 기본값 dev
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
+            trust: smtp.gmail.com
         debug: true
 
+kakao:
+  auth:
+    client: ${KAKAO_CLIENT_ID}
+    redirect: ${KAKAO_REDIRECT_URL}
+
+naver:
+  auth:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+
+google:
+  auth:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect: ${GOOGLE_REDIRECT_URI}
+
+springdoc:
+  override-with-generic-response: false
 # 이후 jwt도 yml에 넣어서 관리 예정

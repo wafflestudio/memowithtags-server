@@ -5,25 +5,26 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import java.time.Instant
+import java.util.UUID
 
 @Entity(name = "tags")
 class TagEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: UUID,
 
     @Column(name = "name", nullable = false)
     var name: String,
 
     @Column(name = "color", nullable = false)
-    var color: String,
+    var colorHex: String,
+
+    @Column(name = "embedding_vector", nullable = false)
+    var embeddingVector: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")

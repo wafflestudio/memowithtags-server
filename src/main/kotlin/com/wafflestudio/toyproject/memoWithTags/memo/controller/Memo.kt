@@ -2,24 +2,29 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import java.time.Instant
+import java.util.UUID
 
 class Memo(
-    val id: Long,
+    val id: UUID,
+    val embeddingVector: List<Double>,
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val tags: List<Long>
+    val tagIds: List<UUID>,
+    val locked: Boolean
 ) {
     companion object {
         fun fromEntity(entity: MemoEntity): Memo {
             return Memo(
-                id = entity.id!!,
+                id = entity.id,
+                embeddingVector = entity.embeddingVector,
                 content = entity.content,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
-                tags = entity.memoTags.map { memoTagEntity ->
-                    memoTagEntity.tag.id!!
-                }
+                tagIds = entity.memoTags.map { memoTagEntity ->
+                    memoTagEntity.tag.id
+                },
+                locked = entity.locked
             )
         }
     }

@@ -7,7 +7,7 @@ class TagNotFoundException : CustomException(
     httpErrorCode = HttpStatus.NOT_FOUND,
     msg = "존재하지 않는 태그입니다."
 )
-class WrongUserException : CustomException(
+class TagNotOwnedByUserException : CustomException(
     errorCode = 0,
     httpErrorCode = HttpStatus.FORBIDDEN,
     msg = "유저가 가지고 있는 태그가 아닙니다."

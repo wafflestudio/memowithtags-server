@@ -1,5 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.persistence
 
+import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.EntityManager
@@ -22,7 +24,7 @@ class MemoRepositoryImpl(
         endDate: Instant?,
         page: Int, // 몇 번째 페이지인지 (1부터 시작)
         pageSize: Int // 한 페이지에 몇 개를 가져올지
-    ): List<MemoEntity> {
+    ): SearchResult<Memo> {
         val cb = em.criteriaBuilder
         val query = cb.createQuery(MemoEntity::class.java)
         val root = query.from(MemoEntity::class.java)
@@ -100,6 +102,77 @@ class MemoRepositoryImpl(
         typedQuery.maxResults = pageSize
 
         // 7) 쿼리 실행 & 결과 리턴
-        return typedQuery.resultList
+        val results = typedQuery.resultList
+
+        /**
+         * 2) Count 쿼리 (전체 개수 구하기)
+         *
+         *  메인 쿼리와 동일한 조건을 사용하되,
+         *  select 부분만 count(*) 또는 count(root)를 사용.
+         */
+        val countQuery = cb.createQuery(Long::class.java)
+        val countRoot = countQuery.from(MemoEntity::class.java)
+        val countPredicates = mutableListOf<Predicate>()
+
+        // 유저 조건
+        countPredicates.add(cb.equal(countRoot.get<UserEntity>("user").get<UUID>("id"), userId))
+
+        // 메모 내용 조건
+        content?.let {
+            countPredicates.add(cb.like(countRoot.get("content"), "%$it%"))
+        }
+
+        // 날짜 범위 조건
+        startDate?.let {
+            countPredicates.add(cb.greaterThanOrEqualTo(countRoot.get("createdAt"), it))
+        }
+        endDate?.let {
+            countPredicates.add(cb.lessThanOrEqualTo(countRoot.get("createdAt"), it))
+        }
+
+        // 태그 조건(전체 태그 포함) — “서브쿼리 + having countDistinct” 방식과 동일한 논리를 재활용
+        // 다만, count 쿼리에서 똑같이 join/having을 해야 합니다.
+        if (!tags.isNullOrEmpty()) {
+            val subqueryForCount: Subquery<Long> = countQuery.subquery(Long::class.java)
+            val subRootForCount = subqueryForCount.from(MemoEntity::class.java)
+
+            val subJoinForCount = subRootForCount.join<MutableSet<MemoTagEntity>, MemoTagEntity>("memoTags")
+            val tagPathForCount = subJoinForCount.get<TagEntity>("tag")
+            val tagIdPathForCount = tagPathForCount.get<Long>("id")
+
+            subqueryForCount
+                .select(subRootForCount.get<Long>("id"))
+                .where(
+                    cb.and(
+                        cb.equal(subRootForCount.get<Long>("id"), countRoot.get<Long>("id")),
+                        tagIdPathForCount.`in`(tags)
+                    )
+                )
+                .groupBy(subRootForCount.get<Long>("id"))
+                .having(cb.equal(cb.countDistinct(tagIdPathForCount), tags.size.toLong()))
+
+            countPredicates.add(cb.`in`(countRoot.get<Long>("id")).value(subqueryForCount))
+        }
+
+        // count 쿼리에 WHERE 절 적용
+        countQuery.select(cb.count(countRoot))
+        countQuery.where(cb.and(*countPredicates.toTypedArray()))
+
+        // 실행해서 전체 개수 구함
+        val totalResults = em.createQuery(countQuery).singleResult
+
+        // 전체 페이지 수 = totalResults / pageSize (올림)
+        val totalPages = if (totalResults == 0L) {
+            1 // 검색 결과가 없으면 페이지는 1이라고 가정
+        } else {
+            ((totalResults - 1) / pageSize + 1).toInt()
+        }
+
+        return SearchResult<Memo>(
+            page = page,
+            totalPages = totalPages,
+            totalResults = totalResults.toInt(),
+            results = results.map { Memo.fromEntity(it) }
+        )
     }
 }

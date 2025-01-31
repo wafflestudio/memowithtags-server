@@ -1,6 +1,6 @@
-package com.wafflestudio.toyproject.memoWithTags.user.contoller
+package com.wafflestudio.toyproject.memoWithTags.mail
 
-import com.wafflestudio.toyproject.memoWithTags.user.persistence.EmailVerificationEntity
+import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import java.time.LocalDateTime
 
 class EmailVerification(

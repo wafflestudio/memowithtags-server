@@ -1,13 +1,12 @@
 package com.wafflestudio.toyproject.memoWithTags.user
 
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import java.util.Date
 import javax.crypto.SecretKey
 
 object JwtUtil {
-    private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
+    private val secretKey: SecretKey = Keys.hmacShaKeyFor("your-fixed-secret-key-here-your-fixed-secret-key-here".toByteArray())
     private const val ACCESS_TOKEN_EXPIRATION: Long = 1000 * 60 * 120 // 2시간
     private const val REFRESH_TOKEN_EXPIRATION: Long = 1000 * 60 * 60 * 24 * 14 // 14일
 
@@ -41,19 +40,6 @@ object JwtUtil {
             true
         } catch (e: Exception) {
             false
-        }
-    }
-
-    fun isTokenExpired(token: String): Boolean {
-        return try {
-            val claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .body
-            claims.expiration.before(Date())
-        } catch (e: Exception) {
-            true
         }
     }
 
