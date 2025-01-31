@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -90,6 +91,16 @@ class UserController(
         return userService.refreshToken(refreshToken)
     }
 
+    @Operation(summary = "회원 탈퇴(유저 삭제)")
+    @DeleteMapping("/auth/withdrawal")
+    fun withdrawal(
+        @AuthUser user: User,
+        @RequestBody request: ForgotPasswordRequest
+    ): ResponseEntity<Unit> {
+        userService.deleteUser(user, request.email)
+        return ResponseEntity.noContent().build()
+    }
+
     @Operation(summary = "현재 로그인한 유저 조회")
     @GetMapping("/auth/me")
     fun me(
@@ -98,3 +109,5 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 }
+
+typealias WithdrawalRequest = ForgotPasswordRequest

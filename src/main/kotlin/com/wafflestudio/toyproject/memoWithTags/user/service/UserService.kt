@@ -43,9 +43,12 @@ class UserService(
     ): User {
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
         val encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
+        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 100000으로 한다.
+        val userNumber = userRepository.getMaxUserNumber() + 100000
         // 메일 인증이 이루어지기 전까지 User의 verified 필드는 false이다.
         val userEntity = userRepository.save(
             UserEntity(
+                userNumber = userNumber,
                 email = email,
                 nickname = nickname,
                 hashedPassword = encryptedPassword,
@@ -205,6 +208,18 @@ class UserService(
             refreshToken = refreshToken,
             expiresIn = JwtUtil.getAccessTokenExpiration()
         )
+    }
+
+    /**
+     * 해당 유저를 레포지토리에서 지우는 함수
+     */
+    @Transactional
+    fun deleteUser(
+        user: User,
+        email: String
+    ) {
+        if (user.email != email) throw AuthenticationFailedException()
+        userRepository.deleteById(user.id)
     }
 
     /**
