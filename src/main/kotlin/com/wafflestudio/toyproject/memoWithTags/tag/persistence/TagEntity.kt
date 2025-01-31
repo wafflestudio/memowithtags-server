@@ -1,9 +1,11 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.persistence
 
+import com.wafflestudio.toyproject.memoWithTags.memo.persistence.EmbeddingVectorConverter
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
@@ -23,8 +25,9 @@ class TagEntity(
     @Column(name = "color", nullable = false)
     var colorHex: String,
 
-    @Column(name = "embedding_vector", nullable = false)
-    var embeddingVector: String,
+    @Convert(converter = EmbeddingVectorConverter::class)
+    @Column(columnDefinition = "TEXT")
+    var embeddingVector: List<Double> = emptyList(),
 
     @ManyToOne
     @JoinColumn(name = "user_id")

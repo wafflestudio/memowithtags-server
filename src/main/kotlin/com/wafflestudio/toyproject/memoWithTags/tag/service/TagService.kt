@@ -19,7 +19,7 @@ class TagService(
     private val userRepository: UserRepository
 ) {
     fun getTags(user: User): List<Tag> {
-        return tagRepository.findByUserId(user.id).map { Tag(it.id, it.name, it.colorHex, Tag.convertStringToEmbeddingVector(it.embeddingVector), it.createdAt, it.updatedAt) }
+        return tagRepository.findByUserId(user.id).map { Tag(it.id, it.name, it.colorHex, it.embeddingVector, it.createdAt, it.updatedAt) }
     }
 
     fun createTag(request: CreateTagRequest, user: User): Tag {
@@ -28,7 +28,7 @@ class TagService(
             id = request.id,
             name = request.name,
             colorHex = request.colorHex,
-            embeddingVector = Tag.convertEmbeddingVectorToString(request.embeddingVector),
+            embeddingVector = request.embeddingVector,
             createdAt = request.createdAt,
             updatedAt = request.updatedAt,
             user = userEntity
@@ -38,7 +38,7 @@ class TagService(
             savedTagEntity.id,
             savedTagEntity.name,
             savedTagEntity.colorHex,
-            Tag.convertStringToEmbeddingVector(savedTagEntity.embeddingVector),
+            savedTagEntity.embeddingVector,
             savedTagEntity.createdAt,
             savedTagEntity.updatedAt
         )
@@ -51,14 +51,14 @@ class TagService(
         }
         tagEntity.name = request.name
         tagEntity.colorHex = request.colorHex
-        tagEntity.embeddingVector = Tag.convertEmbeddingVectorToString(request.embeddingVector)
+        tagEntity.embeddingVector = request.embeddingVector
         tagEntity.updatedAt = request.updatedAt
         val savedTagEntity = tagRepository.save(tagEntity)
         return Tag(
             savedTagEntity.id,
             savedTagEntity.name,
             savedTagEntity.colorHex,
-            Tag.convertStringToEmbeddingVector(savedTagEntity.embeddingVector),
+            savedTagEntity.embeddingVector,
             savedTagEntity.createdAt,
             savedTagEntity.updatedAt
         )
