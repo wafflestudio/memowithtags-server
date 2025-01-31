@@ -20,7 +20,7 @@ class TagService(
     private val userRepository: UserRepository
 ) {
     fun getTags(user: User): List<Tag> {
-        return tagRepository.findByUserId(user.id).map { Tag(it.id, it.name, it.colorHex, Tag.convertStringToEmbeddingVector(it.embeddingVector), it.createdAt, it.updatedAt ) }
+        return tagRepository.findByUserId(user.id).map { Tag(it.id, it.name, it.colorHex, Tag.convertStringToEmbeddingVector(it.embeddingVector), it.createdAt, it.updatedAt) }
     }
 
     fun createTag(request: CreateTagRequest, user: User): Tag {
@@ -32,7 +32,8 @@ class TagService(
             embeddingVector = Tag.convertEmbeddingVectorToString(request.embeddingVector),
             createdAt = request.createdAt,
             updatedAt = request.updatedAt,
-            user = userEntity)
+            user = userEntity
+        )
         val savedTagEntity = tagRepository.save(tagEntity)
         return Tag(
             savedTagEntity.id,
@@ -42,7 +43,6 @@ class TagService(
             savedTagEntity.createdAt,
             savedTagEntity.updatedAt
         )
-
     }
 
     fun updateTag(request: UpdateTagRequest, user: User): Tag {

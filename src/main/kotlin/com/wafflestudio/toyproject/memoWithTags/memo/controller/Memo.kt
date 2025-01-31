@@ -2,13 +2,14 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import java.time.Instant
+import java.util.UUID
 
 class Memo(
     val id: Long,
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val tagIds: List<Long>,
+    val tagIds: List<UUID>,
     val locked: Boolean
 ) {
     companion object {
@@ -19,7 +20,7 @@ class Memo(
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
-                    memoTagEntity.tag.id!!
+                    memoTagEntity.tag.id
                 },
                 locked = entity.locked
             )

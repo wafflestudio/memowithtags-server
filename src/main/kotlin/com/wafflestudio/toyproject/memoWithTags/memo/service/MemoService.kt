@@ -24,7 +24,7 @@ class MemoService(
     private val userService: UserService
 ) {
     @Transactional
-    fun createMemo(user: User, content: String, tagIds: List<Long>, locked: Boolean): Memo {
+    fun createMemo(user: User, content: String, tagIds: List<UUID>, locked: Boolean): Memo {
         val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
         val userEntity = userService.getUserEntityByEmail(user.email)
         val memoEntity = MemoEntity(
@@ -44,7 +44,7 @@ class MemoService(
     }
 
     @Transactional
-    fun updateMemo(userId: UUID, content: String, memoId: Long, tagIds: List<Long>, locked: Boolean): Memo {
+    fun updateMemo(userId: UUID, content: String, memoId: Long, tagIds: List<UUID>, locked: Boolean): Memo {
         val memo = memoRepository.findById(memoId)
             .orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) {
@@ -74,7 +74,7 @@ class MemoService(
     }
 
     @Transactional
-    fun addTag(userId: UUID, memoId: Long, tagId: Long) {
+    fun addTag(userId: UUID, memoId: Long, tagId: UUID) {
         val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) { throw AccessDeniedException() }
         val tag = tagRepository.findById(tagId).orElseThrow { TagNotFoundException() }
@@ -83,7 +83,7 @@ class MemoService(
     }
 
     @Transactional
-    fun deleteTag(userId: UUID, memoId: Long, tagId: Long) {
+    fun deleteTag(userId: UUID, memoId: Long, tagId: UUID) {
         val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) { throw AccessDeniedException() }
         val tag = tagRepository.findById(tagId).orElseThrow { TagNotFoundException() }
