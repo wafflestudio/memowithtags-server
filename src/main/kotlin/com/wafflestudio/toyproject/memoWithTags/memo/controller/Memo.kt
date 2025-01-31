@@ -5,7 +5,8 @@ import java.time.Instant
 import java.util.UUID
 
 class Memo(
-    val id: Long,
+    val id: UUID,
+    val embeddingVector: List<Double>,
     val content: String,
     val createdAt: Instant,
     val updatedAt: Instant,
@@ -15,7 +16,8 @@ class Memo(
     companion object {
         fun fromEntity(entity: MemoEntity): Memo {
             return Memo(
-                id = entity.id!!,
+                id = entity.id,
+                embeddingVector = entity.embeddingVector,
                 content = entity.content,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
