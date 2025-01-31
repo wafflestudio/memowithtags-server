@@ -17,6 +17,8 @@ sealed class TagRequest {
         val id: UUID,
         val name: String,
         val colorHex: String,
-        val embeddingVector: List<Float>
+        val embeddingVector: List<Float>,
+        val createdAt: Instant,
+        val updatedAt: Instant?
     ) : TagResponse()
 }

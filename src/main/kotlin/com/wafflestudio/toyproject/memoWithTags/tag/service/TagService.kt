@@ -11,7 +11,6 @@ import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.springframework.stereotype.Service
-import java.time.Instant
 import java.util.UUID
 
 @Service
@@ -53,7 +52,7 @@ class TagService(
         tagEntity.name = request.name
         tagEntity.colorHex = request.colorHex
         tagEntity.embeddingVector = Tag.convertEmbeddingVectorToString(request.embeddingVector)
-        tagEntity.updatedAt = Instant.now()
+        tagEntity.updatedAt = request.updatedAt
         val savedTagEntity = tagRepository.save(tagEntity)
         return Tag(
             savedTagEntity.id,
