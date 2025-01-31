@@ -11,7 +11,6 @@ import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.springframework.stereotype.Service
-import java.time.Instant
 import java.util.UUID
 
 @Service
