@@ -5,9 +5,13 @@ import java.util.UUID
 
 sealed class MemoRequest {
     data class CreateMemoRequest(
+        val id: UUID,
         val content: String,
         val tagIds: List<UUID>,
-        val locked: Boolean
+        val locked: Boolean,
+        val embeddingVector: List<Double>,
+        val createdAt: Instant,
+        val updatedAt: Instant
     ) : MemoRequest()
 
     data class UpdateTagRequest(
@@ -15,10 +19,13 @@ sealed class MemoRequest {
     ) : MemoRequest()
 
     data class UpdateMemoRequest(
-        val id: Long,
+        val id: UUID,
         val content: String,
         val tagIds: List<UUID>,
-        val locked: Boolean
+        val locked: Boolean,
+        val embeddingVector: List<Double>,
+        val createdAt: Instant,
+        val updatedAt: Instant
     ) : MemoRequest()
 
     data class MemoSearchRequest(

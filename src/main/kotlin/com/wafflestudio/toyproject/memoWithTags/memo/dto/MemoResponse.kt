@@ -9,20 +9,22 @@ sealed class MemoResponse {
     ) : MemoResponse()
 
     data class CreateMemoResponse(
-        val id: Long,
+        val id: UUID,
         val content: String,
         val tagIds: List<UUID>,
+        val locked: Boolean,
+        val embeddingVector: List<Double>,
         val createdAt: Instant,
-        val updatedAt: Instant,
-        val locked: Boolean
+        val updatedAt: Instant
     ) : MemoResponse()
 
     data class UpdateMemoResponse(
-        val id: Long,
+        val id: UUID,
         val content: String,
         val tagIds: List<UUID>,
+        val locked: Boolean,
+        val embeddingVector: List<Double>,
         val createdAt: Instant,
-        val updatedAt: Instant,
-        val locked: Boolean
+        val updatedAt: Instant
     ) : MemoResponse()
 }
