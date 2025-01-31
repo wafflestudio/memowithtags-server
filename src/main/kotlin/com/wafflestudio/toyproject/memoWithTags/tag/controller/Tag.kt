@@ -8,7 +8,7 @@ data class Tag(
     val id: UUID,
     val name: String,
     val colorHex: String,
-    val embeddingVector: List<Float>,
+    val embeddingVector: List<Double>,
     val createdAt: Instant,
     val updatedAt: Instant?
 ) {
@@ -18,16 +18,10 @@ data class Tag(
                 id = entity.id,
                 name = entity.name,
                 colorHex = entity.colorHex,
-                embeddingVector = convertStringToEmbeddingVector(entity.embeddingVector),
+                embeddingVector = entity.embeddingVector,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt
             )
-        }
-        fun convertEmbeddingVectorToString(embeddingVector: List<Float>): String {
-            return embeddingVector.joinToString(",")
-        }
-        fun convertStringToEmbeddingVector(embeddingVector: String): List<Float> {
-            return embeddingVector.split(",").map { it.toFloat() }
         }
     }
 }
