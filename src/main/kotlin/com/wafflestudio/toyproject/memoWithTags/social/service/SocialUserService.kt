@@ -53,7 +53,7 @@ class SocialUserService(
 
         // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 1으로 한다.
         val userNumber = userRepository.getMaxUserNumber() + 1
-        
+
         val userEntity = userRepository.save(
             UserEntity(
                 userNumber = userNumber,
