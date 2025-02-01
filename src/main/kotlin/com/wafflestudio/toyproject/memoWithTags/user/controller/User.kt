@@ -1,6 +1,5 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
-import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import java.time.Instant
 import java.util.UUID
