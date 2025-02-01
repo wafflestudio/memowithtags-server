@@ -44,7 +44,7 @@ class UserService(
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
         val encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
         // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 100000으로 한다.
-        val userNumber = userRepository.getMaxUserNumber() + 100000
+        val userNumber = userRepository.getMaxUserNumber() + 1
         // 메일 인증이 이루어지기 전까지 User의 verified 필드는 false이다.
         val userEntity = userRepository.save(
             UserEntity(
