@@ -2,10 +2,12 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotMatchException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
 import com.wafflestudio.toyproject.memoWithTags.exception.MailVerificationException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
+import com.wafflestudio.toyproject.memoWithTags.exception.UpdatePasswordInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
@@ -123,6 +125,7 @@ class UserService(
         password: String
     ): Triple<User, String, String> {
         val userEntity = userRepository.findByEmail(email) ?: throw SignInInvalidException()
+        if (userEntity.socialType != null) throw SignInInvalidException()
         if (!BCrypt.checkpw(password, userEntity.hashedPassword)) throw SignInInvalidException()
         logger.info("User logged in: ${userEntity.id}, ${userEntity.email}")
         return Triple(
@@ -171,7 +174,7 @@ class UserService(
         newPassword: String
     ): User {
         val userEntity = userRepository.findByEmail(user.email) ?: throw UserNotFoundException()
-        if (!BCrypt.checkpw(originalPassword, userEntity.hashedPassword)) throw SignInInvalidException()
+        if (!BCrypt.checkpw(originalPassword, userEntity.hashedPassword)) throw UpdatePasswordInvalidException()
         userEntity.hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
         return User.fromEntity(userRepository.save(userEntity))
     }
@@ -218,7 +221,7 @@ class UserService(
         user: User,
         email: String
     ) {
-        if (user.email != email) throw AuthenticationFailedException()
+        if (user.email != email) throw EmailNotMatchException()
         userRepository.deleteById(user.id)
     }
 
