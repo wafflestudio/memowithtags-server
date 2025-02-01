@@ -18,7 +18,7 @@ class MemoEntity(
     @Id
     val id: UUID,
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     var content: String,
     @Column(name = "locked", nullable = false)
     var locked: Boolean = false,
