@@ -24,8 +24,8 @@ class SocialUserService(
         val naverNickname = naverProfile.nickname
         val encryptedPassword = "naver_registered_user"
 
-        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 100000으로 한다.
-        val userNumber = userRepository.getMaxUserNumber() + 100000
+        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 1으로 한다.
+        val userNumber = userRepository.getMaxUserNumber() + 1
 
         val userEntity = userRepository.save(
             UserEntity(
@@ -51,9 +51,9 @@ class SocialUserService(
         val kakaoNickname = kakaoProfile.kakao_account.profile.nickname
         val encryptedPassword = "kakao_registered_user"
 
-        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 100000으로 한다.
-        val userNumber = userRepository.getMaxUserNumber() + 100000
-
+        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 1으로 한다.
+        val userNumber = userRepository.getMaxUserNumber() + 1
+        
         val userEntity = userRepository.save(
             UserEntity(
                 userNumber = userNumber,
@@ -78,8 +78,8 @@ class SocialUserService(
         val googleNickname = profile.name
         val encryptedPassword = "google_registered_user"
 
-        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 100000으로 한다.
-        val userNumber = userRepository.getMaxUserNumber() + 100000
+        // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 1으로 한다.
+        val userNumber = userRepository.getMaxUserNumber() + 1
 
         val userEntity = userRepository.save(
             UserEntity(
