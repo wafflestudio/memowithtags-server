@@ -57,12 +57,21 @@ class OAuthRequestException : UserException(
     msg = "소셜 로그인 요청에 실패했습니다."
 )
 
-class EmailNotMatchException : UserException(
+// 비밀번호 변경 시 잘못된 비밀번호 입력
+class UpdatePasswordInvalidException : UserException(
     errorCode = 0,
-    httpErrorCode = HttpStatus.BAD_REQUEST,
-    msg = "업데이트 할 유저 이메일이 기존 이메일과 일치하지 않습니다"
+    httpErrorCode = HttpStatus.FORBIDDEN,
+    msg = "잘못된 비밀번호입니다."
 )
 
+// 회원 탈퇴 시 이메일을 잘못 입력
+class EmailNotMatchException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.NOT_FOUND,
+    msg = "입력한 이메일이 유저의 이메일과 일치하지 않습니다"
+)
+
+// Admin 권한 없음
 class UserNotAdminException : UserException(
     errorCode = 0,
     httpErrorCode = HttpStatus.BAD_REQUEST,

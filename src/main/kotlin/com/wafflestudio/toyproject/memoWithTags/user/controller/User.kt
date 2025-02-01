@@ -1,5 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
+import com.wafflestudio.toyproject.memoWithTags.user.SocialType
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import java.time.Instant
 import java.util.UUID
@@ -9,6 +10,7 @@ class User(
     val userNumber: Int,
     val email: String,
     val nickname: String,
+    val isSocial: Boolean,
     val createdAt: Instant
 ) {
     companion object {
@@ -18,6 +20,7 @@ class User(
                 userNumber = entity.userNumber,
                 email = entity.email,
                 nickname = entity.nickname,
+                isSocial = (entity.socialType != null),
                 createdAt = entity.createdAt
             )
         }
