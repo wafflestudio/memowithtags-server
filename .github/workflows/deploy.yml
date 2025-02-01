@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     if: ${{ github.event.workflow_run.conclusion == 'success' &&
-            (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
+            github.event.workflow_run.head_branch == 'develop' }}
     runs-on: ubuntu-latest
 
     steps:
