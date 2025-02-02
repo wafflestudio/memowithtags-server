@@ -154,14 +154,16 @@ MemoWithTags는 태그 기반 메모 관리와 AI 자동 태그 추천을 통해
   - 아래의 웹 사이트를 참고하여 문제를 해결하였습니다.
   - https://dev-annals.tistory.com/68
   - https://docs.spring.io/spring-framework/reference/integration/email.html
-  - https://chatgpt.com/
 - 소셜 로그인
   - 카카오, 네이버, 구글 세 가지 서비스를 통해 로그인할 수 있도록 각각의 서비스에서 제공하는 API를 활용하였습니다.
-  - Java의 라이브러리를 Kotlin에서 사용하며 발생한 오류와, API 요청과 응답으로 쓰이는 JSON 파싱 중 발생한 오류 등을 해결하기 위해, ChatGPT와 Perplexity를 사용하였습니다.
-- 내용이 긴 매모
+  - Java의 라이브러리를 Kotlin에서 사용하며 발생한 오류와, API 요청과 응답으로 쓰이는 JSON 파싱 중 여러 발생한 오류들을 해결하였습니다.
+- 내용이 긴 메모
   - 내용이 긴 메모를 보낼 때, MySQL에서 정해진 content 필드의 크기 한계로 인해 오류가 발생하여 500 에러가 발생하였습니다.
-  - JPA Entity를 정의할 때 @Lob, @Column의 columnDefinition 지정 등으로 content 필드를 TEXT 타입으로 지정하여 해결하였습니다. 
-
+  - JPA Entity를 정의할 때 @Lob, @Column의 columnDefinition 지정 등으로 content 필드를 TEXT 타입으로 지정하여 해결하였습니다.
+- 태그와 메모의 임베딩 벡터 저장 문제
+  - Spring 서버에서 태그(TagEntity)와 메모(MemoEntity)의 임베딩 벡터(`List<Float>`)를 효율적으로 저장하는 과정에서 여러 어려움을 겪었습니다.
+  - `AttributeConverter`를 활용하여 List<Float> 타입을 문자열(Text)로 변환하여 저장하여 데이터 조회 시 문자열을 다시 List<Float>로 변환하는 방식 적용하였습니다.
+  - 이를 통해 JPA에서 List<Float> 타입을 유지하면서도 데이터베이스에 저장 가능하도록 처리하도록 해결하였습니다.
 
 # 💁‍♂️ 프로젝트 팀원
 <table style="width:100%; table-layout: fixed; text-align: center;">
