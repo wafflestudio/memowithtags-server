@@ -1,30 +1,27 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.dto
 
 import java.time.Instant
-import java.util.UUID
 
 sealed class MemoResponse {
     data class AddTagResponse(
-        val tagId: UUID
+        val tagId: Long
     ) : MemoResponse()
 
     data class CreateMemoResponse(
-        val id: UUID,
+        val id: Long,
         val content: String,
-        val tagIds: List<UUID>,
-        val locked: Boolean,
-        val embeddingVector: List<Double>,
+        val tagIds: List<Long>,
         val createdAt: Instant,
-        val updatedAt: Instant
+        val updatedAt: Instant,
+        val locked: Boolean
     ) : MemoResponse()
 
     data class UpdateMemoResponse(
-        val id: UUID,
+        val id: Long,
         val content: String,
-        val tagIds: List<UUID>,
-        val locked: Boolean,
-        val embeddingVector: List<Double>,
+        val tagIds: List<Long>,
         val createdAt: Instant,
-        val updatedAt: Instant
+        val updatedAt: Instant,
+        val locked: Boolean
     ) : MemoResponse()
 }

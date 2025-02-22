@@ -10,6 +10,7 @@ import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
+import java.time.Instant
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -19,52 +20,47 @@ class TagService(
     private val userRepository: UserRepository
 ) {
     fun getTags(user: User): List<Tag> {
-        return tagRepository.findByUserId(user.id).map { Tag(it.id, it.name, it.colorHex, it.embeddingVector, it.createdAt, it.updatedAt) }
+        return tagRepository.findByUserId(user.id).map { Tag(it.id!!, it.name, it.colorHex, it.createdAt, it.updatedAt) }
     }
 
     fun createTag(request: CreateTagRequest, user: User): Tag {
         val userEntity = userRepository.findByEmail(user.email) ?: throw AuthenticationFailedException()
         val tagEntity = TagEntity(
-            id = request.id,
             name = request.name,
             colorHex = request.colorHex,
-            embeddingVector = request.embeddingVector,
-            createdAt = request.createdAt,
-            updatedAt = request.updatedAt,
+            createdAt = Instant.now(),
+            updatedAt = Instant.now(),
             user = userEntity
         )
         val savedTagEntity = tagRepository.save(tagEntity)
         return Tag(
-            savedTagEntity.id,
+            savedTagEntity.id!!,
             savedTagEntity.name,
             savedTagEntity.colorHex,
-            savedTagEntity.embeddingVector,
             savedTagEntity.createdAt,
             savedTagEntity.updatedAt
         )
     }
 
-    fun updateTag(request: UpdateTagRequest, user: User): Tag {
-        val tagEntity = tagRepository.findById(request.id).orElseThrow { throw TagNotFoundException() }
+    fun updateTag(tagId: Long, request: UpdateTagRequest, user: User): Tag {
+        val tagEntity = tagRepository.findById(tagId).orElseThrow { throw TagNotFoundException() }
         if (tagEntity.user.email != user.email) {
             throw TagNotOwnedByUserException()
         }
         tagEntity.name = request.name
         tagEntity.colorHex = request.colorHex
-        tagEntity.embeddingVector = request.embeddingVector
-        tagEntity.updatedAt = request.updatedAt
+        tagEntity.updatedAt = Instant.now()
         val savedTagEntity = tagRepository.save(tagEntity)
         return Tag(
-            savedTagEntity.id,
+            savedTagEntity.id!!,
             savedTagEntity.name,
             savedTagEntity.colorHex,
-            savedTagEntity.embeddingVector,
             savedTagEntity.createdAt,
             savedTagEntity.updatedAt
         )
     }
 
-    fun deleteTag(tagId: UUID, user: User) {
+    fun deleteTag(tagId: Long, user: User) {
         val tagEntity = tagRepository.findById(tagId).orElseThrow { throw TagNotFoundException() }
         if (tagEntity.user.email != user.email) {
             throw TagNotOwnedByUserException()

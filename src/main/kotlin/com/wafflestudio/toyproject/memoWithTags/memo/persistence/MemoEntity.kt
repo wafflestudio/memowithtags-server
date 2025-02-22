@@ -5,6 +5,8 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
@@ -16,7 +18,8 @@ import java.util.UUID
 @Entity(name = "memos")
 class MemoEntity(
     @Id
-    val id: UUID,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
     @Lob
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     var content: String,
@@ -26,10 +29,6 @@ class MemoEntity(
     val createdAt: Instant,
     @Column(name = "updated_at", nullable = false)
     var updatedAt: Instant,
-
-    @Convert(converter = EmbeddingVectorConverter::class)
-    @Column(columnDefinition = "TEXT")
-    var embeddingVector: List<Double> = emptyList(),
 
     @ManyToOne
     @JoinColumn(name = "user_id")
