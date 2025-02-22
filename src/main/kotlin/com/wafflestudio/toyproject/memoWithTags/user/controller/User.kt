@@ -24,4 +24,8 @@ class User(
             )
         }
     }
+
+    override fun toString(): String {
+        return "{id: $id, userNumber: $userNumber, nickname: $nickname, email: $email, isSocial: $isSocial}"
+    }
 }

@@ -29,6 +29,13 @@ class EmailSendingException : UserException(
     msg = "인증 이메일 전송에 실패했습니다."
 )
 
+// 회원가입 시 메일 인증 과정을 거치지 않은 경우
+class EmailNotVerifiedException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "인증이 완료되지 않은 이메일입니다."
+)
+
 // 로그인 실패
 class SignInInvalidException : UserException(
     errorCode = 0,
