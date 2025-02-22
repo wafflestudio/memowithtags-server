@@ -1,10 +1,10 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.AddTagResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.CreateMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.UpdateMemoResponse
@@ -68,7 +68,7 @@ class MemoController(
             createdAt = memo.createdAt,
             updatedAt = memo.updatedAt,
             tagIds = memo.tagIds,
-            locked = memo.locked,
+            locked = memo.locked
         )
     }
 

@@ -2,7 +2,6 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import java.time.Instant
-import java.util.UUID
 
 class Memo(
     val id: Long,

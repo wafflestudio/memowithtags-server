@@ -1,7 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.dto
 
 import java.time.Instant
-import java.util.UUID
 
 sealed class MemoRequest {
     data class CreateMemoRequest(

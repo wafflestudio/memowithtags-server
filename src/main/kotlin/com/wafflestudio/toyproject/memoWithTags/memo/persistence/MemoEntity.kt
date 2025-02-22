@@ -3,7 +3,6 @@ package com.wafflestudio.toyproject.memoWithTags.memo.persistence
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
-import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -13,7 +12,6 @@ import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import java.time.Instant
-import java.util.UUID
 
 @Entity(name = "memos")
 class MemoEntity(
