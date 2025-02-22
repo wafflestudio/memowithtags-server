@@ -16,6 +16,8 @@ class EmailVerificationEntity(
     val email: String,
     @Column(name = "code", nullable = false)
     val code: String,
+    @Column(name = "verified", nullable = false)
+    var verified: Boolean = false,
     @Column(name = "expiryTime", nullable = false)
     val expiryTime: LocalDateTime
 )

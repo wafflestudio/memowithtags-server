@@ -19,4 +19,8 @@ class EmailVerification(
             )
         }
     }
+
+    override fun toString(): String {
+        return "{id: $id, email: $email, code: $code, expiryTime: $expiryTime}"
+    }
 }

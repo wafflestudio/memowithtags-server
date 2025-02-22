@@ -21,12 +21,6 @@ sealed class UserRequest {
         val email: String
     ) : UserRequest()
 
-    data class ResetPasswordRequest(
-        val email: String,
-        val verificationCode: String,
-        val password: String
-    ) : UserRequest()
-
     data class UpdatePasswordRequest(
         val originalPassword: String,
         val newPassword: String

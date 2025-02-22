@@ -33,7 +33,7 @@ class UserEntity(
     var hashedPassword: String,
 
     @Column(name = "verified", nullable = false)
-    var verified: Boolean = false,
+    var verified: Boolean = true,
 
     @Column(name = "role", nullable = false)
     var role: RoleType = RoleType.ROLE_USER,
