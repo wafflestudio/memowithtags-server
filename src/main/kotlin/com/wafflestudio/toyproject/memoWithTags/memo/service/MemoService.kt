@@ -2,6 +2,7 @@ package com.wafflestudio.toyproject.memoWithTags.memo.service
 
 import com.wafflestudio.toyproject.memoWithTags.exception.AccessDeniedException
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
@@ -23,12 +24,10 @@ class MemoService(
     private val userService: UserService
 ) {
     @Transactional
-    fun createMemo(user: User, id: UUID, embeddingVector: List<Double>, content: String, tagIds: List<UUID>, locked: Boolean): Memo {
+    fun createMemo(user: User, content: String, tagIds: List<Long>, locked: Boolean): Memo {
         val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
         val userEntity = userService.getUserEntityByEmail(user.email)
         val memoEntity = MemoEntity(
-            id = id,
-            embeddingVector = embeddingVector,
             content = content,
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
@@ -45,7 +44,7 @@ class MemoService(
     }
 
     @Transactional
-    fun updateMemo(userId: UUID, content: String, memoId: UUID, tagIds: List<UUID>, locked: Boolean, embeddingVector: List<Double>): Memo {
+    fun updateMemo(userId: UUID, content: String, memoId: Long, tagIds: List<Long>, locked: Boolean): Memo {
         val memo = memoRepository.findById(memoId)
             .orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) {
@@ -63,16 +62,34 @@ class MemoService(
         memo.content = content
         memo.updatedAt = Instant.now()
         memo.locked = locked
-        memo.embeddingVector = embeddingVector
 
         return Memo.fromEntity(memoRepository.save(memo))
     }
 
     @Transactional
-    fun deleteMemo(userId: UUID, memoId: UUID) {
+    fun deleteMemo(userId: UUID, memoId: Long) {
         val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) { throw AccessDeniedException() }
         memoRepository.delete(memo)
+    }
+
+    @Transactional
+    fun addTag(userId: UUID, memoId: Long, tagId: Long) {
+        val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
+        if (memo.user.id != userId) { throw AccessDeniedException() }
+        val tag = tagRepository.findById(tagId).orElseThrow { TagNotFoundException() }
+        val memoTag = MemoTagEntity(memo = memo, tag = tag)
+        memo.memoTags.add(memoTag)
+    }
+
+    @Transactional
+    fun deleteTag(userId: UUID, memoId: Long, tagId: Long) {
+        val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
+        if (memo.user.id != userId) { throw AccessDeniedException() }
+        val tag = tagRepository.findById(tagId).orElseThrow { TagNotFoundException() }
+        val memoTag = memo.memoTags.find { it.tag.id == tagId } ?: return
+
+        memo.memoTags.remove(memoTag) // orphanRemoval 때문에 여기까지 끝
     }
 
     @Transactional

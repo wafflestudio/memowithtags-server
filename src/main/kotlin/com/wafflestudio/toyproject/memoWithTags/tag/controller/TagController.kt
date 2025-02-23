@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 @RestController
 class TagController(
@@ -30,12 +29,12 @@ class TagController(
     }
 
     @PutMapping("/api/v1/tag/{tagId}")
-    fun updateTag(@PathVariable tagId: UUID, @RequestBody request: UpdateTagRequest, @AuthUser user: User): Tag {
-        return tagService.updateTag(request, user)
+    fun updateTag(@PathVariable tagId: Long, @RequestBody request: UpdateTagRequest, @AuthUser user: User): Tag {
+        return tagService.updateTag(tagId, request, user)
     }
 
     @DeleteMapping("/api/v1/tag/{tagId}")
-    fun deleteTag(@PathVariable tagId: UUID, @AuthUser user: User): ResponseEntity<Unit> {
+    fun deleteTag(@PathVariable tagId: Long, @AuthUser user: User): ResponseEntity<Unit> {
         tagService.deleteTag(tagId, user)
         return ResponseEntity.noContent().build()
     }

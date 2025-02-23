@@ -1,31 +1,23 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.dto
 
 import java.time.Instant
-import java.util.UUID
 
 sealed class MemoRequest {
     data class CreateMemoRequest(
-        val id: UUID,
         val content: String,
-        val tagIds: List<UUID>,
-        val locked: Boolean,
-        val embeddingVector: List<Double>,
-        val createdAt: Instant,
-        val updatedAt: Instant
+        val tagIds: List<Long>,
+        val locked: Boolean
     ) : MemoRequest()
 
     data class UpdateTagRequest(
-        val tagId: UUID
+        val tagId: Long
     ) : MemoRequest()
 
     data class UpdateMemoRequest(
-        val id: UUID,
+        val id: Long,
         val content: String,
-        val tagIds: List<UUID>,
-        val locked: Boolean,
-        val embeddingVector: List<Double>,
-        val createdAt: Instant,
-        val updatedAt: Instant
+        val tagIds: List<Long>,
+        val locked: Boolean
     ) : MemoRequest()
 
     data class MemoSearchRequest(
