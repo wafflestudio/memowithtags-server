@@ -4,6 +4,9 @@ import com.wafflestudio.toyproject.memoWithTags.exception.AccessDeniedException
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.FetchPageFromMemoResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.RecommendMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoRepository
@@ -95,5 +98,43 @@ class MemoService(
     @Transactional
     fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo> {
         return memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
+    }
+
+    @Transactional
+    fun recommendMemo(userId: UUID, request: RecommendMemoRequest): RecommendMemoResponse {
+        memoRepository.findByUserId(userId).let { memos ->
+            val recommendedMemos = memos.filter { memo ->
+                request.tagIds.all { tagId ->
+                    memo.memoTags.any { it.tag.id == tagId }
+                }
+            }
+            return RecommendMemoResponse(
+                memoIds = recommendedMemos.map { it.id!! }
+            )
+        }
+    }
+
+    @Transactional
+    fun fetchPageFromMemo(userId: UUID, memoId: Long, pageSize: Int): FetchPageFromMemoResponse {
+        val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
+        if (memo.user.id != userId) { throw AccessDeniedException() }
+        val totalResults = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = 1, pageSize = pageSize).totalResults
+        val page = totalResults / pageSize + 1
+
+        var response: FetchPageFromMemoResponse? = null
+
+        for (i in 1..page) {
+            val results = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = i, pageSize = pageSize)
+            if (results.results.any { it.id == memoId }) {
+                response = FetchPageFromMemoResponse(
+                    page = i,
+                    totalPages = page,
+                    totalResults = totalResults,
+                    results = results.results
+                )
+                break
+            }
+        }
+        return response ?: throw MemoNotFoundException()
     }
 }

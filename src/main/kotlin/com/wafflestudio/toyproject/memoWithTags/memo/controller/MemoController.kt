@@ -2,11 +2,15 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.FetchPageFromMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.AddTagResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.CreateMemoResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.FetchPageFromMemoResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.RecommendMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.UpdateMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
@@ -89,6 +93,16 @@ class MemoController(
             page = request.page,
             pageSize = 15
         )
+    }
+
+    @PostMapping("/api/v1/memo/recommend-memo")
+    fun recommendMemo(@RequestBody request: RecommendMemoRequest, @AuthUser user: User): RecommendMemoResponse {
+        return memoService.recommendMemo(userId = user.id, request = request)
+    }
+
+    @GetMapping("/api/v1/memo/{memoId}")
+    fun fetchPageFromMemo(@RequestBody request: FetchPageFromMemoRequest, @PathVariable memoId: Long, @AuthUser user: User): FetchPageFromMemoResponse {
+        return memoService.fetchPageFromMemo(userId = user.id, memoId = memoId, pageSize = request.pageSize)
     }
 
     @PostMapping("/api/v1/memo/{memoId}/tag")
