@@ -96,4 +96,19 @@ class MemoService(
     fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo> {
         return memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
     }
+
+    @Transactional
+    fun getMemoIdsByTagIds(userId: UUID, tagIds: List<Long>): List<Long> {
+        // 해당 유저의 태그를 모두 가져옴
+        val tags: List<TagEntity> = tagRepository.findAllById(tagIds).filter {
+            it.user.id == userId
+        }
+
+        // 각 TagEntity의 memoTags 컬렉션에서 memo의 id를 추출 후 모두 flat하게 합침
+        return tags.flatMap { tag ->
+            tag.memoTags.mapNotNull { memoTag ->
+                memoTag.memo.id
+            }
+        }
+    }
 }

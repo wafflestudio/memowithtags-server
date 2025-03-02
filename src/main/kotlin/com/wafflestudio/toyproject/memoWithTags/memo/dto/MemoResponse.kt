@@ -24,4 +24,8 @@ sealed class MemoResponse {
         val updatedAt: Instant,
         val locked: Boolean
     ) : MemoResponse()
+
+    data class RecommendMemoResponse(
+        val memoIds: List<Long>,
+    )
 }

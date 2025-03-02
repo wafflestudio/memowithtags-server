@@ -5,9 +5,11 @@ import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoR
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.AddTagResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.CreateMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.UpdateMemoResponse
+import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.RecommendMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
@@ -73,13 +75,19 @@ class MemoController(
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}")
-    fun deleteMemo(@PathVariable memoId: Long, @AuthUser user: User): ResponseEntity<Void> {
+    fun deleteMemo(
+        @PathVariable memoId: Long,
+        @AuthUser user: User
+    ): ResponseEntity<Void> {
         memoService.deleteMemo(memoId = memoId, userId = user.id)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/api/v1/search-memo")
-    fun searchMemo(@ModelAttribute request: MemoSearchRequest, @AuthUser user: User): SearchResult<Memo> {
+    fun searchMemo(
+        @ModelAttribute request: MemoSearchRequest,
+        @AuthUser user: User
+    ): SearchResult<Memo> {
         return memoService.searchMemo(
             userId = user.id,
             content = request.content,
@@ -92,7 +100,11 @@ class MemoController(
     }
 
     @PostMapping("/api/v1/memo/{memoId}/tag")
-    fun addTagToMemo(@PathVariable memoId: Long, @AuthUser user: User, @RequestBody addTagRequest: UpdateTagRequest): AddTagResponse {
+    fun addTagToMemo(
+        @PathVariable memoId: Long,
+        @AuthUser user: User,
+        @RequestBody addTagRequest: UpdateTagRequest
+    ): AddTagResponse {
         memoService.addTag(userId = user.id, memoId = memoId, tagId = addTagRequest.tagId)
         return AddTagResponse(
             tagId = addTagRequest.tagId
@@ -100,9 +112,22 @@ class MemoController(
     }
 
     @DeleteMapping("/api/v1/memo/{memoId}/tag")
-    fun deleteTagFromMemo(@PathVariable memoId: Long, @AuthUser user: User, @RequestBody deleteTagRequest: UpdateTagRequest): ResponseEntity<Void> {
+    fun deleteTagFromMemo(
+        @PathVariable memoId: Long,
+        @AuthUser user: User,
+        @RequestBody deleteTagRequest: UpdateTagRequest
+    ): ResponseEntity<Void> {
         memoService.deleteTag(userId = user.id, memoId = memoId, tagId = deleteTagRequest.tagId)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/api/v1/recommend-memo")
+    fun recommendMemo(
+        @AuthUser user: User,
+        @RequestBody recommendMemoRequest: RecommendMemoRequest
+    ): ResponseEntity<RecommendMemoResponse> {
+        val memoIds = memoService.getMemoIdsByTagIds(userId = user.id, tagIds = recommendMemoRequest.tagIds)
+        return ResponseEntity.ok(RecommendMemoResponse(memoIds))
     }
 
     @GetMapping("/api/test")

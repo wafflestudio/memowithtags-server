@@ -27,4 +27,9 @@ sealed class MemoRequest {
         val endDate: Instant? = null, // 검색 종료 날짜 (optional, ISO 8601 형식)
         val page: Int // 페이지 번호 (required)
     ) : MemoRequest()
+
+    data class RecommendMemoRequest(
+        val content: String,
+        val tagIds: List<Long>,
+    ) : MemoRequest()
 }
