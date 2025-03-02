@@ -27,6 +27,11 @@ sealed class MemoResponse {
     ) : MemoResponse()
 
     data class RecommendMemoResponse(
-        val memoIds: List<Long>,
+        val memoIds: List<Long>
     )
+
+    data class FetchPageFromMemoResponse(
+        val memos: List<Memo>,
+        val totalPage: Int
+    ) : MemoResponse()
 }

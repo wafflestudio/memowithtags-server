@@ -30,6 +30,10 @@ sealed class MemoRequest {
 
     data class RecommendMemoRequest(
         val content: String,
-        val tagIds: List<Long>,
+        val tagIds: List<Long>
+    ) : MemoRequest()
+
+    data class FetchPageFromMemoRequest(
+        val pageSize: Int
     ) : MemoRequest()
 }

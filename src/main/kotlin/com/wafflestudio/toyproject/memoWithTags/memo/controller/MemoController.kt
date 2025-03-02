@@ -7,13 +7,10 @@ import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchR
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateTagRequest
-import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.AddTagResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.CreateMemoResponse
-import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.FetchPageFromMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.RecommendMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.UpdateMemoResponse
-import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoResponse.RecommendMemoResponse
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
@@ -103,13 +100,8 @@ class MemoController(
         )
     }
 
-    @PostMapping("/api/v1/memo/recommend-memo")
-    fun recommendMemo(@RequestBody request: RecommendMemoRequest, @AuthUser user: User): RecommendMemoResponse {
-        return memoService.recommendMemo(userId = user.id, request = request)
-    }
-
     @GetMapping("/api/v1/memo/{memoId}")
-    fun fetchPageFromMemo(@RequestBody request: FetchPageFromMemoRequest, @PathVariable memoId: Long, @AuthUser user: User): FetchPageFromMemoResponse {
+    fun fetchPageFromMemo(@RequestBody request: FetchPageFromMemoRequest, @PathVariable memoId: Long, @AuthUser user: User): SearchResult<Memo> {
         return memoService.fetchPageFromMemo(userId = user.id, memoId = memoId, pageSize = request.pageSize)
     }
 
