@@ -96,4 +96,37 @@ class MemoService(
     fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo> {
         return memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
     }
+
+    @Transactional
+    fun getMemoIdsByTagIds(userId: UUID, tagIds: List<Long>): List<Long> {
+        // 해당 유저의 태그를 모두 가져옴
+        val tags: List<TagEntity> = tagRepository.findAllById(tagIds).filter {
+            it.user.id == userId
+        }
+
+        // 각 TagEntity의 memoTags 컬렉션에서 memo의 id를 추출 후 모두 flat하게 합침
+        return tags.flatMap { tag ->
+            tag.memoTags.mapNotNull { memoTag ->
+                memoTag.memo.id
+            }
+        }
+    }
+
+    @Transactional
+    fun fetchPageFromMemo(userId: UUID, memoId: Long, pageSize: Int): SearchResult<Memo> {
+        val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
+        if (memo.user.id != userId) { throw AccessDeniedException() }
+        val totalResults = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = 1, pageSize = pageSize).totalResults
+        val page = totalResults / pageSize + 1
+
+        var results: SearchResult<Memo>? = null
+
+        for (i in 1..page) {
+            results = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = i, pageSize = pageSize)
+            if (results.results.any { it.id == memoId }) {
+                break
+            }
+        }
+        return results ?: throw MemoNotFoundException()
+    }
 }
