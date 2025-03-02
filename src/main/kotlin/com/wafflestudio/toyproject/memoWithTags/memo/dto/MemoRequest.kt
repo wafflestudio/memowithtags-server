@@ -29,11 +29,7 @@ sealed class MemoRequest {
     ) : MemoRequest()
 
     data class RecommendMemoRequest(
-        val content: String? = null, // 검색할 텍스트 (optional)
-        val tagIds: List<Long>
+        val content: String,
+        val tagIds: List<Long>,
     ) : MemoRequest()
-
-    data class FetchPageFromMemoRequest(
-        val pageSize: Int
-    )
 }

@@ -101,19 +101,19 @@ class MemoService(
     }
 
     @Transactional
-    fun recommendMemo(userId: UUID, request: RecommendMemoRequest): RecommendMemoResponse {
-        memoRepository.findByUserId(userId).let { memos ->
-            val recommendedMemos = memos.filter { memo ->
-                request.tagIds.all { tagId ->
-                    memo.memoTags.any { it.tag.id == tagId }
-                }
+    fun getMemoIdsByTagIds(userId: UUID, tagIds: List<Long>): List<Long> {
+        // 해당 유저의 태그를 모두 가져옴
+        val tags: List<TagEntity> = tagRepository.findAllById(tagIds).filter {
+            it.user.id == userId
+        }
+
+        // 각 TagEntity의 memoTags 컬렉션에서 memo의 id를 추출 후 모두 flat하게 합침
+        return tags.flatMap { tag ->
+            tag.memoTags.mapNotNull { memoTag ->
+                memoTag.memo.id
             }
-            return RecommendMemoResponse(
-                memoIds = recommendedMemos.map { it.id!! }
-            )
         }
     }
-
     @Transactional
     fun fetchPageFromMemo(userId: UUID, memoId: Long, pageSize: Int): FetchPageFromMemoResponse {
         val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
