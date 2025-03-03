@@ -106,7 +106,9 @@ class MemoService(
 
         // 각 TagEntity의 memoTags 컬렉션에서 memo의 id를 추출 후 모두 flat하게 합침
         return tags.flatMap { tag ->
-            tag.memoTags.mapNotNull { memoTag ->
+            tag.memoTags.sortedBy { memoTag ->
+                memoTag.memo.createdAt
+            }.mapNotNull { memoTag ->
                 memoTag.memo.id
             }
         }
