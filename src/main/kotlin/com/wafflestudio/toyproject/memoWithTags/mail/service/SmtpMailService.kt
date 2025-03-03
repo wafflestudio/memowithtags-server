@@ -5,18 +5,18 @@ import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificati
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
-import java.time.LocalDateTime
 import org.springframework.context.annotation.Profile
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Profile("prod")
 @Service
 class SmtpMailService(
     private val mailSender: JavaMailSender,
-    private val emailVerificationRepository: EmailVerificationRepository,
+    private val emailVerificationRepository: EmailVerificationRepository
 ) : MailService {
     override fun sendMail(toEmail: String, title: String, content: String) {
         val message: MimeMessage = mailSender.createMimeMessage()
