@@ -13,6 +13,7 @@ import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.RefreshTok
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,7 +34,7 @@ class UserController(
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<LoginResponse> {
         userService.register(request.email, request.password, request.nickname)
         val (_, accessToken, refreshToken) = userService.login(request.email, request.password)
-        return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
+        return ResponseEntity.status(HttpStatus.CREATED).body(LoginResponse(accessToken, refreshToken))
     }
 
     @Operation(summary = "메일 인증 요청")

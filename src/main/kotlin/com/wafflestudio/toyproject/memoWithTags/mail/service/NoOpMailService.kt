@@ -3,12 +3,12 @@ package com.wafflestudio.toyproject.memoWithTags.mail.service
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
-import java.time.LocalDateTime
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Profile("!prod")
 @Service
