@@ -76,8 +76,8 @@ class UserService(
     fun sendCodeToEmail(
         email: String
     ) {
-        // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 예외를 발생시킨다.
-        if (emailVerificationRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
+        // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 해당 이메일로 발송된 인증번호 데이터를 삭제한다.
+        emailVerificationRepository.deleteAllByEmail(email)
 
         val verification: EmailVerification = mailService.createVerificationCode(email)
         val title = "Memo with tags 이메일 인증 번호"
