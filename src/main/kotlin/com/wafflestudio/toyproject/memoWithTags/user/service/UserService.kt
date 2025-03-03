@@ -80,7 +80,7 @@ class UserService(
         // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 예외를 발생시킨다.
         if (emailVerificationRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
 
-        val verification: EmailVerification = createVerificationCode(email)
+        val verification: EmailVerification = mailService.createVerificationCode(email)
         val title = "Memo with tags 이메일 인증 번호"
         val content: String = "<html>" +
             "<body>" +
@@ -98,20 +98,6 @@ class UserService(
             e.printStackTrace()
             throw EmailSendingException()
         }
-    }
-
-    /**
-     * 인증 메일에 포함될 인증 코드를 랜덤으로 생성하는 함수. 6자리 숫자를 생성한다.
-     */
-    @Transactional
-    fun createVerificationCode(email: String): EmailVerification {
-        val randomCode: String = (100000..999999).random().toString()
-        val codeEntity = EmailVerificationEntity(
-            email = email,
-            code = randomCode,
-            expiryTime = LocalDateTime.now().plusDays(1)
-        )
-        return EmailVerification.fromEntity(emailVerificationRepository.save(codeEntity))
     }
 
     /**
