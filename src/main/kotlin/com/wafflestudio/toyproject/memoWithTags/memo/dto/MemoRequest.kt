@@ -32,8 +32,4 @@ sealed class MemoRequest {
         val content: String,
         val tagIds: List<Long>
     ) : MemoRequest()
-
-    data class FetchPageFromMemoRequest(
-        val pageSize: Int
-    ) : MemoRequest()
 }

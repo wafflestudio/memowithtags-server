@@ -2,7 +2,6 @@ package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
 import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoRequest
-import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.FetchPageFromMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.UpdateMemoRequest
@@ -101,8 +100,8 @@ class MemoController(
     }
 
     @GetMapping("/api/v1/memo/{memoId}")
-    fun fetchPageFromMemo(@RequestBody request: FetchPageFromMemoRequest, @PathVariable memoId: Long, @AuthUser user: User): SearchResult<Memo> {
-        return memoService.fetchPageFromMemo(userId = user.id, memoId = memoId, pageSize = request.pageSize)
+    fun fetchPageFromMemo(@PathVariable memoId: Long, @AuthUser user: User): SearchResult<Memo> {
+        return memoService.fetchPageFromMemo(userId = user.id, memoId = memoId, pageSize = 15)
     }
 
     @PostMapping("/api/v1/memo/{memoId}/tag")
