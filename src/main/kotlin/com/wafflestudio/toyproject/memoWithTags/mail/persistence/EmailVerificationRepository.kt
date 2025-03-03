@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 interface EmailVerificationRepository : JpaRepository<EmailVerificationEntity, Long> {
     fun deleteByExpiryTimeBefore(expiryTime: LocalDateTime)
+    fun deleteAllByEmail(email: String)
     fun findByEmail(email: String): EmailVerificationEntity?
     fun findByEmailAndCode(email: String, code: String): EmailVerificationEntity?
 }
