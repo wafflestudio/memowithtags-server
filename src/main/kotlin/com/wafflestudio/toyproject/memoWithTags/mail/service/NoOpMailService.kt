@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Profile("!prod")
 @Service
@@ -30,9 +29,9 @@ class NoOpMailService(
     override fun createVerificationCode(email: String): EmailVerification {
         val randomCode = "000000"
         val codeEntity = EmailVerificationEntity(
-            email = email,
+            id = email,
             code = randomCode,
-            expiryTime = LocalDateTime.now().plusDays(1)
+            verified = false
         )
         return EmailVerification.fromEntity(emailVerificationRepository.save(codeEntity))
     }

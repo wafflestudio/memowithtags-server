@@ -35,6 +35,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-logging")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     testImplementation("com.ninja-squad:springmockk:4.0.2")

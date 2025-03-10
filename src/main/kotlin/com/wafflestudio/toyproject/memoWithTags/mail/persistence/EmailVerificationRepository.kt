@@ -1,11 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.mail.persistence
 
-import org.springframework.data.jpa.repository.JpaRepository
-import java.time.LocalDateTime
+import org.springframework.data.repository.CrudRepository
 
-interface EmailVerificationRepository : JpaRepository<EmailVerificationEntity, Long> {
-    fun deleteByExpiryTimeBefore(expiryTime: LocalDateTime)
-    fun deleteAllByEmail(email: String)
-    fun findByEmail(email: String): EmailVerificationEntity?
-    fun findByEmailAndCode(email: String, code: String): EmailVerificationEntity?
+interface EmailVerificationRepository : CrudRepository<EmailVerificationEntity, String> {
+    fun deleteAllById(id: String)
 }

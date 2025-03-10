@@ -10,7 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Profile("prod")
 @Service
@@ -48,9 +47,9 @@ class SmtpMailService(
         }
 
         val codeEntity = EmailVerificationEntity(
-            email = email,
+            id = email,
             code = randomCode,
-            expiryTime = LocalDateTime.now().plusDays(1)
+            verified = false
         )
         return EmailVerification.fromEntity(emailVerificationRepository.save(codeEntity))
     }
