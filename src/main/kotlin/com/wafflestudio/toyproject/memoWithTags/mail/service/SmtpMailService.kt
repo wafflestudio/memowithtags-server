@@ -43,9 +43,9 @@ class SmtpMailService(
     override fun createVerificationCode(email: String): EmailVerification {
         val randomCode: String = (100000..999999).random().toString()
         val codeEntity = EmailVerificationEntity(
-            email = email,
+            id = email,
             code = randomCode,
-            expiryTime = LocalDateTime.now().plusDays(1)
+            verified = false
         )
         return EmailVerification.fromEntity(emailVerificationRepository.save(codeEntity))
     }

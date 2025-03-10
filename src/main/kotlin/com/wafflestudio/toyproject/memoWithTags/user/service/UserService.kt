@@ -11,6 +11,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UpdatePasswordInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
+import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.mail.service.MailService
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
@@ -24,7 +25,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import java.time.LocalDateTime
+import org.springframework.data.repository.findByIdOrNull
 
 @Service
 class UserService(
@@ -46,10 +47,12 @@ class UserService(
         // 소셜 로그인 사용 여부와 무관하게 동일 이메일이 존재하기만 하면 예외 처리한다.
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
 
+        logger.info(emailVerificationRepository.findAll().toString())
+
         // 메일 인증 과정을 거치지 않고 바로 회원가입 시도 시 예외 처리한다. 검증 후 인증 데이터는 삭제한다.
-        val verification = emailVerificationRepository.findByEmail(email) ?: throw EmailNotVerifiedException()
+        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw EmailNotVerifiedException()
         if (!verification.verified) throw EmailNotVerifiedException()
-        emailVerificationRepository.deleteById(verification.id!!)
+        emailVerificationRepository.deleteById(email)
 
         val encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
         // 클라이언트에서 쓸 유저 식별 번호인 userNumber는 해당 유저가 서비스에 가입한 순서 + 1로 한다.
@@ -77,7 +80,7 @@ class UserService(
         email: String
     ) {
         // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 해당 이메일로 발송된 인증번호 데이터를 삭제한다.
-        emailVerificationRepository.deleteAllByEmail(email)
+        emailVerificationRepository.deleteAllById(email)
 
         val verification: EmailVerification = mailService.createVerificationCode(email)
         val title = "Memo with tags 이메일 인증 번호"
@@ -107,10 +110,11 @@ class UserService(
         email: String,
         code: String
     ): Boolean {
-        val verification = emailVerificationRepository.findByEmailAndCode(email, code) ?: throw MailVerificationException()
-        if (verification.expiryTime.isBefore(LocalDateTime.now())) throw AuthenticationFailedException()
+        logger.info(emailVerificationRepository.findAll().toString())
+        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw MailVerificationException()
+        if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
-        verification.verified = true
+        emailVerificationRepository.save(EmailVerificationEntity(email, code, true))
         logger.info("verified email code")
         return true
     }
@@ -144,9 +148,9 @@ class UserService(
         newPassword: String
     ) {
         // 인증된 이메일인지 확인하고, 검증 후 인증 데이터를 삭제한다.
-        val verification = emailVerificationRepository.findByEmail(email) ?: throw EmailNotVerifiedException()
+        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw EmailNotVerifiedException()
         if (!verification.verified) throw EmailNotVerifiedException()
-        emailVerificationRepository.deleteById(verification.id!!)
+        emailVerificationRepository.deleteById(email)
 
         // 해당하는 유저가 없으면 예외를 발생시킨다.
         val userEntity = userRepository.findByEmail(email) ?: throw UserNotFoundException()
@@ -235,15 +239,6 @@ class UserService(
     @Transactional
     fun getUserEntityByEmail(email: String): UserEntity {
         return userRepository.findByEmail(email) ?: throw UserNotFoundException()
-    }
-
-    /**
-     * 메일 정오에 만료된 인증 코드 엔티티를 삭제하는 함수
-     */
-    @Transactional
-    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul") // 매일 정오에 만료 코드 삭제
-    fun deleteExpiredVerificationCode() {
-        emailVerificationRepository.deleteByExpiryTimeBefore(LocalDateTime.now())
     }
 
     /**

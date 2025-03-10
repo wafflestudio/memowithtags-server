@@ -1,23 +1,24 @@
 package com.wafflestudio.toyproject.memoWithTags.mail.persistence
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import java.time.LocalDateTime
+import org.springframework.data.redis.core.RedisHash
+import org.springframework.data.redis.core.TimeToLive
+import org.springframework.data.redis.core.index.Indexed
 
-@Entity(name = "emails")
-class EmailVerificationEntity(
+@RedisHash(value = "email_verification")
+data class EmailVerificationEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    @Column(name = "email", nullable = false)
-    val email: String,
-    @Column(name = "code", nullable = false)
-    val code: String,
-    @Column(name = "verified", nullable = false)
-    var verified: Boolean = false,
-    @Column(name = "expiryTime", nullable = false)
-    val expiryTime: LocalDateTime
-)
+    val id: String, // email (xx@xx.xx)
+
+    @Indexed
+    val code: String, // verification code (000000)
+
+    var verified: Boolean // default: false, verified user: true
+) {
+    @TimeToLive
+    fun getTimeToLive(): Long {
+        return if (verified) {
+            86400 // 메일 인증이 확인된 인증 정보는 TTL 24시간으로 설정
+        } else 300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
+    }
+}

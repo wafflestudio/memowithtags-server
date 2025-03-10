@@ -30,9 +30,9 @@ class NoOpMailService(
     override fun createVerificationCode(email: String): EmailVerification {
         val randomCode = "000000"
         val codeEntity = EmailVerificationEntity(
-            email = email,
+            id = email,
             code = randomCode,
-            expiryTime = LocalDateTime.now().plusDays(1)
+            verified = false
         )
         return EmailVerification.fromEntity(emailVerificationRepository.save(codeEntity))
     }
