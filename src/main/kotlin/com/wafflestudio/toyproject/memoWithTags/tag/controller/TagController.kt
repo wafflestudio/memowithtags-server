@@ -4,6 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.tag.dto.TagRequest.UpdateTagRequ
 import com.wafflestudio.toyproject.memoWithTags.tag.service.TagService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -23,6 +25,7 @@ class TagController(
     }
 
     @PostMapping("/api/v1/tag")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createTag(@RequestBody request: CreateTagRequest, @AuthUser user: User): Tag {
         val tag = tagService.createTag(request, user)
         return tag

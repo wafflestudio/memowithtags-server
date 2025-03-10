@@ -9,5 +9,5 @@ sealed class TagRequest {
     data class UpdateTagRequest(
         val name: String,
         val colorHex: String
-    ) : TagResponse()
+    ) : TagRequest()
 }
