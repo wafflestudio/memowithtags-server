@@ -18,7 +18,7 @@ class UserNotFoundException : UserException(
 // 회원가입 시 이메일이 이미 존재하는 경우
 class EmailAlreadyExistsException : UserException(
     errorCode = 0,
-    httpErrorCode = HttpStatus.BAD_REQUEST,
+    httpErrorCode = HttpStatus.CONFLICT,
     msg = "이미 등록된 이메일입니다."
 )
 
