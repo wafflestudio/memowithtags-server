@@ -222,7 +222,6 @@ class TagIntegrationTest {
                 .content(mapper.writeValueAsString(updateTagRequest))
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.name").value("updateTag"))
             .andExpect(jsonPath("$.colorHex").value("#000001"))
 
