@@ -43,7 +43,9 @@ class SmtpMailService(
     override fun createVerificationCode(email: String): EmailVerification {
         val randomCode: String = if (email == "test@example.com") {
             "000000"
-        } else (100000..999999).random().toString()
+        } else {
+            (100000..999999).random().toString()
+        }
 
         val codeEntity = EmailVerificationEntity(
             email = email,
