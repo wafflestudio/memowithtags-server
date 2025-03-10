@@ -21,11 +21,11 @@ import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import org.springframework.data.repository.findByIdOrNull
 
 @Service
 class UserService(

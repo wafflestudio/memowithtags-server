@@ -19,6 +19,8 @@ data class EmailVerificationEntity(
     fun getTimeToLive(): Long {
         return if (verified) {
             86400 // 메일 인증이 확인된 인증 정보는 TTL 24시간으로 설정
-        } else 300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
+        } else {
+            300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
+        }
     }
 }
