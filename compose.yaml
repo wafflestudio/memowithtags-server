@@ -14,9 +14,17 @@ services:
       - test-network
     volumes:
       - mysql-data:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: test-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - test-network
 
 volumes:
   mysql-data:
+  redis-data:
 
 networks:
   test-network:
