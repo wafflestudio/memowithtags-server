@@ -78,6 +78,13 @@ class EmailNotMatchException : UserException(
     msg = "입력한 이메일이 유저의 이메일과 일치하지 않습니다"
 )
 
+// 이메일 형식이 유효하지 않은 경우
+class EmailNotValidException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "이메일 형식이 올바르지 않습니다"
+)
+
 // Admin 권한 없음
 class UserNotAdminException : UserException(
     errorCode = 0,

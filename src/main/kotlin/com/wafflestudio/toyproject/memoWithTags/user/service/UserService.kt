@@ -3,6 +3,7 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotMatchException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotValidException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotVerifiedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
@@ -44,6 +45,14 @@ class UserService(
         password: String,
         nickname: String
     ): User {
+        // 이메일 형식이 올바른지 검증한다.
+        if (!email.matches(Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}\$"))) throw EmailNotValidException()
+
+        // 암호 형식이 올바른지 검증한다.
+
+        // 닉네임 형식이 올바른지 검증한다.
+
+
         // 소셜 로그인 사용 여부와 무관하게 동일 이메일이 존재하기만 하면 예외 처리한다.
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
 
