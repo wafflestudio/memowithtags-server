@@ -85,6 +85,20 @@ class EmailNotValidException : UserException(
     msg = "이메일 형식이 올바르지 않습니다"
 )
 
+// 비밀번호 형식이 유효하지 않은 경우
+class PasswordNotValidException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "비밀번호는 8자 이상, 20자 이하로 입력해주세요"
+)
+
+// 닉네임 형식이 유효하지 않은 경우
+class NicknameNotValidException : UserException(
+    errorCode = 0,
+    httpErrorCode = HttpStatus.BAD_REQUEST,
+    msg = "닉네임은 2자 이상, 20자 이하로 입력해주세요"
+)
+
 // Admin 권한 없음
 class UserNotAdminException : UserException(
     errorCode = 0,
