@@ -19,7 +19,11 @@ spring:
     redis:
       host: ${REDIS_ENDPOINT}
       port: 6379
+      timeout: 3000 # 3초
+      ssl:
+        enabled: true
   logging:
     level:
       org.hibernate.SQL: WARN
       org.hibernate.type.descriptor.sql.BasicBinder: ERROR
+      org.springframework.data.redis: DEBUG
