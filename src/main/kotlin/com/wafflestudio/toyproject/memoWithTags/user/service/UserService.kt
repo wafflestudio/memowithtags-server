@@ -53,8 +53,8 @@ class UserService(
         // 암호 형식이 올바른지 검증한다. (8자 이상 16자 이하, 영문 대소문자, 숫자, 특수문자 포함)
         if (!password.matches(Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,16}\$"))) throw PasswordNotValidException()
 
-        // 닉네임 형식이 올바른지 검증한다. (1자 이상 8자 이하)
-        if (nickname.length !in 1..8) throw NicknameNotValidException()
+        // 닉네임 형식이 올바른지 검증한다. (1자 이상 16자 이하)
+        if (nickname.length !in 1..16) throw NicknameNotValidException()
 
         // 소셜 로그인 사용 여부와 무관하게 동일 이메일이 존재하기만 하면 예외 처리한다.
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
