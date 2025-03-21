@@ -3,10 +3,13 @@ package com.wafflestudio.toyproject.memoWithTags.user.service
 import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotMatchException
+import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotValidException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailNotVerifiedException
 import com.wafflestudio.toyproject.memoWithTags.exception.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.InValidTokenException
 import com.wafflestudio.toyproject.memoWithTags.exception.MailVerificationException
+import com.wafflestudio.toyproject.memoWithTags.exception.NicknameNotValidException
+import com.wafflestudio.toyproject.memoWithTags.exception.PasswordNotValidException
 import com.wafflestudio.toyproject.memoWithTags.exception.SignInInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UpdatePasswordInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
@@ -44,6 +47,15 @@ class UserService(
         password: String,
         nickname: String
     ): User {
+        // 이메일 형식이 올바른지 검증한다.
+        if (!email.matches(Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}\$"))) throw EmailNotValidException()
+
+        // 암호 형식이 올바른지 검증한다. (8자 이상 16자 이하, 영문 대소문자, 숫자, 특수문자 포함)
+        if (!password.matches(Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,16}\$"))) throw PasswordNotValidException()
+
+        // 닉네임 형식이 올바른지 검증한다. (1자 이상 8자 이하)
+        if (nickname.length !in 1..8) throw NicknameNotValidException()
+
         // 소셜 로그인 사용 여부와 무관하게 동일 이메일이 존재하기만 하면 예외 처리한다.
         if (userRepository.findByEmail(email) != null) throw EmailAlreadyExistsException()
 

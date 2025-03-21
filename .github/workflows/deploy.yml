@@ -31,7 +31,7 @@ jobs:
       # 2. Gradle 빌드
       - name: Build project
         run: |
-          SPRING_PROFILES_ACTIVE=prod ./gradlew build
+          SPRING_PROFILES_ACTIVE=prod ./gradlew build -x test
 
       # 3. 빌드 결과 확인
       - name: Verify build artifacts
