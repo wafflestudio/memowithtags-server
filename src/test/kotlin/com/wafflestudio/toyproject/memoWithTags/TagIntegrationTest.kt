@@ -64,7 +64,7 @@ class TagIntegrationTest {
         val requestBody = mapOf(
             "email" to "test@example.com",
             "nickname" to "John Doe",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val requestJson = mapper.writeValueAsString(requestBody)
@@ -83,7 +83,7 @@ class TagIntegrationTest {
     fun `create tag`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -120,7 +120,7 @@ class TagIntegrationTest {
     fun `get tag`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -182,7 +182,7 @@ class TagIntegrationTest {
     fun `update tag`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -245,7 +245,7 @@ class TagIntegrationTest {
     fun `delete tag`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
