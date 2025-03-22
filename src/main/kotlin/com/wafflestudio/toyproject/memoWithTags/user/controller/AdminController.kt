@@ -1,6 +1,11 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
+import com.wafflestudio.toyproject.memoWithTags.exception.annotation.ApiErrorCodeExamples
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
+import com.wafflestudio.toyproject.memoWithTags.user.docs.admin.CreateUserExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.admin.DeleteUserExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.admin.GetUsersExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.admin.UpdateUserExceptionDocs
 import com.wafflestudio.toyproject.memoWithTags.user.dto.AdminRequest.CreateUserRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.AdminRequest.UpdateUserRequest
 import com.wafflestudio.toyproject.memoWithTags.user.service.AdminService
@@ -25,6 +30,7 @@ class AdminController(
     private val adminService: AdminService,
     private val userService: UserService
 ) {
+    @ApiErrorCodeExamples(GetUsersExceptionDocs::class)
     @Operation(summary = "유저 목록 가져오기")
     @GetMapping("/admin/user")
     fun getUsers(@AuthUser user: User): List<User> {
@@ -32,6 +38,7 @@ class AdminController(
         return adminService.getUsers()
     }
 
+    @ApiErrorCodeExamples(CreateUserExceptionDocs::class)
     @Operation(summary = "유저 계정 생성")
     @PostMapping("/admin/user")
     fun createUser(@AuthUser user: User, @RequestBody request: CreateUserRequest): User {
@@ -39,6 +46,7 @@ class AdminController(
         return userService.register(request.email, request.password, request.nickname)
     }
 
+    @ApiErrorCodeExamples(DeleteUserExceptionDocs::class)
     @Operation(summary = "유저 계정 삭제하기")
     @DeleteMapping("/admin/user/{userId}")
     fun deleteUser(@AuthUser user: User, @PathVariable userId: UUID): ResponseEntity<Unit> {
@@ -47,9 +55,10 @@ class AdminController(
         return ResponseEntity.ok().build()
     }
 
+    @ApiErrorCodeExamples(UpdateUserExceptionDocs::class)
     @Operation(summary = "유저 계정 업데이트")
     @PutMapping("/admin/user")
-    fun getUsers(@AuthUser user: User, @RequestBody request: UpdateUserRequest): User {
+    fun updateUser(@AuthUser user: User, @RequestBody request: UpdateUserRequest): User {
         adminService.assertAdminRole(user.id)
         return adminService.updateUser(request.id, request.userUpdateInfo)
     }
