@@ -1,7 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.user.service
 
-import com.wafflestudio.toyproject.memoWithTags.exception.UserNotAdminException
-import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UserNotAdminException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.RoleType
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserUpdateInfo

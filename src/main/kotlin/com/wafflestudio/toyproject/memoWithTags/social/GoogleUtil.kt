@@ -1,6 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.social
 
-import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.social.dto.GoogleProfile
 import org.slf4j.LoggerFactory

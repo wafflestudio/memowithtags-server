@@ -1,6 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.social.controller
 
-import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.social.dto.SocialLoginResponse
 import com.wafflestudio.toyproject.memoWithTags.social.service.SocialLoginService
 import com.wafflestudio.toyproject.memoWithTags.user.SocialType

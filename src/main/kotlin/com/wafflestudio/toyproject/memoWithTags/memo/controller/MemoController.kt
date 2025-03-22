@@ -1,6 +1,14 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.controller
 
-import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.annotation.ApiErrorCodeExamples
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.AddTagToMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.CreateMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.DeleteMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.FetchPageFromMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.RecommendMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.SearchMemoExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.memo.docs.UpdateMemoExceptionDocs
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.CreateMemoRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.MemoSearchRequest
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.MemoRequest.RecommendMemoRequest
@@ -14,6 +22,8 @@ import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.service.MemoService
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -27,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
+@Tag(name = "memo api", description = "메모 관련 api")
 @RestController
 class MemoController(
     private val memoService: MemoService
@@ -41,6 +52,8 @@ class MemoController(
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
     }
 
+    @Operation(summary = "메모 생성")
+    @ApiErrorCodeExamples(CreateMemoExceptionDocs::class)
     @PostMapping("/api/v1/memo")
     fun createMemo(
         @RequestBody request: CreateMemoRequest,
@@ -57,6 +70,8 @@ class MemoController(
         )
     }
 
+    @Operation(summary = "메모 업데이트")
+    @ApiErrorCodeExamples(UpdateMemoExceptionDocs::class)
     @PutMapping("/api/v1/memo/{memoId}")
     fun updateMemo(
         @PathVariable memoId: Long,
@@ -74,6 +89,8 @@ class MemoController(
         )
     }
 
+    @Operation(summary = "메모 삭제")
+    @ApiErrorCodeExamples(DeleteMemoExceptionDocs::class)
     @DeleteMapping("/api/v1/memo/{memoId}")
     fun deleteMemo(
         @PathVariable memoId: Long,
@@ -83,6 +100,8 @@ class MemoController(
         return ResponseEntity.noContent().build()
     }
 
+    @Operation(summary = "메모 검색")
+    @ApiErrorCodeExamples(SearchMemoExceptionDocs::class)
     @GetMapping("/api/v1/search-memo")
     fun searchMemo(
         @ModelAttribute request: MemoSearchRequest,
@@ -99,11 +118,15 @@ class MemoController(
         )
     }
 
+    @Operation(summary = "메모 페이지 조회")
+    @ApiErrorCodeExamples(FetchPageFromMemoExceptionDocs::class)
     @GetMapping("/api/v1/memo/{memoId}")
     fun fetchPageFromMemo(@PathVariable memoId: Long, @AuthUser user: User): SearchResult<Memo> {
         return memoService.fetchPageFromMemo(userId = user.id, memoId = memoId, pageSize = 15)
     }
 
+    @Operation(summary = "메모에 태그 추가")
+    @ApiErrorCodeExamples(AddTagToMemoExceptionDocs::class)
     @PostMapping("/api/v1/memo/{memoId}/tag")
     fun addTagToMemo(
         @PathVariable memoId: Long,
@@ -116,6 +139,8 @@ class MemoController(
         )
     }
 
+    @Operation(summary = "메모에 태그 삭제")
+    @ApiErrorCodeExamples(DeleteMemoExceptionDocs::class)
     @DeleteMapping("/api/v1/memo/{memoId}/tag")
     fun deleteTagFromMemo(
         @PathVariable memoId: Long,
@@ -126,6 +151,8 @@ class MemoController(
         return ResponseEntity.noContent().build()
     }
 
+    @Operation(summary = "메모 추천")
+    @ApiErrorCodeExamples(RecommendMemoExceptionDocs::class)
     @PostMapping("/api/v1/recommend-memo")
     fun recommendMemo(
         @AuthUser user: User,
@@ -135,6 +162,7 @@ class MemoController(
         return ResponseEntity.ok(RecommendMemoResponse(memoIds))
     }
 
+    @Operation(summary = "테스트")
     @GetMapping("/api/test")
     fun test() {
         println(Instant.now())

@@ -1,8 +1,8 @@
 package com.wafflestudio.toyproject.memoWithTags.tag.service
 
-import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
-import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.exception.TagNotOwnedByUserException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.AuthenticationFailedException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.TagNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.TagNotOwnedByUserException
 import com.wafflestudio.toyproject.memoWithTags.tag.controller.Tag
 import com.wafflestudio.toyproject.memoWithTags.tag.dto.TagRequest.CreateTagRequest
 import com.wafflestudio.toyproject.memoWithTags.tag.dto.TagRequest.UpdateTagRequest

@@ -1,12 +1,11 @@
-package com.wafflestudio.toyproject.memoWithTags.exception
-
+package com.wafflestudio.toyproject.memoWithTags.exception.code
 
 enum class ErrorCode(
     val status: Int,
     val code: String,
     val message: String
 ) {
-    // User Exceptions
+    // User ErrorCode
     USER_NOT_FOUND(404, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
     USER_EMAIL_ALREADY_EXISTS(409, "USER_EMAIL_ALREADY_EXISTS", "이미 존재하는 이메일입니다."),
     USER_UNABLE_TO_SEND_EMAIL(500, "USER_UNABLE_TO_SEND_EMAIL", "이메일 전송에 실패했습니다."),
@@ -22,15 +21,15 @@ enum class ErrorCode(
     USER_WRONG_NICKNAME_FORMAT(400, "USER_WRONG_NICKNAME_FORMAT", "잘못된 닉네임 형식입니다."),
     USER_NOT_ADMIN(403, "USER_NOT_ADMIN", "Admin 권한이 없습니다"),
 
-    // Memo Exceptions
+    // Memo ErrorCode
     MEMO_NOT_FOUND(404, "MEMO_NOT_FOUND", "존재하지 않는 메모입니다."),
     MEMO_ACCESS_DENIED(403, "MEMO_ACCESS_DENIED", "해당 메모를 업데이트할 권한이 없습니다."),
 
-    // Tag Exceptions
+    // Tag ErrorCode
     TAG_NOT_FOUND(404, "TAG_NOT_FOUND", "존재하지 않는 태그입니다."),
     TAG_NOT_OWNED_BY_USER(403, "TAG_NOT_OWNED_BY_USER", "유저가 가지고 있는 태그가 아닙니다."),
 
-    // Token Exceptions
+    // Token ErrorCode
     TOKEN_EXPIRED(401, "TOKEN_EXPIRED", "토큰이 만료되었습니다."),
     TOKEN_INVALID_SIGNATURE(401, "TOKEN_INVALID_SIGNATURE", "토큰의 서명이 유효하지 않습니다."),
     TOKEN_INVALID(401, "TOKEN_INVALID", "토큰이 유효하지 않습니다."),

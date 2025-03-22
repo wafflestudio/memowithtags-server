@@ -1,6 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.user.service
 
-import com.wafflestudio.toyproject.memoWithTags.exception.UserNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.user.CustomUserDetails
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
