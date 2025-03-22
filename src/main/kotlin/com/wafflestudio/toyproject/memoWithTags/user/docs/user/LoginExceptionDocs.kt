@@ -9,5 +9,4 @@ object LoginExceptionDocs {
 
     @field:ExplainError("이메일이 존재하지 않거나 잘못된 비밀번호입니다.")
     val USER_SIGN_IN_INVALID = ErrorCode.USER_SIGN_IN_INVALID
-
 }

@@ -9,5 +9,4 @@ object VerifyEmailExceptionDocs {
 
     @field:ExplainError("이메일이 인증되지 않았습니다")
     val USER_MAIL_VERIFICATION_FAILED = ErrorCode.USER_MAIL_VERIFICATION_FAILED
-
 }

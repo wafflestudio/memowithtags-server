@@ -9,5 +9,4 @@ object OauthLoginExceptionDocs {
 
     @field:ExplainError("이메일이 이미 존재할 때")
     val EMAIL_ALREADY_EXISTS = ErrorCode.USER_EMAIL_ALREADY_EXISTS
-
 }

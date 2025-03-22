@@ -32,5 +32,5 @@ enum class ErrorCode(
     // Token ErrorCode
     TOKEN_EXPIRED(401, "TOKEN_EXPIRED", "토큰이 만료되었습니다."),
     TOKEN_INVALID_SIGNATURE(401, "TOKEN_INVALID_SIGNATURE", "토큰의 서명이 유효하지 않습니다."),
-    TOKEN_INVALID(401, "TOKEN_INVALID", "토큰이 유효하지 않습니다."),
+    TOKEN_INVALID(401, "TOKEN_INVALID", "토큰이 유효하지 않습니다.")
 }

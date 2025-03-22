@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 
-
 @Configuration
 class SwaggerConfig {
     @Bean
@@ -75,7 +74,7 @@ class SwaggerConfig {
                             value = mapOf(
                                 "status" to errorCode.status,
                                 "code" to errorCode.code,
-                                "message" to errorCode.message,
+                                "message" to errorCode.message
                             )
                         }
 
@@ -91,7 +90,4 @@ class SwaggerConfig {
             operation
         }
     }
-
-
-
 }
