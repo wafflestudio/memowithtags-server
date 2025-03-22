@@ -1,6 +1,17 @@
 package com.wafflestudio.toyproject.memoWithTags.user.controller
 
+import com.wafflestudio.toyproject.memoWithTags.exception.annotation.ApiErrorCodeExamples
 import com.wafflestudio.toyproject.memoWithTags.user.AuthUser
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.LoginExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.MeExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.RefreshTokenExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.RegisterExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.ResetPasswordExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.SendEmailExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.UpdateNicknameExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.UpdatePasswordExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.VerifyEmailExceptionDocs
+import com.wafflestudio.toyproject.memoWithTags.user.docs.user.WithdrawalExceptionDocs
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.ForgotPasswordRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.LoginRequest
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserRequest.RefreshTokenRequest
@@ -29,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService
 ) {
+
+    @ApiErrorCodeExamples(RegisterExceptionDocs::class)
     @Operation(summary = "사용자 회원가입")
     @PostMapping("/auth/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<LoginResponse> {
@@ -37,6 +50,7 @@ class UserController(
         return ResponseEntity.status(HttpStatus.CREATED).body(LoginResponse(accessToken, refreshToken))
     }
 
+    @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 요청")
     @PostMapping("/auth/send-email")
     fun sendEmail(@RequestBody request: SendEmailRequest): ResponseEntity<Unit> {
@@ -44,6 +58,7 @@ class UserController(
         return ResponseEntity.ok().build()
     }
 
+    @ApiErrorCodeExamples(VerifyEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 확인")
     @PostMapping("/auth/verify-email")
     fun verifyEmail(@RequestBody request: VerifyEmailRequest): ResponseEntity<Unit> {
@@ -51,6 +66,7 @@ class UserController(
         return ResponseEntity.ok().build()
     }
 
+    @ApiErrorCodeExamples(LoginExceptionDocs::class)
     @Operation(summary = "로그인")
     @PostMapping("/auth/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
@@ -58,6 +74,7 @@ class UserController(
         return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
     }
 
+    @ApiErrorCodeExamples(ResetPasswordExceptionDocs::class)
     @Operation(summary = "비밀번호 초기화")
     @PostMapping("/auth/reset-password")
     fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<Unit> {
@@ -65,6 +82,7 @@ class UserController(
         return ResponseEntity.ok().build()
     }
 
+    @ApiErrorCodeExamples(UpdatePasswordExceptionDocs::class)
     @Operation(summary = "비밀번호 수정(로그인 상태에서)")
     @PutMapping("/auth/password")
     fun updatePassword(
@@ -74,6 +92,7 @@ class UserController(
         return ResponseEntity.ok(userService.updatePassword(user, request.originalPassword, request.newPassword))
     }
 
+    @ApiErrorCodeExamples(UpdateNicknameExceptionDocs::class)
     @Operation(summary = "닉네임 수정")
     @PutMapping("/auth/nickname")
     fun updateNickname(
@@ -83,6 +102,7 @@ class UserController(
         return ResponseEntity.ok(userService.updateNickname(user, request.nickname))
     }
 
+    @ApiErrorCodeExamples(RefreshTokenExceptionDocs::class)
     @Operation(summary = "토큰 재발급")
     @PostMapping("/auth/refresh-token")
     fun refreshToken(@RequestBody request: RefreshTokenRequest): RefreshTokenResponse {
@@ -90,6 +110,7 @@ class UserController(
         return userService.refreshToken(refreshToken)
     }
 
+    @ApiErrorCodeExamples(WithdrawalExceptionDocs::class)
     @Operation(summary = "회원 탈퇴(유저 삭제)")
     @DeleteMapping("/auth/withdrawal")
     fun withdrawal(
@@ -100,6 +121,7 @@ class UserController(
         return ResponseEntity.noContent().build()
     }
 
+    @ApiErrorCodeExamples(MeExceptionDocs::class)
     @Operation(summary = "현재 로그인한 유저 조회")
     @GetMapping("/auth/me")
     fun me(
