@@ -102,6 +102,6 @@ class NicknameNotValidException : UserException(
 // Admin 권한 없음
 class UserNotAdminException : UserException(
     errorCode = 0,
-    httpErrorCode = HttpStatus.BAD_REQUEST,
+    httpErrorCode = HttpStatus.FORBIDDEN,
     msg = "Admin 권한이 없습니다"
 )
