@@ -3,7 +3,7 @@ package com.wafflestudio.toyproject.memoWithTags.social
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.wafflestudio.toyproject.memoWithTags.exception.OAuthRequestException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.OAuthRequestException
 import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverOAuthToken
 import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfile
 import com.wafflestudio.toyproject.memoWithTags.social.dto.NaverProfileResponse

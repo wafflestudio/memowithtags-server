@@ -1,6 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.config
 
-import com.wafflestudio.toyproject.memoWithTags.exception.AuthenticationFailedException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.AuthenticationFailedException
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.service.CustomUserDetailsService
 import jakarta.servlet.FilterChain

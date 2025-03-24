@@ -55,7 +55,7 @@ class UserIntegrationTest {
         val requestBody = mapOf(
             "email" to "test@example.com",
             "nickname" to "John Doe",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val requestJson = mapper.writeValueAsString(requestBody)
@@ -98,7 +98,7 @@ class UserIntegrationTest {
         val requestBody = mapOf(
             "email" to "test@example.com",
             "nickname" to "John Doe",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val requestJson = mapper.writeValueAsString(requestBody)
@@ -114,7 +114,7 @@ class UserIntegrationTest {
 
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         mockMvc.perform(
@@ -155,7 +155,7 @@ class UserIntegrationTest {
         val requestBody = mapOf(
             "email" to "test@example.com",
             "nickname" to "John Doe",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val requestJson = mapper.writeValueAsString(requestBody)
@@ -171,7 +171,7 @@ class UserIntegrationTest {
 
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -218,7 +218,7 @@ class UserIntegrationTest {
 
         val loginRequest1 = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password123!"
         )
 
         mockMvc.perform(

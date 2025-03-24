@@ -1,8 +1,8 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.service
 
-import com.wafflestudio.toyproject.memoWithTags.exception.AccessDeniedException
-import com.wafflestudio.toyproject.memoWithTags.exception.MemoNotFoundException
-import com.wafflestudio.toyproject.memoWithTags.exception.TagNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.AccessDeniedException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MemoNotFoundException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.TagNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity

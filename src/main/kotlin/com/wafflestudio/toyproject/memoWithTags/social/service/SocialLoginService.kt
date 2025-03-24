@@ -1,6 +1,6 @@
 package com.wafflestudio.toyproject.memoWithTags.social.service
 
-import com.wafflestudio.toyproject.memoWithTags.exception.EmailAlreadyExistsException
+import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.EmailAlreadyExistsException
 import com.wafflestudio.toyproject.memoWithTags.social.GoogleUtil
 import com.wafflestudio.toyproject.memoWithTags.social.KakaoUtil
 import com.wafflestudio.toyproject.memoWithTags.social.NaverUtil
