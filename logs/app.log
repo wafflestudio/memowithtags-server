@@ -1,1 +1,0 @@
-2025-03-31T20:11:48.004+09:00  INFO 23140 --- [http-nio-8080-exec-1] c.w.t.m.aspect.ApiCallLoggingAspect      : API call - User: anonymous, Date: 2025-03-31, API: POST http://localhost:8080/api/v1/auth/login
