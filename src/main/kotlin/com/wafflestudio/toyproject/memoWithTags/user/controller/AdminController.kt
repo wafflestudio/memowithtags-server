@@ -12,6 +12,7 @@ import com.wafflestudio.toyproject.memoWithTags.user.service.AdminService
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
@@ -47,12 +49,13 @@ class AdminController(
     }
 
     @ApiErrorCodeExamples(DeleteUserExceptionDocs::class)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "유저 계정 삭제하기")
     @DeleteMapping("/admin/user/{userId}")
     fun deleteUser(@AuthUser user: User, @PathVariable userId: UUID): ResponseEntity<Unit> {
         adminService.assertAdminRole(user.id)
         adminService.deleteUser(userId)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @ApiErrorCodeExamples(UpdateUserExceptionDocs::class)
