@@ -50,10 +50,11 @@ class TagController(
     }
 
     @Operation(summary = "태그 삭제")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiErrorCodeExamples(DeleteTagExceptionDocs::class)
     @DeleteMapping("/api/v1/tag/{tagId}")
     fun deleteTag(@PathVariable tagId: Long, @AuthUser user: User): ResponseEntity<Unit> {
         tagService.deleteTag(tagId, user)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
