@@ -35,5 +35,5 @@ enum class ErrorCode(
     TOKEN_INVALID(401, "TOKEN_INVALID", "토큰이 유효하지 않습니다."),
 
     // Server ErrorCode
-    SERVER_HTTP_MESSAGE_NOT_READABLE(400, "SERVER_HTTP_MESSAGE_NOT_READABLE", "RequestBody 형식에 맞지 않은 요청입니다."),
+    SERVER_HTTP_MESSAGE_NOT_READABLE(400, "SERVER_HTTP_MESSAGE_NOT_READABLE", "RequestBody 형식에 맞지 않은 요청입니다.")
 }
