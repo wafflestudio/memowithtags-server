@@ -13,14 +13,13 @@ data class EmailVerificationEntity(
     @Indexed
     val code: String, // verification code (000000)
 
-    var verified: Boolean // default: false, verified user: true
-) {
+    var verified: Boolean, // default: false, verified user: true
+
     @TimeToLive
-    fun getTimeToLive(): Long {
-        return if (verified) {
-            86400 // 메일 인증이 확인된 인증 정보는 TTL 24시간으로 설정
-        } else {
-            300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
-        }
+    var ttl: Long = 300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
+) {
+    fun verify() {
+        this.verified = true
+        this.ttl = 86400 // 메일 인증이 확인된 인증 정보는 TTL 24시간으로 설정
     }
 }

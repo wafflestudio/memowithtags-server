@@ -3,7 +3,6 @@ package com.wafflestudio.toyproject.memoWithTags.mail.service
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MailVerificationException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
-import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -66,7 +65,8 @@ class MailVerifService(
         val verification = emailVerificationRepository.findByIdOrNull(purposeAndEmail) ?: throw MailVerificationException()
         if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
-        emailVerificationRepository.save(EmailVerificationEntity(email, code, true))
+        verification.verify()
+        emailVerificationRepository.save(verification)
         return true
     }
 }
