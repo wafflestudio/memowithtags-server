@@ -196,6 +196,10 @@ class UserService(
     ): User {
         val userEntity = userRepository.findByEmail(user.email) ?: throw UserNotFoundException()
         if (!BCrypt.checkpw(originalPassword, userEntity.hashedPassword)) throw UpdatePasswordInvalidException()
+
+        // newPassword 형식 체크
+        if (!newPassword.matches(Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,16}\$"))) throw PasswordNotValidException()
+
         userEntity.hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt())
         logger.info("password updated: $user")
         return User.fromEntity(userRepository.save(userEntity))

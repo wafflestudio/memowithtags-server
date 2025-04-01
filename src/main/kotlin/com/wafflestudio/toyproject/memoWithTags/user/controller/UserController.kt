@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "user api", description = "사용자 관련 api")
@@ -50,20 +51,22 @@ class UserController(
         return ResponseEntity.status(HttpStatus.CREATED).body(LoginResponse(accessToken, refreshToken))
     }
 
-    @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 요청")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @PostMapping("/auth/send-email")
     fun sendEmail(@RequestBody request: SendEmailRequest): ResponseEntity<Unit> {
         userService.sendCodeToEmail(request.email)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @ApiErrorCodeExamples(VerifyEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 확인")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(VerifyEmailExceptionDocs::class)
     @PostMapping("/auth/verify-email")
     fun verifyEmail(@RequestBody request: VerifyEmailRequest): ResponseEntity<Unit> {
         userService.verifyEmail(request.email, request.verificationCode)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @ApiErrorCodeExamples(LoginExceptionDocs::class)
@@ -74,12 +77,13 @@ class UserController(
         return ResponseEntity.ok(LoginResponse(accessToken, refreshToken))
     }
 
-    @ApiErrorCodeExamples(ResetPasswordExceptionDocs::class)
     @Operation(summary = "비밀번호 초기화")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(ResetPasswordExceptionDocs::class)
     @PostMapping("/auth/reset-password")
     fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<Unit> {
         userService.resetPasswordWithEmailVerification(request.email, request.password)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @ApiErrorCodeExamples(UpdatePasswordExceptionDocs::class)
@@ -110,15 +114,16 @@ class UserController(
         return userService.refreshToken(refreshToken)
     }
 
-    @ApiErrorCodeExamples(WithdrawalExceptionDocs::class)
     @Operation(summary = "회원 탈퇴(유저 삭제)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(WithdrawalExceptionDocs::class)
     @DeleteMapping("/auth/withdrawal")
     fun withdrawal(
         @AuthUser user: User,
         @RequestBody request: WithdrawalRequest
     ): ResponseEntity<Unit> {
         userService.deleteUser(user, request.email)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @ApiErrorCodeExamples(MeExceptionDocs::class)

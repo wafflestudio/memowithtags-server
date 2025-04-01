@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
@@ -90,6 +91,7 @@ class MemoController(
     }
 
     @Operation(summary = "메모 삭제")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiErrorCodeExamples(DeleteMemoExceptionDocs::class)
     @DeleteMapping("/api/v1/memo/{memoId}")
     fun deleteMemo(
@@ -97,7 +99,7 @@ class MemoController(
         @AuthUser user: User
     ): ResponseEntity<Void> {
         memoService.deleteMemo(memoId = memoId, userId = user.id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @Operation(summary = "메모 검색")
@@ -140,6 +142,7 @@ class MemoController(
     }
 
     @Operation(summary = "메모에 태그 삭제")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiErrorCodeExamples(DeleteMemoExceptionDocs::class)
     @DeleteMapping("/api/v1/memo/{memoId}/tag")
     fun deleteTagFromMemo(
@@ -148,7 +151,7 @@ class MemoController(
         @RequestBody deleteTagRequest: UpdateTagRequest
     ): ResponseEntity<Void> {
         memoService.deleteTag(userId = user.id, memoId = memoId, tagId = deleteTagRequest.tagId)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @Operation(summary = "메모 추천")

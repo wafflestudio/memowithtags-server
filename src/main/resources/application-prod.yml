@@ -24,6 +24,7 @@ spring:
         enabled: true
   logging:
     level:
-      org.hibernate.SQL: WARN
-      org.hibernate.type.descriptor.sql.BasicBinder: ERROR
-      org.springframework.data.redis: DEBUG
+      root: ERROR
+      com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+    file:
+      name: logs/app.log

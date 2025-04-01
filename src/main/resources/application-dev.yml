@@ -19,5 +19,7 @@ spring:
 
 logging:
   level:
-    root: info
-    com.wafflestudio.toyproject.memoWithTags: info
+    root: ERROR
+    com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+  file:
+    name: logs/app.log
