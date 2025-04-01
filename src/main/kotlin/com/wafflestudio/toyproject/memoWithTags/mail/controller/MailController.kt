@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1")
 class MailController(
-    private val mailVerifService: MailVerifService,
+    private val mailVerifService: MailVerifService
 ) {
     @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 요청")
