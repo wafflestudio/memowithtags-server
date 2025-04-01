@@ -34,17 +34,17 @@ class MailVerifService(
         val verifCode = verification.code
         val title = "[Memo with tags] 인증번호 [$verifCode] 를 입력해주세요"
         val content: String = "<html>" +
-                "<body>" +
-                "<h1>인증번호 안내</h1>" +
-                "<p>안녕하세요, Memo with tags 팀입니다.</p>" +
-                "<b>[${hangulPurpose}]을 위해, 아래의 인증번호 6자리를 진행 중인 화면에 입력하여 5분 내에 인증을 완료해주세요.</b>" +
-                "<h2>인증번호<br>$verifCode</h2>" +
-                "<p>인증번호는 이메일 발송 시점으로부터 3분 동안 유효합니다.</p>" +
-                "<footer style='color: grey; font-size: small;'>" +
-                "<p>본 메일은 자동응답 메일이므로 본 메일에 회신하지 마시기 바랍니다.</p>" +
-                "</footer>" +
-                "</body>" +
-                "</html>"
+            "<body>" +
+            "<h1>인증번호 안내</h1>" +
+            "<p>안녕하세요, Memo with tags 팀입니다.</p>" +
+            "<b>[$hangulPurpose]을 위해, 아래의 인증번호 6자리를 진행 중인 화면에 입력하여 5분 내에 인증을 완료해주세요.</b>" +
+            "<h2>인증번호<br>$verifCode</h2>" +
+            "<p>인증번호는 이메일 발송 시점으로부터 3분 동안 유효합니다.</p>" +
+            "<footer style='color: grey; font-size: small;'>" +
+            "<p>본 메일은 자동응답 메일이므로 본 메일에 회신하지 마시기 바랍니다.</p>" +
+            "</footer>" +
+            "</body>" +
+            "</html>"
         try {
             mailService.sendMail(email, title, content)
         } catch (e: Exception) {
