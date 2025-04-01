@@ -106,7 +106,6 @@ class UserService(
             "</body>" +
             "</html>"
         try {
-            logger.info("code: $verification")
             mailService.sendMail(email, title, content)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -126,8 +125,8 @@ class UserService(
         val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw MailVerificationException()
         if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
-        emailVerificationRepository.save(EmailVerificationEntity(email, code, true))
-        logger.info("verified email code")
+        verification.verified = true
+        emailVerificationRepository.save(verification)
         return true
     }
 

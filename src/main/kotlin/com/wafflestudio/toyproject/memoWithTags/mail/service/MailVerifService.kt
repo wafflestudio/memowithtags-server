@@ -66,7 +66,8 @@ class MailVerifService(
         val verification = emailVerificationRepository.findByIdOrNull(purposeAndEmail) ?: throw MailVerificationException()
         if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
-        emailVerificationRepository.save(EmailVerificationEntity(email, code, true))
+        verification.verify()
+        emailVerificationRepository.save(verification)
         return true
     }
 }
