@@ -16,7 +16,7 @@ data class EmailVerificationEntity(
     var verified: Boolean, // default: false, verified user: true
 
     @TimeToLive
-    var ttl: Long = 300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
+    var ttl: Long? = 300 // 메일 인증을 완료하지 않은 인증 정보는 TTL 5분으로 설정
 ) {
     fun verify() {
         this.verified = true
