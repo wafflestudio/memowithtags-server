@@ -3,7 +3,6 @@ package com.wafflestudio.toyproject.memoWithTags.mail.service
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.EmailSendingException
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MailVerificationException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
-import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

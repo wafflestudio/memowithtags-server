@@ -14,7 +14,6 @@ import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.SignInInval
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UpdatePasswordInvalidException
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UserNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
-import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationEntity
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.mail.service.MailService
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
