@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.index.Indexed
 @RedisHash(value = "email_verification")
 data class EmailVerificationEntity(
     @Id
-    val id: String, // email (xx@xx.xx)
+    val id: String, // type and email (type,xx@xx.xx)
 
     @Indexed
     val code: String, // verification code (000000)

@@ -4,6 +4,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.EmailSendin
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MailVerificationException
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,6 +14,8 @@ class MailVerifService(
     private val emailVerificationRepository: EmailVerificationRepository,
     private val mailService: MailService
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     /**
      * 회원가입 또는 비밀번호 재설정 등 목적에 따른 인증용 메일을 발송하는 함수
      */
@@ -24,12 +27,11 @@ class MailVerifService(
         // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 해당 이메일로 발송된 인증번호 데이터를 삭제한다.
         emailVerificationRepository.deleteAllById(email)
 
-        val purposeAndEmail = "${purpose.name},$email"
         val hangulPurpose = when (purpose) {
             SendMailType.Register -> "회원가입"
             SendMailType.ResetPassword -> "비밀번호 재설정"
         }
-        val verification: EmailVerification = mailService.createVerificationCode(purposeAndEmail)
+        val verification: EmailVerification = mailService.createVerificationCode(email, purpose)
         val verifCode = verification.code
         val title = "[Memo with tags] 인증번호 [$verifCode] 를 입력해주세요"
         val content: String = "<html>" +
@@ -61,8 +63,7 @@ class MailVerifService(
         code: String,
         purpose: SendMailType
     ): Boolean {
-        val purposeAndEmail = "${purpose.name},$email"
-        val verification = emailVerificationRepository.findByIdOrNull(purposeAndEmail) ?: throw MailVerificationException()
+        val verification = emailVerificationRepository.findByIdOrNull("${purpose.name},$email") ?: throw MailVerificationException()
         if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
         verification.verify()

@@ -16,6 +16,7 @@ import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.UserNotFoun
 import com.wafflestudio.toyproject.memoWithTags.mail.EmailVerification
 import com.wafflestudio.toyproject.memoWithTags.mail.persistence.EmailVerificationRepository
 import com.wafflestudio.toyproject.memoWithTags.mail.service.MailService
+import com.wafflestudio.toyproject.memoWithTags.mail.service.SendMailType
 import com.wafflestudio.toyproject.memoWithTags.user.JwtUtil
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.dto.UserResponse.RefreshTokenResponse
@@ -61,7 +62,8 @@ class UserService(
         logger.info(emailVerificationRepository.findAll().toString())
 
         // 메일 인증 과정을 거치지 않고 바로 회원가입 시도 시 예외 처리한다. 검증 후 인증 데이터는 삭제한다.
-        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw EmailNotVerifiedException()
+        val verification = emailVerificationRepository.findByIdOrNull("${SendMailType.Register.name},$email")
+            ?: throw EmailNotVerifiedException()
         if (!verification.verified) throw EmailNotVerifiedException()
         emailVerificationRepository.deleteById(email)
 
@@ -93,7 +95,7 @@ class UserService(
         // 이미 인증 메일을 보낸 주소로 또 시도하는 경우에는 해당 이메일로 발송된 인증번호 데이터를 삭제한다.
         emailVerificationRepository.deleteAllById(email)
 
-        val verification: EmailVerification = mailService.createVerificationCode(email)
+        val verification: EmailVerification = mailService.createVerificationCode(email, SendMailType.Register)
         val title = "Memo with tags 이메일 인증 번호"
         val content: String = "<html>" +
             "<body>" +
@@ -120,8 +122,8 @@ class UserService(
         email: String,
         code: String
     ): Boolean {
-        logger.info(emailVerificationRepository.findAll().toString())
-        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw MailVerificationException()
+        var verification = emailVerificationRepository.findByIdOrNull("Register,$email")
+        if (verification == null) verification = emailVerificationRepository.findByIdOrNull("ResetPassword,$email") ?: throw MailVerificationException()
         if (verification.code != code) throw MailVerificationException()
         // 인증 성공 시, verification의 Verified 필드가 true로 바뀌어 회원가입의 검증 절차를 통과한다.
         verification.verified = true
@@ -158,7 +160,8 @@ class UserService(
         newPassword: String
     ) {
         // 인증된 이메일인지 확인하고, 검증 후 인증 데이터를 삭제한다.
-        val verification = emailVerificationRepository.findByIdOrNull(email) ?: throw EmailNotVerifiedException()
+        val verification = emailVerificationRepository.findByIdOrNull("${SendMailType.ResetPassword.name},$email")
+            ?: throw EmailNotVerifiedException()
         if (!verification.verified) throw EmailNotVerifiedException()
         emailVerificationRepository.deleteById(email)
 
