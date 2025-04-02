@@ -39,7 +39,7 @@ class SmtpMailService(
      * 인증 메일에 포함될 인증 코드를 랜덤으로 생성하는 함수. 6자리 숫자를 생성한다.
      */
     @Transactional
-    override fun createVerificationCode(email: String): EmailVerification {
+    override fun createVerificationCode(email: String, purpose: SendMailType): EmailVerification {
         val randomCode: String = if (email == "test@example.com") {
             "000000"
         } else {
@@ -47,7 +47,7 @@ class SmtpMailService(
         }
 
         val codeEntity = EmailVerificationEntity(
-            id = email,
+            id = "${purpose.name},$email",
             code = randomCode,
             verified = false
         )

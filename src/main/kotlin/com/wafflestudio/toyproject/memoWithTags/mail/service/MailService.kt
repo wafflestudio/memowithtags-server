@@ -9,5 +9,5 @@ interface MailService {
      */
     fun sendMail(toEmail: String, title: String, content: String)
 
-    fun createVerificationCode(email: String): EmailVerification
+    fun createVerificationCode(email: String, purpose: SendMailType): EmailVerification
 }

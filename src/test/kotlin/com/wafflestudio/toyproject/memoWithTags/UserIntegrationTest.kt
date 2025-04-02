@@ -34,11 +34,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/send-email")
+            post("/api/v1/mail?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(mailRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val verifyRequest = mapOf(
             "email" to "test@example.com",
@@ -46,11 +46,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/verify-email")
+            post("/api/v1/mail/verify?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(verifyRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val requestBody = mapOf(
             "email" to "test@example.com",
@@ -77,11 +77,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/send-email")
+            post("/api/v1/mail?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(mailRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val verifyRequest = mapOf(
             "email" to "test@example.com",
@@ -89,11 +89,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/verify-email")
+            post("/api/v1/mail/verify?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(verifyRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val requestBody = mapOf(
             "email" to "test@example.com",
@@ -134,11 +134,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/send-email")
+            post("/api/v1/mail?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(mailRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val verifyRequest = mapOf(
             "email" to "test@example.com",
@@ -146,11 +146,11 @@ class UserIntegrationTest {
         )
 
         mockMvc.perform(
-            post("/api/v1/auth/verify-email")
+            post("/api/v1/mail/verify?type=Register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(verifyRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val requestBody = mapOf(
             "email" to "test@example.com",
@@ -227,5 +227,87 @@ class UserIntegrationTest {
                 .content(mapper.writeValueAsString(loginRequest))
         )
             .andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    fun `reset password`() {
+        val mailRequest = mapOf(
+            "email" to "test@example.com"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/mail?type=Register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(mailRequest))
+        )
+            .andExpect(status().isNoContent)
+
+        val verifyRequest = mapOf(
+            "email" to "test@example.com",
+            "verificationCode" to "000000"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/mail/verify?type=Register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(verifyRequest))
+        )
+            .andExpect(status().isNoContent)
+
+        val requestBody = mapOf(
+            "email" to "test@example.com",
+            "nickname" to "John Doe",
+            "password" to "Password123!"
+        )
+
+        val requestJson = mapper.writeValueAsString(requestBody)
+
+        mockMvc.perform(
+            post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+        )
+            .andExpect(status().isCreated)
+            .andExpect(jsonPath("$.accessToken").exists())
+            .andExpect(jsonPath("$.refreshToken").exists())
+
+
+        mockMvc.perform(
+            post("/api/v1/mail?type=ResetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(mailRequest))
+        )
+            .andExpect(status().isNoContent)
+
+        mockMvc.perform(
+            post("/api/v1/mail/verify?type=ResetPassword")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(verifyRequest))
+        )
+            .andExpect(status().isNoContent)
+
+        val resetPasswordRequest = mapOf(
+            "email" to "test@example.com",
+            "password" to "newPassword123!"
+        )
+
+        mockMvc.perform(
+            post("/api/v1/auth/reset-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(resetPasswordRequest))
+        )
+            .andExpect(status().isNoContent)
+
+        val loginRequest = mapOf(
+            "email" to "test@example.com",
+            "password" to "newPassword123!"
+        )
+
+        val mvcResult = mockMvc.perform(
+            post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(loginRequest))
+        )
+            .andExpect(status().isOk)
     }
 }
