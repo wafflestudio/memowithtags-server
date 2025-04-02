@@ -271,7 +271,6 @@ class UserIntegrationTest {
             .andExpect(jsonPath("$.accessToken").exists())
             .andExpect(jsonPath("$.refreshToken").exists())
 
-
         mockMvc.perform(
             post("/api/v1/mail?type=ResetPassword")
                 .contentType(MediaType.APPLICATION_JSON)
