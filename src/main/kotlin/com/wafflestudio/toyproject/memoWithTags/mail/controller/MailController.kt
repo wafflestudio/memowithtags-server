@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "mail api", description = "메일 관련 api")
@@ -23,8 +24,9 @@ import org.springframework.web.bind.annotation.RestController
 class MailController(
     private val mailVerifService: MailVerifService
 ) {
-    @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 요청")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(SendEmailExceptionDocs::class)
     @PostMapping("/mail")
     fun sendMail(
         @RequestBody request: SendMailRequest,
@@ -34,8 +36,9 @@ class MailController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @ApiErrorCodeExamples(VerifyEmailExceptionDocs::class)
     @Operation(summary = "메일 인증 확인")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiErrorCodeExamples(VerifyEmailExceptionDocs::class)
     @PostMapping("/mail/verify")
     fun verifyMail(
         @RequestBody request: VerifyMailRequest,
