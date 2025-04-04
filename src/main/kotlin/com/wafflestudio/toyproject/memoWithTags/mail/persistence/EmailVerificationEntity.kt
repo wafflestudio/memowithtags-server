@@ -3,7 +3,6 @@ package com.wafflestudio.toyproject.memoWithTags.mail.persistence
 import jakarta.persistence.Id
 import org.springframework.data.redis.core.RedisHash
 import org.springframework.data.redis.core.TimeToLive
-import org.springframework.data.redis.core.index.Indexed
 
 @RedisHash(value = "email_verification")
 data class EmailVerificationEntity(
