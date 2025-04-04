@@ -10,7 +10,6 @@ data class EmailVerificationEntity(
     @Id
     val id: String, // type and email (type,xx@xx.xx)
 
-    @Indexed
     val code: String, // verification code (000000)
 
     var verified: Boolean, // default: false, verified user: true
