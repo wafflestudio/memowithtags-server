@@ -22,9 +22,9 @@ spring:
       timeout: 3000 # 3초
       ssl:
         enabled: true
-  logging:
+logging:
     level:
       root: ERROR
-      com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+      "com.wafflestudio.toyproject.memoWithTags.aspect" : INFO
     file:
       name: /app/logs/app.log
