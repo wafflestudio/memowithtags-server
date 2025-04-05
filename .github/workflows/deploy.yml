@@ -94,6 +94,7 @@ jobs:
           docker run -d \
               -p 8080:8080 \
               --env-file /home/ubuntu/.env \
+              -v /home/ubuntu/memo-logs:/app/logs \
               --name memowithtags-backend \
               \$REPOSITORY_URI:\$TAG" > deploy.sh
       
