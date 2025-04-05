@@ -27,4 +27,4 @@ spring:
       root: ERROR
       com.wafflestudio.toyproject.memoWithTags.aspect: INFO
     file:
-      name: logs/app.log
+      name: /app/logs/app.log
