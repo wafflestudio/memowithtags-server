@@ -19,8 +19,11 @@ class Memo(
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
-                    if (memoTagEntity == null) null
-                    else memoTagEntity.tag.id
+                    if (memoTagEntity == null) {
+                        null
+                    } else {
+                        memoTagEntity.tag.id
+                    }
                 }.filterNotNull(),
                 locked = entity.locked
             )
