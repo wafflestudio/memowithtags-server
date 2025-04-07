@@ -20,7 +20,7 @@ class Memo(
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
                     if (memoTagEntity == null) {
-                        println(memoTagEntity.memo.id)
+                        println(entity.id)
                         println("###############################################################")
                         // 여기서 어떻게 처리할지 결정해야 함
                         null
