@@ -19,8 +19,19 @@ class Memo(
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
-                    memoTagEntity.tag.id!!
-                },
+                    if (memoTagEntity == null) {
+                        println(memoTagEntity.memo.id)
+                        println("###############################################################")
+                        // 여기서 어떻게 처리할지 결정해야 함
+                        null
+                    } else {
+                        // memoTagEntity 자체는 non-null이라 가정
+                        memoTagEntity.tag.id ?: run {
+                            println("memoTagEntity.tag가 null입니다!")
+                            null
+                        }
+                    }
+                }.filterNotNull(),
                 locked = entity.locked
             )
         }
