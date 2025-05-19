@@ -5,12 +5,15 @@ import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.EntityManager
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Subquery
 import org.springframework.stereotype.Repository
 import java.time.Instant
 import java.util.UUID
 
+/**/
 @Repository
 class MemoRepositoryImpl(
     private val em: EntityManager
@@ -18,24 +21,24 @@ class MemoRepositoryImpl(
 
     override fun searchMemo(
         userId: UUID,
-        content: String?,
+        content_text: String?,
         tags: List<Long>?,
         startDate: Instant?,
         endDate: Instant?,
         page: Int, // 몇 번째 페이지인지 (1부터 시작)
         pageSize: Int // 한 페이지에 몇 개를 가져올지
     ): SearchResult<Memo> {
-        val cb = em.criteriaBuilder
-        val query = cb.createQuery(MemoEntity::class.java)
+        val cb: CriteriaBuilder = em.criteriaBuilder
+        val query: CriteriaQuery<MemoEntity> = cb.createQuery(MemoEntity::class.java)
         val root = query.from(MemoEntity::class.java)
 
         // 조건들을 담을 리스트
         val predicates = mutableListOf<Predicate>()
 
-        predicates.add(cb.equal(root.get<UserEntity>("user").get<UUID>("id"), userId))
+        predicates.add(cb.equal(root.get<UserEntity>("user").get<UUID>("id"), userId)) // userId 조건
 
         // 1) 메모 내용 조건
-        content?.let {
+        content_text?.let {
             // "content LIKE '%it%'" 조건
             predicates.add(cb.like(root.get("content"), "%$it%"))
         }
@@ -118,7 +121,7 @@ class MemoRepositoryImpl(
         countPredicates.add(cb.equal(countRoot.get<UserEntity>("user").get<UUID>("id"), userId))
 
         // 메모 내용 조건
-        content?.let {
+        content_text?.let {
             countPredicates.add(cb.like(countRoot.get("content"), "%$it%"))
         }
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.UUID
+import org.jsoup.Jsoup
 
 @Service
 class MemoService(
@@ -27,8 +28,10 @@ class MemoService(
     fun createMemo(user: User, content: String, tagIds: List<Long>, locked: Boolean): Memo {
         val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
         val userEntity = userService.getUserEntityByEmail(user.email)
+        val doc = Jsoup.parse(content)
         val memoEntity = MemoEntity(
-            content = content,
+            contentHtml = content,
+            contentText = doc.text(),
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
             user = userEntity,
@@ -59,7 +62,8 @@ class MemoService(
         }
 
         memo.memoTags.addAll(memoTags)
-        memo.content = content
+        memo.contentHtml = content
+        memo.contentText = Jsoup.parse(content).text()
         memo.updatedAt = Instant.now()
         memo.locked = locked
 

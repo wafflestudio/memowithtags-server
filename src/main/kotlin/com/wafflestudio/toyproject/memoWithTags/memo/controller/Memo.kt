@@ -15,23 +15,12 @@ class Memo(
         fun fromEntity(entity: MemoEntity): Memo {
             return Memo(
                 id = entity.id!!,
-                content = entity.content,
+                content = entity.contentHtml,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
-                    if (memoTagEntity == null) {
-                        println(memoTagEntity.memo.id)
-                        println("###############################################################")
-                        // 여기서 어떻게 처리할지 결정해야 함
-                        null
-                    } else {
-                        // memoTagEntity 자체는 non-null이라 가정
-                        memoTagEntity.tag.id ?: run {
-                            println("memoTagEntity.tag가 null입니다!")
-                            null
-                        }
-                    }
-                }.filterNotNull(),
+                    memoTagEntity.tag.id!!
+                },
                 locked = entity.locked
             )
         }
