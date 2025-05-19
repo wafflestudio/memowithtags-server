@@ -25,7 +25,7 @@ data class Tag(
     val colorHex: String
 )
 
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional

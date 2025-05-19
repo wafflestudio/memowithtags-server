@@ -30,7 +30,7 @@ jobs:
       # 2. Gradle 빌드
       - name: Build project
         run: |
-          SPRING_PROFILES_ACTIVE=prod ./gradlew build -x test
+          SPRING_PROFILES_ACTIVE=dev ./gradlew build -x test
 
       # 3. 빌드 결과 확인
       - name: Verify build artifacts
@@ -98,7 +98,7 @@ jobs:
               \$REPOSITORY_URI:\$TAG" > deploy.sh
       
           # 3. .env 파일 생성
-          echo "SPRING_PROFILES_ACTIVE=prod
+          echo "SPRING_PROFILES_ACTIVE=dev
           DB_NAME=memowithtags_db
           DB_ENDPOINT=${{ secrets.DB_ENDPOINT }}
           DB_USERNAME=${{ secrets.DB_USERNAME }}
