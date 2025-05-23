@@ -28,7 +28,7 @@ data class Memo(
 )
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 @AutoConfigureMockMvc
 @Transactional
 class MemoIntegrationTest {
