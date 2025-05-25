@@ -66,7 +66,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://${DB_ENDPOINT}:3306/memowithtags_dev
+    url: jdbc:mysql://${DB_ENDPOINT}:3306/memowithtags_db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
