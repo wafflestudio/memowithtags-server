@@ -20,8 +20,10 @@ class MemoEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     @Lob
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-    var content: String,
+    @Column(name = "content_html", nullable = false, columnDefinition = "TEXT")
+    var contentHtml: String,
+    @Column(name = "content_text")
+    var contentText: String,
     @Column(name = "locked", nullable = false)
     var locked: Boolean = false,
     @Column(name = "created_at", nullable = false)
