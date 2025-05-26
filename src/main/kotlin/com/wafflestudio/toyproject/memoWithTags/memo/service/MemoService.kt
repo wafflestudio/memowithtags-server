@@ -12,11 +12,11 @@ import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
+import org.jsoup.Jsoup
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.UUID
-import org.jsoup.Jsoup
 
 @Service
 class MemoService(

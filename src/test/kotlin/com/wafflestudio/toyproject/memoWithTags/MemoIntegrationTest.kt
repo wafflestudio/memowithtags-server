@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 
-
 @SpringBootTest
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
@@ -154,7 +153,6 @@ class MemoIntegrationTest {
             .andExpect(jsonPath("$.refreshToken").exists())
             .andReturn()
 
-
         val responseBody = mvcResult.response.contentAsString
         val jsonNode = mapper.readTree(responseBody)
         val accessToken = jsonNode.get("accessToken").asText()
@@ -167,7 +165,7 @@ class MemoIntegrationTest {
 
         mockMvc.perform(
             post("/api/v1/memo")
-                .header("Authorization","Bearer $accessToken")
+                .header("Authorization", "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(createMemoRequest))
         )
@@ -368,7 +366,7 @@ class MemoIntegrationTest {
         val updateMemoRequest = mapOf(
             "id" to id,
             "content" to "<br> test content11",
-            "tagIds" to listOf(1,2),
+            "tagIds" to listOf(1, 2),
             "locked" to false
         )
 
