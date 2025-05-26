@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional

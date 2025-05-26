@@ -21,14 +21,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 
-data class Memo(
-    val content: String,
-    val tagIds: List<Long>,
-    val locked: Boolean
-)
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 @AutoConfigureMockMvc
 @Transactional
 class MemoIntegrationTest {
@@ -40,7 +35,7 @@ class MemoIntegrationTest {
 
     fun createMemoJson(memoNumber: Int, tagIds: List<Long>): String {
         val payload = mapOf(
-            "content" to "test content$memoNumber",
+            "content" to "<br> test content$memoNumber",
             "tagIds" to tagIds
         )
         return mapper.writeValueAsString(payload)
@@ -49,7 +44,7 @@ class MemoIntegrationTest {
     fun performCreateMemoRequest(memoNumber: Int, tagIds: List<Long>, accessToken: String): ResultActions {
         val jsonPayload = createMemoJson(memoNumber, tagIds)
         return mockMvc.perform(
-            post("api/v1/memo")
+            post("/api/v1/memo")
                 .header("Authorization", "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPayload)
@@ -67,7 +62,7 @@ class MemoIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(mailRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val verifyRequest = mapOf(
             "email" to "test@example.com",
@@ -79,12 +74,12 @@ class MemoIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(verifyRequest))
         )
-            .andExpect(status().isOk)
+            .andExpect(status().isNoContent)
 
         val requestBody = mapOf(
             "email" to "test@example.com",
             "nickname" to "John Doe",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val requestJson = mapper.writeValueAsString(requestBody)
@@ -100,7 +95,7 @@ class MemoIntegrationTest {
 
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -146,7 +141,7 @@ class MemoIntegrationTest {
     fun `create memo`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -158,6 +153,7 @@ class MemoIntegrationTest {
             .andExpect(jsonPath("$.accessToken").exists())
             .andExpect(jsonPath("$.refreshToken").exists())
             .andReturn()
+
 
         val responseBody = mvcResult.response.contentAsString
         val jsonNode = mapper.readTree(responseBody)
@@ -171,10 +167,11 @@ class MemoIntegrationTest {
 
         mockMvc.perform(
             post("/api/v1/memo")
+                .header("Authorization","Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(createMemoRequest))
         )
-            .andExpect(status().isCreated)
+            .andExpect(status().isOk)
             .andExpect(jsonPath("$.content").value("test content"))
             .andExpect(jsonPath("$.tagIds").isArray) // 배열 여부 확인
             .andExpect(jsonPath("$.tagIds[0]").value(1))
@@ -186,7 +183,7 @@ class MemoIntegrationTest {
     fun `search memo`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -208,7 +205,7 @@ class MemoIntegrationTest {
         }
 
         mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content")
                 .param("tagIds", "1,2")
@@ -218,15 +215,15 @@ class MemoIntegrationTest {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.totalPages").value(3))
+            .andExpect(jsonPath("$.totalPages").value(2))
             .andExpect(jsonPath("$.totalResults").value(27))
-            .andExpect(jsonPath("$.results[0].content").value("test content30"))
-            .andExpect(jsonPath("$.results[1].content").value("test content29"))
-            .andExpect(jsonPath("$.results[0].tagIds").value(listOf(1L, 2L)))
-            .andExpect(jsonPath("$.results[1].tagIds").value(listOf(1L, 2L)))
+            .andExpect(jsonPath("$.results[0].content").value("<br> test content27"))
+            .andExpect(jsonPath("$.results[1].content").value("<br> test content26"))
+            .andExpect(jsonPath("$.results[0].tagIds[0]").value(1))
+            .andExpect(jsonPath("$.results[1].tagIds[1]").value(2))
 
         mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content1")
                 .param("tagIds", "1")
@@ -237,17 +234,31 @@ class MemoIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.page").value(1))
             .andExpect(jsonPath("$.totalPages").value(1))
-            .andExpect(jsonPath("$.totalResults").value(1))
-            .andExpect(jsonPath("$.results[0].content").value("test content1"))
-            .andExpect(jsonPath("$.results[0].tagIds").value(listOf(1L, 2L)))
+            .andExpect(jsonPath("$.totalResults").value(11))
+            .andExpect(jsonPath("$.results[0].content").value("<br> test content19"))
+            .andExpect(jsonPath("$.results[0].tagIds[0]").value(1))
             .andExpect(jsonPath("$.results[0].locked").value(false))
+
+        mockMvc.perform(
+            get("/api/v1/search-memo")
+                .header("Authorization", "Bearer $accessToken")
+                .param("content", "<br>")
+                .param("tagIds", "1")
+                .param("startDate", "2024-01-01T00:00:00Z")
+                .param("endDate", "2025-12-31T23:59:59Z")
+                .param("page", "1")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.page").value(1))
+            .andExpect(jsonPath("$.totalPages").value(1))
+            .andExpect(jsonPath("$.totalResults").value(0))
     }
 
     @Test
     fun `delete memo`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -270,7 +281,7 @@ class MemoIntegrationTest {
 
         // 메모 삭제
         val searchResult = mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content1")
                 .param("tagIds", "1")
@@ -284,18 +295,18 @@ class MemoIntegrationTest {
         val content = searchResult.response.contentAsString
         val idList: List<Int> = JsonPath.parse(content).read("$.results[*].id")
 
-        assert(idList.size == 1)
+        assert(idList.size == 3)
         val id = idList[0]
 
         mockMvc.perform(
-            delete("api/vi/memo/$id")
+            delete("/api/v1/memo/$id")
                 .header("Authorization", "Bearer $accessToken")
         )
             .andExpect(status().isNoContent)
 
         // 삭제 잘 되었는지 확인, page 개수 1
         mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content")
                 .param("tagIds", "1")
@@ -307,8 +318,9 @@ class MemoIntegrationTest {
             .andExpect(jsonPath("$.page").value(1))
             .andExpect(jsonPath("$.totalPages").value(1))
             .andExpect(jsonPath("$.totalResults").value(10))
-            .andExpect(jsonPath("$.results[0].content").value("test content11"))
-            .andExpect(jsonPath("$.results[0].tagIds").value(listOf(1L, 2L)))
+            .andExpect(jsonPath("$.results[0].content").value("<br> test content10"))
+            .andExpect(jsonPath("$.results[0].tagIds[0]").value(1))
+            .andExpect(jsonPath("$.results[0].tagIds[1]").value(2))
             .andExpect(jsonPath("$.results[0].locked").value(false))
     }
 
@@ -316,7 +328,7 @@ class MemoIntegrationTest {
     fun `update memo`() {
         val loginRequest = mapOf(
             "email" to "test@example.com",
-            "password" to "password"
+            "password" to "Password!2#"
         )
 
         val mvcResult: MvcResult = mockMvc.perform(
@@ -336,7 +348,7 @@ class MemoIntegrationTest {
         performCreateMemoRequest(1, listOf(1L, 2L), accessToken)
 
         val searchResult = mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content1")
                 .param("tagIds", "1")
@@ -354,8 +366,9 @@ class MemoIntegrationTest {
         val id = idList[0]
 
         val updateMemoRequest = mapOf(
-            "content" to "test content11",
-            "tagIds" to "1,2",
+            "id" to id,
+            "content" to "<br> test content11",
+            "tagIds" to listOf(1,2),
             "locked" to false
         )
 
@@ -370,7 +383,7 @@ class MemoIntegrationTest {
             .andExpect(content().json(mapper.writeValueAsString(updateMemoRequest), false))
 
         mockMvc.perform(
-            get("/search-memo")
+            get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content11")
                 .param("tagIds", "1")
@@ -379,6 +392,6 @@ class MemoIntegrationTest {
                 .param("page", "1")
         )
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.results[0].content").value("test content11"))
+            .andExpect(jsonPath("$.results[0].content").value("<br> test content11"))
     }
 }

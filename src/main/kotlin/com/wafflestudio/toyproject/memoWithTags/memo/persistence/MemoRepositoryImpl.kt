@@ -21,7 +21,7 @@ class MemoRepositoryImpl(
 
     override fun searchMemo(
         userId: UUID,
-        content_text: String?,
+        content: String?,
         tags: List<Long>?,
         startDate: Instant?,
         endDate: Instant?,
@@ -38,9 +38,9 @@ class MemoRepositoryImpl(
         predicates.add(cb.equal(root.get<UserEntity>("user").get<UUID>("id"), userId)) // userId 조건
 
         // 1) 메모 내용 조건
-        content_text?.let {
+        content?.let {
             // "content LIKE '%it%'" 조건
-            predicates.add(cb.like(root.get("content"), "%$it%"))
+            predicates.add(cb.like(root.get("contentText"), "%$it%"))
         }
 
         // 2) 날짜 범위 조건 (createdAt 기준이라고 가정)
@@ -121,8 +121,8 @@ class MemoRepositoryImpl(
         countPredicates.add(cb.equal(countRoot.get<UserEntity>("user").get<UUID>("id"), userId))
 
         // 메모 내용 조건
-        content_text?.let {
-            countPredicates.add(cb.like(countRoot.get("content"), "%$it%"))
+        content?.let {
+            countPredicates.add(cb.like(countRoot.get("contentText"), "%$it%"))
         }
 
         // 날짜 범위 조건

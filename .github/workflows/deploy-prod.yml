@@ -1,17 +1,17 @@
-name: Build, Push, and Deploy Docker Image to EC2
+name: Deploy Docker Image (Prod)
 
 on:
   workflow_run:
     workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
-    types:
-      - completed
+    branches: [main]
+    types: [completed]
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' &&
-            github.event.workflow_run.head_branch == 'develop' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
+    # EKS 이전 이후 수정 예정
     steps:
       # 1. 코드 체크아웃
       - name: Checkout code

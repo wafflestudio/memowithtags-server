@@ -191,7 +191,7 @@ MemoWithTags는 태그 기반 메모 관리와 AI 자동 태그 추천을 통해
 - 태그와 메모의 임베딩 벡터 저장 문제
   - Spring 서버에서 태그(TagEntity)와 메모(MemoEntity)의 임베딩 벡터(`List<Float>`)를 효율적으로 저장하는 과정에서 여러 어려움을 겪었습니다.
   - `AttributeConverter`를 활용하여 List<Float> 타입을 문자열(Text)로 변환하여 저장하여 데이터 조회 시 문자열을 다시 List<Float>로 변환하는 방식 적용하였습니다.
-  - 이를 통해 JPA에서 List<Float> 타입을 유지하면서도 데이터베이스에 저장 가능하도록 처리하도록 해결하였습니다.
+  - 이를 통해 JPA에서 List<Float> 타입을 유지하면서도 데이터베이스에 저장 가능하도록 처리하도록 해결하였습니다..
 
 # 💁‍♂️ 프로젝트 팀원
 <table style="width:100%; table-layout: fixed; text-align: center;">
