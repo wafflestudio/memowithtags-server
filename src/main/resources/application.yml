@@ -61,6 +61,8 @@ logging:
 
 ---
 # dev
+secret-names: dev/memowithtags
+
 spring:
   config:
     activate:
@@ -91,6 +93,8 @@ logging:
 
 ---
 # prod
+secret-names: prod/memowithtags
+
 spring:
   config:
     activate:

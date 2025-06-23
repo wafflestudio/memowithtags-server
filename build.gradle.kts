@@ -17,27 +17,41 @@ java {
 }
 
 repositories {
+    maven {
+        val authToken = properties["codeArtifactAuthToken"] as String? ?: ProcessBuilder(
+            "aws", "codeartifact", "get-authorization-token",
+            "--domain", "wafflestudio", "--domain-owner", "405906814034",
+            "--query", "authorizationToken", "--region", "ap-northeast-1", "--output", "text"
+        ).start().inputStream.bufferedReader().readText().trim()
+        url = uri("https://wafflestudio-405906814034.d.codeartifact.ap-northeast-1.amazonaws.com/maven/spring-waffle/")
+        credentials {
+            username = "aws"
+            password = authToken
+        }
+    }
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.mindrot:jbcrypt:0.4")
-    implementation("com.mysql:mysql-connector-j:8.2.0")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
-    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
-    // implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.mysql:mysql-connector-j:8.2.0")
+    implementation("com.wafflestudio.spring:spring-boot-starter-waffle:1.0.4")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    // implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
