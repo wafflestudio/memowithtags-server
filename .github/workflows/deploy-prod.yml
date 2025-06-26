@@ -1,4 +1,4 @@
-name: Deploy Docker Image (Prod)
+name: Build, Push, and Deploy Docker Image to EC2
 
 on:
   workflow_run:
@@ -11,120 +11,57 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
-    # EKS 이전 이후 수정 예정
     steps:
       # 1. 코드 체크아웃
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+      # 2. JDK 및 Gradle 환경 설정
+      - name: Set up Corretto JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 17
 
-      # 2. Docker Compose로 DB 시작
-      - name: Start Database with Docker Compose
-        run: |
-          docker-compose up -d mysql
-        working-directory: .
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
 
-      # 2. Gradle 빌드
-      - name: Build project
-        run: |
-          SPRING_PROFILES_ACTIVE=prod ./gradlew build -x test
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
 
-      # 3. 빌드 결과 확인
-      - name: Verify build artifacts
-        run: ls -R build/libs
-
-      # 4. Docker 빌드 컨텍스트 준비
-      - name: Prepare Docker context
-        run: cp build/libs/*.jar .
-
-      # 5. AWS 자격 증명 설정
+      # 3. AWS 자격 증명 설정
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # 6. AWS ECR 로그인
+      # 4. AWS CodeArtifact 토큰 가져오기 및 저장
+      - name: Get and save Auth Token for CodeArtifact
+        id: get-save-codeartifact-auth-token
+        run: |
+          aws codeartifact get-authorization-token --domain wafflestudio --domain-owner 405906814034 --query authorizationToken --region ap-northeast-1 --output text > .codeartifact-auth-token
+
+      - name: Export CodeArtifact Auth Token
+        run: |
+          echo "CODEARTIFACT_AUTH_TOKEN=$(cat .codeartifact-auth-token)" >> $GITHUB_ENV
+
+      # 5. Gradle 빌드
+      - name: Build Project with Gradle
+        run: ./gradlew build -x test
+        env:
+          codeArtifactToken: ${{ env.CODEARTIFACT_AUTH_TOKEN }}
+
+      # 6. Amazon ECR에 로그인
       - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # 7. 도커 이미지 빌드
-      - name: Build Docker image
-        run: docker build -t memowithtags-backend:latest .
-
-      # 8. 도커 이미지를 ECR로 푸시
-      - name: Push Docker image to ECR
+      # 7. Docker 이미지 빌드 및 ECR로 푸시
+      - name: Build and push Docker image
         run: |
-          REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
-          TAG=$(echo $GITHUB_SHA | cut -c1-7)  # 커밋 해시 앞 7자리로 태그 생성
-          
-          echo "Pushing Docker image with TAG: $TAG"
-          
-          docker tag memowithtags-backend:latest $REPOSITORY_URI:$TAG
-          docker push $REPOSITORY_URI:$TAG
-
-      # 9. Docker 이미지 실행 파일을 EC2로 전달
-      - name: Send Deploy File to EC2
-        run: |
-          # 1. SSH 개인 키 준비
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-
-          # 2. 배포 스크립트 작성
-          echo "#!/bin/bash
-          REPOSITORY_URI=739275468912.dkr.ecr.ap-northeast-2.amazonaws.com/memo-with-tags
-          TAG=\$(echo $GITHUB_SHA | cut -c1-7)
-      
-          echo \"Deploying Docker image with TAG: \$TAG\"
-          echo \"Deploying Docker image with REPOSITORY_URI: \$REPOSITORY_URI\"
-
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin \$REPOSITORY_URI
-      
-          echo \"Container exists: $(docker ps -aq -f name=memowithtags-backend)\"
-      
-          docker stop memowithtags-backend || true
-          docker rm memowithtags-backend || true
-      
-          docker pull \$REPOSITORY_URI:\$TAG
-          docker run -d \
-              -p 8080:8080 \
-              --env-file /home/ubuntu/.env \
-              -v /home/ubuntu/memo-logs:/app/logs \
-              --name memowithtags-backend \
-              \$REPOSITORY_URI:\$TAG" > deploy.sh
-      
-          # 3. .env 파일 생성
-          echo "SPRING_PROFILES_ACTIVE=prod
-          DB_NAME=memowithtags_db
-          DB_ENDPOINT=${{ secrets.DB_ENDPOINT }}
-          DB_USERNAME=${{ secrets.DB_USERNAME }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          REDIS_ENDPOINT=${{ secrets.REDIS_ENDPOINT }}
-          MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-          KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
-          KAKAO_REDIRECT_URL=${{ secrets.KAKAO_REDIRECT_URL }}
-          NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
-          NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" > .env
-      
-          # 배포 스크립트 EC2로 전송
-          scp -i private_key.pem -o StrictHostKeyChecking=no deploy.sh .env ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/
-
-      # 10. EC2에서 도커 실행
-      - name: Deploy to EC2
-        run: |
-          # EC2에서 스크립트 실행
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "bash /home/ubuntu/deploy.sh"
-
-      - name: Stop Database
-        run: |
-          docker-compose down
-        working-directory: .
+          docker build --build-arg JAR_FILE=build/libs/*.jar -t ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest .
+          docker tag ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}
+          docker push ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}
