@@ -1,0 +1,155 @@
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}  # 기본값 local
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: smtp.gmail.com
+        debug: true
+server:
+  port: 8080
+springdoc:
+  override-with-generic-response: false
+
+---
+# local
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: "optional:file:.env[.properties]"
+  datasource:
+    url: jdbc:mysql://localhost:3306/testdb
+    username: testuser
+    password: testpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  data:
+    redis:
+      host: localhost:6379
+  mail:
+    username: "jiwoo"
+    password: "050413"
+logging:
+  level:
+    root: ERROR
+    com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+  file:
+    name: logs/app.log
+kakao:
+  auth:
+    client: ${KAKAO_CLIENT_ID}
+    redirect: ${KAKAO_REDIRECT_URL}
+naver:
+  auth:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+google:
+  auth:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect: ${GOOGLE_REDIRECT_URI}
+
+---
+# dev
+secret-names: dev/memowithtags
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+  data:
+    redis:
+      host:
+      database:
+  mail:
+    username:
+    password:
+logging:
+  level:
+    root: ERROR
+    com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+  file:
+    name:
+kakao:
+  auth:
+    client:
+    redirect:
+naver:
+  auth:
+    client-id:
+    client-secret:
+google:
+  auth:
+    client-id:
+    client-secret:
+    redirect:
+
+---
+# prod
+secret-names: prod/memowithtags
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+  data:
+    redis:
+      host:
+      database:
+  mail:
+    username:
+    password:
+logging:
+  level:
+    root: ERROR
+  file:
+    name:
+kakao:
+  auth:
+    client:
+    redirect:
+naver:
+  auth:
+    client-id:
+    client-secret:
+google:
+  auth:
+    client-id:
+    client-secret:
+    redirect:

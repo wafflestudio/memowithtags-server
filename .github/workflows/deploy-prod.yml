@@ -1,0 +1,67 @@
+name: Build, Push, and Deploy Docker Image to EC2
+
+on:
+  workflow_run:
+    workflows: ["Kotlin Lint Check"]  # lint.yml이 끝난 후 실행
+    branches: [main]
+    types: [completed]
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. JDK 및 Gradle 환경 설정
+      - name: Set up Corretto JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      # 3. AWS 자격 증명 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # 4. AWS CodeArtifact 토큰 가져오기 및 저장
+      - name: Get and save Auth Token for CodeArtifact
+        id: get-save-codeartifact-auth-token
+        run: |
+          aws codeartifact get-authorization-token --domain wafflestudio --domain-owner 405906814034 --query authorizationToken --region ap-northeast-1 --output text > .codeartifact-auth-token
+
+      - name: Export CodeArtifact Auth Token
+        run: |
+          echo "CODEARTIFACT_AUTH_TOKEN=$(cat .codeartifact-auth-token)" >> $GITHUB_ENV
+
+      # 5. Gradle 빌드
+      - name: Build Project with Gradle
+        run: ./gradlew build -x test
+        env:
+          codeArtifactToken: ${{ env.CODEARTIFACT_AUTH_TOKEN }}
+
+      # 6. Amazon ECR에 로그인
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 7. Docker 이미지 빌드 및 ECR로 푸시
+      - name: Build and push Docker image
+        run: |
+          docker build --build-arg JAR_FILE=build/libs/*.jar -t ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest .
+          docker tag ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}
+          docker push ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}

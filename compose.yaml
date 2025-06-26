@@ -1,10 +1,29 @@
 services:
   mysql:
-    image: 'mysql:latest'
+    image: mysql:8.4
+    container_name: test-mysql
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
     ports:
-      - '3306'
+      - "3306:3306"
+    networks:
+      - test-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: test-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - test-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  test-network:
