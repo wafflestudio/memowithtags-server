@@ -4,8 +4,6 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 465
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -16,6 +14,37 @@ spring:
         debug: true
 server:
   port: 8080
+springdoc:
+  override-with-generic-response: false
+
+---
+# local
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: "optional:file:.env[.properties]"
+  datasource:
+    url: jdbc:mysql://localhost:3306/testdb
+    username: testuser
+    password: testpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  data:
+    redis:
+      host: localhost:6379
+  mail:
+    username: "jiwoo"
+    password: "050413"
+logging:
+  level:
+    root: ERROR
+    com.wafflestudio.toyproject.memoWithTags.aspect: INFO
+  file:
+    name: logs/app.log
 kakao:
   auth:
     client: ${KAKAO_CLIENT_ID}
@@ -29,35 +58,6 @@ google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect: ${GOOGLE_REDIRECT_URI}
-springdoc:
-  override-with-generic-response: false
-
----
-# local
-spring:
-  config:
-    activate:
-      on-profile: lcoal
-    import: "optional:file:.env[.properties]"
-  datasource:
-    url: jdbc:mysql://localhost:3306/testdb
-    username: testuser
-    password: testpassword
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
-logging:
-  level:
-    root: ERROR
-    com.wafflestudio.toyproject.memoWithTags.aspect: INFO
-  file:
-    name: logs/app.log
 
 ---
 # dev
@@ -68,9 +68,9 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://${DB_ENDPOINT}:3306/memowithtags_db
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -82,14 +82,30 @@ spring:
     show-sql: false
   data:
     redis:
-      host: ${REDIS_ENDPOINT}
-      port: 6379
+      host:
+      database:
+  mail:
+    username:
+    password:
 logging:
   level:
     root: ERROR
     com.wafflestudio.toyproject.memoWithTags.aspect: INFO
   file:
-    name: logs/dev-app.log
+    name:
+kakao:
+  auth:
+    client:
+    redirect:
+naver:
+  auth:
+    client-id:
+    client-secret:
+google:
+  auth:
+    client-id:
+    client-secret:
+    redirect:
 
 ---
 # prod
@@ -100,9 +116,9 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:mysql://${DB_ENDPOINT}:3306/memowithtags_db
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -114,13 +130,26 @@ spring:
     show-sql: false
   data:
     redis:
-      host: ${REDIS_ENDPOINT}
-      port: 6379
-      timeout: 3000
-      ssl:
-        enabled: true
+      host:
+      database:
+  mail:
+    username:
+    password:
 logging:
   level:
     root: ERROR
   file:
-    name: /app/logs/app.log
+    name:
+kakao:
+  auth:
+    client:
+    redirect:
+naver:
+  auth:
+    client-id:
+    client-secret:
+google:
+  auth:
+    client-id:
+    client-secret:
+    redirect:
