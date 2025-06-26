@@ -15,16 +15,12 @@ class Memo(
         fun fromEntity(entity: MemoEntity): Memo {
             return Memo(
                 id = entity.id!!,
-                content = entity.content,
+                content = entity.contentHtml,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
                 tagIds = entity.memoTags.map { memoTagEntity ->
-                    if (memoTagEntity == null) {
-                        null
-                    } else {
-                        memoTagEntity.tag.id
-                    }
-                }.filterNotNull(),
+                    memoTagEntity.tag.id!!
+                },
                 locked = entity.locked
             )
         }
