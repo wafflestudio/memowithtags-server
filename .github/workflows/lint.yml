@@ -2,9 +2,9 @@ name: Kotlin Lint Check
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, old-server]
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, old-server]
 
 jobs:
   build:

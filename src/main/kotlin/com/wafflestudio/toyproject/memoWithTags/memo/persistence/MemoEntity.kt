@@ -11,7 +11,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OrderColumn
+import jakarta.persistence.OrderBy
 import java.time.Instant
 
 @Entity(name = "memos")
@@ -36,7 +36,7 @@ class MemoEntity(
     val user: UserEntity,
 
     @OneToMany(mappedBy = "memo", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @OrderColumn(name = "order_index")
+    @OrderBy("id ASC")
     val memoTags: MutableList<MemoTagEntity> = mutableListOf()
 
 )
