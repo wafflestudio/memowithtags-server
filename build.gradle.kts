@@ -17,18 +17,6 @@ java {
 }
 
 repositories {
-    maven {
-        val authToken = properties["codeArtifactAuthToken"] as String? ?: ProcessBuilder(
-            "aws", "codeartifact", "get-authorization-token",
-            "--domain", "wafflestudio", "--domain-owner", "405906814034",
-            "--query", "authorizationToken", "--region", "ap-northeast-1", "--output", "text"
-        ).start().inputStream.bufferedReader().readText().trim()
-        url = uri("https://wafflestudio-405906814034.d.codeartifact.ap-northeast-1.amazonaws.com/maven/spring-waffle/")
-        credentials {
-            username = "aws"
-            password = authToken
-        }
-    }
     mavenCentral()
     gradlePluginPortal()
 }
@@ -47,7 +35,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.mysql:mysql-connector-j:8.2.0")
-    implementation("com.wafflestudio.spring:spring-boot-starter-waffle:1.0.4")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
