@@ -18,7 +18,7 @@ class Memo(
                 content = entity.contentHtml,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
-                tagIds = entity.memoTags.map { memoTagEntity ->
+                tagIds = entity.memoTags.filterNotNull().map { memoTagEntity ->
                     memoTagEntity.tag.id!!
                 },
                 locked = entity.locked
