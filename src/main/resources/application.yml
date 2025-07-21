@@ -35,7 +35,8 @@ spring:
     show-sql: true
   data:
     redis:
-      host: localhost:6379
+      host: localhost
+      database: 0
   mail:
     username: "jiwoo"
     password: "050413"
