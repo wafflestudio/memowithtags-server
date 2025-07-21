@@ -1,4 +1,4 @@
-name: Build, Push, and Deploy Docker Image to EC2
+name: Build and Push Docker Image to ECR
 
 on:
   workflow_run:
