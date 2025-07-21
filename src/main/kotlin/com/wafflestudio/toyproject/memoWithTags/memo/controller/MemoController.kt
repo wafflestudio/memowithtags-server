@@ -97,7 +97,7 @@ class MemoController(
     fun deleteMemo(
         @PathVariable memoId: Long,
         @AuthUser user: User
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         memoService.deleteMemo(memoId = memoId, userId = user.id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -149,7 +149,7 @@ class MemoController(
         @PathVariable memoId: Long,
         @AuthUser user: User,
         @RequestBody deleteTagRequest: UpdateTagRequest
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         memoService.deleteTag(userId = user.id, memoId = memoId, tagId = deleteTagRequest.tagId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
