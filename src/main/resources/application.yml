@@ -36,6 +36,7 @@ spring:
   data:
     redis:
       host: localhost
+      port: 6379
       database: 0
   mail:
     username: "jiwoo"
@@ -84,6 +85,7 @@ spring:
   data:
     redis:
       host:
+      port:
       database:
   mail:
     username:
@@ -132,6 +134,7 @@ spring:
   data:
     redis:
       host:
+      port:
       database:
   mail:
     username:

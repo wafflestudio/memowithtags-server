@@ -13,13 +13,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 @Configuration
 class RedisConfig(
     @Value("\${spring.data.redis.host}") private val host: String,
+    @Value("\${spring.data.redis.port}") private val port: Int,
     @Value("\${spring.data.redis.database}") private val database: Int
 ) {
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
         val config = RedisStandaloneConfiguration()
         config.hostName = host
-        config.port = 6379
+        config.port = port
         config.database = database
         return LettuceConnectionFactory(config)
     }
