@@ -35,17 +35,17 @@ class AdminController(
     @ApiErrorCodeExamples(GetUsersExceptionDocs::class)
     @Operation(summary = "유저 목록 가져오기")
     @GetMapping("/admin/user")
-    fun getUsers(@AuthUser user: User): List<User> {
+    fun getUsers(@AuthUser user: User): ResponseEntity<List<User>> {
         adminService.assertAdminRole(user.id)
-        return adminService.getUsers()
+        return ResponseEntity.ok(adminService.getUsers())
     }
 
     @ApiErrorCodeExamples(CreateUserExceptionDocs::class)
     @Operation(summary = "유저 계정 생성")
     @PostMapping("/admin/user")
-    fun createUser(@AuthUser user: User, @RequestBody request: CreateUserRequest): User {
+    fun createUser(@AuthUser user: User, @RequestBody request: CreateUserRequest): ResponseEntity<User> {
         adminService.assertAdminRole(user.id)
-        return userService.register(request.email, request.password, request.nickname)
+        return ResponseEntity.ok(userService.register(request.email, request.password, request.nickname))
     }
 
     @ApiErrorCodeExamples(DeleteUserExceptionDocs::class)
@@ -61,8 +61,8 @@ class AdminController(
     @ApiErrorCodeExamples(UpdateUserExceptionDocs::class)
     @Operation(summary = "유저 계정 업데이트")
     @PutMapping("/admin/user")
-    fun updateUser(@AuthUser user: User, @RequestBody request: UpdateUserRequest): User {
+    fun updateUser(@AuthUser user: User, @RequestBody request: UpdateUserRequest): ResponseEntity<User> {
         adminService.assertAdminRole(user.id)
-        return adminService.updateUser(request.id, request.userUpdateInfo)
+        return ResponseEntity.ok(adminService.updateUser(request.id, request.userUpdateInfo))
     }
 }
