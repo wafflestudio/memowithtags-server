@@ -29,7 +29,6 @@ management:
       exposure:
         include: health
 
-
 server:
   port: 8080
 
@@ -79,6 +78,8 @@ google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
     redirect: ${GOOGLE_REDIRECT_URI}
+openai:
+  api-key: ${OPENAI_API_KEY}
 
 ---
 # dev
@@ -128,6 +129,8 @@ google:
     client-id:
     client-secret:
     redirect:
+openai:
+  api-key:
 
 ---
 # prod
@@ -176,3 +179,5 @@ google:
     client-id:
     client-secret:
     redirect:
+openai:
+  api-key:

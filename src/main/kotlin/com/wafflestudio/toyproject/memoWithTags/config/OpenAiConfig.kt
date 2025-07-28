@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 import kotlin.time.Duration.Companion.seconds
 
 @Configuration
-class OpenAiConfig(@Value("\${OPENAI_API_KEY}") private val apiKey: String) {
+class OpenAiConfig(@Value("\${openai.api-key}") private val apiKey: String) {
     @Bean
     fun openAI(): OpenAI {
         val config = OpenAIConfig(

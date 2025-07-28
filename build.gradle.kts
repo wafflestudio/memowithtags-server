@@ -34,7 +34,6 @@ repositories {
 }
 
 dependencies {
-    implementation("com.aallam.openai:openai-client-jvm:3.5.0")
     implementation("io.ktor:ktor-client-okhttp:2.3.2")
     implementation("io.ktor:ktor-client-core:2.3.2")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.2")
@@ -51,6 +50,7 @@ dependencies {
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.jsoup:jsoup:1.15.4")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("com.aallam.openai:openai-client-jvm:3.5.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.mysql:mysql-connector-j:8.2.0")
     implementation("com.wafflestudio.spring:spring-boot-starter-waffle:1.0.4")
