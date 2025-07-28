@@ -12,8 +12,27 @@ spring:
             enable: true
             trust: smtp.gmail.com
         debug: true
+
+management:
+  endpoint:
+    health:
+      access: read_only
+      probes:
+        enabled: true
+      show-details: never
+      group:
+        startup:
+          include:
+            - livenessState
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+
 server:
   port: 8080
+
 springdoc:
   override-with-generic-response: false
 
