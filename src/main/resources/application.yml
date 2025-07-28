@@ -12,8 +12,27 @@ spring:
             enable: true
             trust: smtp.gmail.com
         debug: true
+
+management:
+  endpoint:
+    health:
+      access: read_only
+      probes:
+        enabled: true
+      show-details: never
+      group:
+        startup:
+          include:
+            - livenessState
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+
 server:
   port: 8080
+
 springdoc:
   override-with-generic-response: false
 
@@ -33,6 +52,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  mail:
+    username: "jiwoo"
+    password: "050413"
 logging:
   level:
     root: ERROR
@@ -77,6 +104,7 @@ spring:
   data:
     redis:
       host:
+      port:
       database:
   mail:
     username:
@@ -125,6 +153,7 @@ spring:
   data:
     redis:
       host:
+      port:
       database:
   mail:
     username:
