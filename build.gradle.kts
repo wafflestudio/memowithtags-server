@@ -34,6 +34,11 @@ repositories {
 }
 
 dependencies {
+    implementation("com.aallam.openai:openai-client-jvm:3.5.0")
+    implementation("io.ktor:ktor-client-okhttp:2.3.2")
+    implementation("io.ktor:ktor-client-core:2.3.2")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.2")
+    implementation("io.ktor:ktor-serialization-jackson:2.3.2")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")

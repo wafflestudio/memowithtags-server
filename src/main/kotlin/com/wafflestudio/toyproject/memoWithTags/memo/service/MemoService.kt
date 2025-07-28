@@ -1,5 +1,7 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.service
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.AccessDeniedException
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.MemoNotFoundException
 import com.wafflestudio.toyproject.memoWithTags.exception.exceptions.TagNotFoundException
@@ -8,10 +10,12 @@ import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoEntity
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoRepository
 import com.wafflestudio.toyproject.memoWithTags.memo.persistence.MemoTagEntity
+import com.wafflestudio.toyproject.memoWithTags.openai.service.OpenAIService
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagRepository
 import com.wafflestudio.toyproject.memoWithTags.user.controller.User
 import com.wafflestudio.toyproject.memoWithTags.user.service.UserService
+import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,20 +26,25 @@ import java.util.UUID
 class MemoService(
     private val memoRepository: MemoRepository,
     private val tagRepository: TagRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val openAIService: OpenAIService,
+    private val objectMapper: ObjectMapper
 ) {
     @Transactional
     fun createMemo(user: User, content: String, tagIds: List<Long>, locked: Boolean): Memo {
         val tags: List<TagEntity> = tagRepository.findAllById(tagIds)
         val userEntity = userService.getUserEntityByEmail(user.email)
         val doc = Jsoup.parse(content)
+        val embeddingVector: String = runBlocking { openAIService.getEmbedding(doc.text()) }
+
         val memoEntity = MemoEntity(
             contentHtml = content,
             contentText = doc.text(),
             createdAt = Instant.now(),
             updatedAt = Instant.now(),
             user = userEntity,
-            locked = locked
+            locked = locked,
+            embeddingVector = embeddingVector
         )
 
         val memoTags = tags.map { tag ->
@@ -98,7 +107,16 @@ class MemoService(
 
     @Transactional
     fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo> {
-        return memoRepository.searchMemo(userId = userId, content = content, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
+        var contentEmbeddingVectorString: String? = null
+        var contentEmbeddingVector: List<Float>? = null
+        if (content != null) {
+            contentEmbeddingVectorString = runBlocking { openAIService.getEmbedding(text = content) }
+            contentEmbeddingVector = objectMapper.readValue(
+                contentEmbeddingVectorString,
+                object : TypeReference<List<Float>>() {}
+            )
+        }
+        return memoRepository.searchMemo(userId = userId, content = content, contentEmbeddingVector = contentEmbeddingVector, tags = tags, startDate = startDate, endDate = endDate, page = page, pageSize = pageSize)
     }
 
     @Transactional
@@ -122,13 +140,13 @@ class MemoService(
     fun fetchPageFromMemo(userId: UUID, memoId: Long, pageSize: Int): SearchResult<Memo> {
         val memo = memoRepository.findById(memoId).orElseThrow { MemoNotFoundException() }
         if (memo.user.id != userId) { throw AccessDeniedException() }
-        val totalResults = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = 1, pageSize = pageSize).totalResults
+        val totalResults = memoRepository.searchMemo(userId = userId, content = null, contentEmbeddingVector = null, tags = null, startDate = null, endDate = null, page = 1, pageSize = pageSize).totalResults
         val page = totalResults / pageSize + 1
 
         var results: SearchResult<Memo>? = null
 
         for (i in 1..page) {
-            results = memoRepository.searchMemo(userId = userId, content = null, tags = null, startDate = null, endDate = null, page = i, pageSize = pageSize)
+            results = memoRepository.searchMemo(userId = userId, content = null, contentEmbeddingVector = null, tags = null, startDate = null, endDate = null, page = i, pageSize = pageSize)
             if (results.results.any { it.id == memoId }) {
                 break
             }

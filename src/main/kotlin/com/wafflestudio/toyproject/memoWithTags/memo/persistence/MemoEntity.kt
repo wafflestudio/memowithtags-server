@@ -30,6 +30,9 @@ class MemoEntity(
     val createdAt: Instant,
     @Column(name = "updated_at", nullable = false)
     var updatedAt: Instant,
+    @Lob
+    @Column(name = "embedding_vector", columnDefinition = "LONGTEXT", nullable = false)
+    var embeddingVector: String,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
