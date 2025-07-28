@@ -33,12 +33,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-  data:
-    redis:
-      host: localhost:6379
-  mail:
-    username: "jiwoo"
-    password: "050413"
 logging:
   level:
     root: ERROR

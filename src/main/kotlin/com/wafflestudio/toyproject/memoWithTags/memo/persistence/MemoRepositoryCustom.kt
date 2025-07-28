@@ -6,5 +6,5 @@ import java.time.Instant
 import java.util.*
 
 interface MemoRepositoryCustom {
-    fun searchMemo(userId: UUID, content: String?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int): SearchResult<Memo>
+    fun searchMemo(userId: UUID, content: String?, contentEmbeddingVector: List<Float>?, tags: List<Long>?, startDate: Instant?, endDate: Instant?, page: Int, pageSize: Int, simThreshold: Double? = null, extraTopK: Int = 100): SearchResult<Memo>
 }

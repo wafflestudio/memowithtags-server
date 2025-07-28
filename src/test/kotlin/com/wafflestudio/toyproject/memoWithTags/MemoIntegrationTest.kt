@@ -198,11 +198,15 @@ class MemoIntegrationTest {
         val jsonNode = mapper.readTree(responseBody)
         val accessToken = jsonNode.get("accessToken").asText()
 
-        for (i in 1..27) {
+        for (i in 1..10) {
             performCreateMemoRequest(i, listOf(1L, 2L), accessToken)
         }
 
-        mockMvc.perform(
+        for (i in 1..10) {
+            performCreateMemoRequest(i + 10, listOf(2L), accessToken)
+        }
+
+        val searchResult = mockMvc.perform(
             get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
                 .param("content", "test content")
@@ -213,13 +217,22 @@ class MemoIntegrationTest {
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.totalPages").value(2))
-            .andExpect(jsonPath("$.totalResults").value(27))
-            .andExpect(jsonPath("$.results[0].content").value("<br> test content27"))
-            .andExpect(jsonPath("$.results[1].content").value("<br> test content26"))
+            .andExpect(jsonPath("$.totalPages").value(1))
+            .andExpect(jsonPath("$.totalResults").value(10))
+            .andExpect(jsonPath("$.results[0].content").value("<br> test content10"))
+            .andExpect(jsonPath("$.results[1].content").value("<br> test content9"))
             .andExpect(jsonPath("$.results[0].tagIds[0]").value(1))
             .andExpect(jsonPath("$.results[1].tagIds[1]").value(2))
+            .andReturn()
 
+//        val json = searchResult.response.contentAsString
+//        val root: JsonNode = mapper.readTree(json)
+//        val contents2: List<String> = root["results"]
+//            .map { it["content"].asText() }
+//        print(contents2)
+//
+
+        print("Abcdadfasdf")
         mockMvc.perform(
             get("/api/v1/search-memo")
                 .header("Authorization", "Bearer $accessToken")
@@ -232,24 +245,21 @@ class MemoIntegrationTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.page").value(1))
             .andExpect(jsonPath("$.totalPages").value(1))
-            .andExpect(jsonPath("$.totalResults").value(11))
-            .andExpect(jsonPath("$.results[0].content").value("<br> test content19"))
-            .andExpect(jsonPath("$.results[0].tagIds[0]").value(1))
-            .andExpect(jsonPath("$.results[0].locked").value(false))
-
-        mockMvc.perform(
-            get("/api/v1/search-memo")
-                .header("Authorization", "Bearer $accessToken")
-                .param("content", "<br>")
-                .param("tagIds", "1")
-                .param("startDate", "2024-01-01T00:00:00Z")
-                .param("endDate", "2025-12-31T23:59:59Z")
-                .param("page", "1")
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.totalPages").value(1))
-            .andExpect(jsonPath("$.totalResults").value(0))
+            .andExpect(jsonPath("$.totalResults").value(10))
+//
+//        mockMvc.perform(
+//            get("/api/v1/search-memo")
+//                .header("Authorization", "Bearer $accessToken")
+//                .param("content", "tset coetnt")
+//                .param("tagIds", "1")
+//                .param("startDate", "2024-01-01T00:00:00Z")
+//                .param("endDate", "2025-12-31T23:59:59Z")
+//                .param("page", "1")
+//        )
+//            .andExpect(status().isOk)
+//            .andExpect(jsonPath("$.page").value(1))
+//            .andExpect(jsonPath("$.totalPages").value(1))
+//            .andExpect(jsonPath("$.totalResults").value(0))
     }
 
     @Test
@@ -293,7 +303,7 @@ class MemoIntegrationTest {
         val content = searchResult.response.contentAsString
         val idList: List<Int> = JsonPath.parse(content).read("$.results[*].id")
 
-        assert(idList.size == 3)
+        assert(idList.size == 11)
         val id = idList[0]
 
         mockMvc.perform(

@@ -1,181 +1,143 @@
 package com.wafflestudio.toyproject.memoWithTags.memo.persistence
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.wafflestudio.toyproject.memoWithTags.memo.controller.Memo
 import com.wafflestudio.toyproject.memoWithTags.memo.dto.SearchResult
 import com.wafflestudio.toyproject.memoWithTags.tag.persistence.TagEntity
 import com.wafflestudio.toyproject.memoWithTags.user.persistence.UserEntity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Predicate
-import jakarta.persistence.criteria.Subquery
+import jakarta.persistence.criteria.Root
 import org.springframework.stereotype.Repository
 import java.time.Instant
 import java.util.UUID
+import kotlin.math.sqrt
 
 /**/
 @Repository
 class MemoRepositoryImpl(
-    private val em: EntityManager
+    private val em: EntityManager,
+    private val objectMapper: ObjectMapper
 ) : MemoRepositoryCustom {
+
+    private fun cosine(a: List<Float>, b: List<Float>): Double {
+        var dot = 0.0
+        var na = 0.0
+        var nb = 0.0
+        for (i in a.indices) {
+            val x = a[i].toDouble()
+            val y = b[i].toDouble()
+            dot += x * y
+            na += x * x
+            nb += y * y
+        }
+        return dot / (sqrt(na) * sqrt(nb))
+    }
 
     override fun searchMemo(
         userId: UUID,
         content: String?,
+        contentEmbeddingVector: List<Float>?,
         tags: List<Long>?,
         startDate: Instant?,
         endDate: Instant?,
         page: Int, // 몇 번째 페이지인지 (1부터 시작)
-        pageSize: Int // 한 페이지에 몇 개를 가져올지
+        pageSize: Int, // 한 페이지에 몇 개를 가져올지
+        simThreshold: Double?,
+        extraTopK: Int
     ): SearchResult<Memo> {
         val cb: CriteriaBuilder = em.criteriaBuilder
-        val query: CriteriaQuery<MemoEntity> = cb.createQuery(MemoEntity::class.java)
-        val root = query.from(MemoEntity::class.java)
 
-        // 조건들을 담을 리스트
-        val predicates = mutableListOf<Predicate>()
-
-        predicates.add(cb.equal(root.get<UserEntity>("user").get<UUID>("id"), userId)) // userId 조건
-
-        // 1) 메모 내용 조건
-        content?.let {
-            // "content LIKE '%it%'" 조건
-            predicates.add(cb.like(root.get("contentText"), "%$it%"))
-        }
-
-        // 2) 날짜 범위 조건 (createdAt 기준이라고 가정)
-        startDate?.let {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), it))
-        }
-        endDate?.let {
-            predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), it))
-        }
-
-        // 3) 특정 태그 목록(tags)을 전부 포함하는 메모 검색
-        if (!tags.isNullOrEmpty()) {
-            // (A) 서브쿼리 작성
-            val subquery: Subquery<Long> = query.subquery(Long::class.java)
-            val subRoot = subquery.from(MemoEntity::class.java)
-
-            // MemoEntity -> MemoTagEntity (1:N 관계)
-            val subJoin = subRoot.join<MutableSet<MemoTagEntity>, MemoTagEntity>("memoTags")
-
-            // MemoTagEntity -> TagEntity (N:1 관계)
-            // MemoTagEntity 내부에 "tag" 필드가 있고, TagEntity의 PK가 Long id라고 가정
-            val tagPath = subJoin.get<TagEntity>("tag")
-            val tagIdPath = tagPath.get<Long>("id")
-
-            subquery
-                .select(subRoot.get<Long>("id"))
-                .where(
-                    cb.and(
-                        // 메인 쿼리의 Memo와 동일한 id
-                        cb.equal(subRoot.get<Long>("id"), root.get<Long>("id")),
-                        // 이 메모가 갖고 있는 태그 ID가 검색 태그 목록 중 하나여야 함
-                        tagIdPath.`in`(tags)
+        fun commonPred(root: Root<MemoEntity>, cb: CriteriaBuilder): MutableList<Predicate> {
+            val p = mutableListOf<Predicate>()
+            p += cb.equal(root.get<UserEntity>("user").get<UUID>("id"), userId)
+            if (!tags.isNullOrEmpty()) {
+                val sub = cb.createQuery(Long::class.java).subquery(Long::class.java)
+                val sr = sub.from(MemoEntity::class.java)
+                val join = sr.join<MutableSet<MemoTagEntity>, MemoTagEntity>("memoTags")
+                val tagId = join.get<TagEntity>("tag").get<Long>("id")
+                sub.select(sr.get<Long>("id"))
+                    .where(
+                        cb.and(
+                            cb.equal(sr.get<Long>("id"), root.get<Long>("id")),
+                            tagId.`in`(tags)
+                        )
                     )
-                )
-                // 메모 하나당 여러 태그 -> group by id
-                .groupBy(subRoot.get<Long>("id"))
-                // having: countDistinct(tagId)가 "tags.size"와 같아야
-                // -> 태그 목록을 전부 포함한다는 의미
-                .having(
-                    cb.equal(
-                        cb.countDistinct(tagIdPath),
-                        tags.size.toLong()
-                    )
-                )
-
-            // 서브쿼리 결과(id 목록)에 메인 쿼리의 Memo id가 포함되어야 함
-            predicates.add(
-                cb.`in`(root.get<Long>("id")).value(subquery)
-            )
+                    .groupBy(sr.get<Long>("id"))
+                    .having(cb.equal(cb.countDistinct(tagId), tags!!.size.toLong()))
+                p += cb.`in`(root.get<Long>("id")).value(sub)
+            }
+            return p
         }
 
-        // 4) WHERE 절 적용
-        query.where(cb.and(*predicates.toTypedArray()))
+        val q1 = cb.createQuery(MemoEntity::class.java)
+        val r1 = q1.from(MemoEntity::class.java)
+        val pred1 = commonPred(r1, cb)
+        content?.let { pred1 += cb.like(r1.get("contentText"), "%$it%") }
+        q1.select(r1).where(cb.and(*pred1.toTypedArray())).orderBy(cb.desc(r1.get<Instant>("createdAt")))
+        val hitList = em.createQuery(q1)
+            .setFirstResult((page - 1) * pageSize) // 페이징은 우선 문자열 결과에만 적용
+            .setMaxResults(pageSize)
+            .resultList
 
-        // 5) ORDER BY: createdAt DESC (최신 메모부터)
-        query.orderBy(cb.desc(root.get<Instant>("createdAt")))
-
-        // 6) 페이징(OFFSET, LIMIT) 설정
-        val typedQuery = em.createQuery(query)
-        // page=1일 때 firstResult=0, page=2일 때 firstResult=10, ...
-        typedQuery.firstResult = (page - 1) * pageSize
-        typedQuery.maxResults = pageSize
-
-        // 7) 쿼리 실행 & 결과 리턴
-        val results = typedQuery.resultList
-
-        /**
-         * 2) Count 쿼리 (전체 개수 구하기)
-         *
-         *  메인 쿼리와 동일한 조건을 사용하되,
-         *  select 부분만 count(*) 또는 count(root)를 사용.
-         */
-        val countQuery = cb.createQuery(Long::class.java)
-        val countRoot = countQuery.from(MemoEntity::class.java)
-        val countPredicates = mutableListOf<Predicate>()
-
-        // 유저 조건
-        countPredicates.add(cb.equal(countRoot.get<UserEntity>("user").get<UUID>("id"), userId))
-
-        // 메모 내용 조건
-        content?.let {
-            countPredicates.add(cb.like(countRoot.get("contentText"), "%$it%"))
+        // count of A (원하면)
+        val totalHits = run {
+            val cq = cb.createQuery(Long::class.java)
+            val cr = cq.from(MemoEntity::class.java)
+            val p = commonPred(cr, cb)
+            content?.let { p += cb.like(cr.get("contentText"), "%$it%") }
+            cq.select(cb.count(cr)).where(cb.and(*p.toTypedArray()))
+            em.createQuery(cq).singleResult.toInt()
         }
 
-        // 날짜 범위 조건
-        startDate?.let {
-            countPredicates.add(cb.greaterThanOrEqualTo(countRoot.get("createdAt"), it))
-        }
-        endDate?.let {
-            countPredicates.add(cb.lessThanOrEqualTo(countRoot.get("createdAt"), it))
-        }
+        // ===== 2) tags-only 후보 B (content 제외) =====
+        val extraList: List<MemoEntity> =
+            if (contentEmbeddingVector == null) {
+                emptyList()
+            } else {
+                val q2 = cb.createQuery(MemoEntity::class.java)
+                val r2 = q2.from(MemoEntity::class.java)
+                val pred2 = commonPred(r2, cb) // content 제외!
+                q2.select(r2).where(cb.and(*pred2.toTypedArray()))
+                    .orderBy(cb.desc(r2.get<Instant>("createdAt")))
+                em.createQuery(q2)
+                    .setMaxResults(extraTopK) // 상한
+                    .resultList
+                    .filterNot { e -> hitList.any { it.id == e.id } } // A에서 이미 나온 건 제외
+            }
 
-        // 태그 조건(전체 태그 포함) — “서브쿼리 + having countDistinct” 방식과 동일한 논리를 재활용
-        // 다만, count 쿼리에서 똑같이 join/having을 해야 합니다.
-        if (!tags.isNullOrEmpty()) {
-            val subqueryForCount: Subquery<Long> = countQuery.subquery(Long::class.java)
-            val subRootForCount = subqueryForCount.from(MemoEntity::class.java)
+        // ===== 3) B에서 코사인 유사도 =====
+        val extraScored: List<Pair<MemoEntity, Double>> =
+            if (contentEmbeddingVector != null) {
+                extraList.map { e ->
+                    val vec: List<Float> = objectMapper.readValue(e.embeddingVector)
+                    e to cosine(contentEmbeddingVector, vec)
+                }
+                    .filter { it.second >= (simThreshold ?: 0.0) }
+                    .sortedByDescending { it.second }
+            } else {
+                emptyList<Pair<MemoEntity, Double>>()
+            }
 
-            val subJoinForCount = subRootForCount.join<MutableSet<MemoTagEntity>, MemoTagEntity>("memoTags")
-            val tagPathForCount = subJoinForCount.get<TagEntity>("tag")
-            val tagIdPathForCount = tagPathForCount.get<Long>("id")
+        // ===== 4) 결과 합치기 =====
+        val merged = hitList.map { it to Double.NaN } + extraScored
+        val totalResults = totalHits + extraScored.size // 페이지 기준 전체 개수
+        val totalPages = if (totalResults == 0) 1 else ((totalResults - 1) / pageSize + 1)
 
-            subqueryForCount
-                .select(subRootForCount.get<Long>("id"))
-                .where(
-                    cb.and(
-                        cb.equal(subRootForCount.get<Long>("id"), countRoot.get<Long>("id")),
-                        tagIdPathForCount.`in`(tags)
-                    )
-                )
-                .groupBy(subRootForCount.get<Long>("id"))
-                .having(cb.equal(cb.countDistinct(tagIdPathForCount), tags.size.toLong()))
+        // hitList는 이미 page 처리. extra는 그 뒤로 붙임.
+        val remainingSlots = pageSize - hitList.size
+        val extraSlice = if (remainingSlots > 0) extraScored.take(remainingSlots) else emptyList()
 
-            countPredicates.add(cb.`in`(countRoot.get<Long>("id")).value(subqueryForCount))
-        }
+        val finalPage = hitList.map { Memo.fromEntity(it) } +
+            extraSlice.map { Memo.fromEntity(it.first) }
 
-        // count 쿼리에 WHERE 절 적용
-        countQuery.select(cb.count(countRoot))
-        countQuery.where(cb.and(*countPredicates.toTypedArray()))
-
-        // 실행해서 전체 개수 구함
-        val totalResults = em.createQuery(countQuery).singleResult
-
-        // 전체 페이지 수 = totalResults / pageSize (올림)
-        val totalPages = if (totalResults == 0L) {
-            1 // 검색 결과가 없으면 페이지는 1이라고 가정
-        } else {
-            ((totalResults - 1) / pageSize + 1).toInt()
-        }
-
-        return SearchResult<Memo>(
+        return SearchResult(
             page = page,
             totalPages = totalPages,
-            totalResults = totalResults.toInt(),
-            results = results.map { Memo.fromEntity(it) }
+            totalResults = totalResults,
+            results = finalPage
         )
     }
 }
