@@ -171,7 +171,7 @@ class MemoRepositoryImpl(
             ((totalResults - 1) / pageSize + 1).toInt()
         }
 
-        return SearchResult<Memo>(
+        return SearchResult(
             page = page,
             totalPages = totalPages,
             totalResults = totalResults.toInt(),
