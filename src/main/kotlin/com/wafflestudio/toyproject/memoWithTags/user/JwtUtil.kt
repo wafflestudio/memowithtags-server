@@ -15,9 +15,9 @@ object JwtUtil {
     // Access Token 생성
     fun generateAccessToken(userEmail: String): String {
         return Jwts.builder()
-            .setSubject(userEmail)
-            .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+            .subject(userEmail)
+            .issuedAt(Date())
+            .expiration(Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
             .signWith(secretKey)
             .compact()
     }
@@ -25,18 +25,18 @@ object JwtUtil {
     // Refresh Token 생성
     fun generateRefreshToken(userEmail: String): String {
         return Jwts.builder()
-            .setSubject(userEmail)
-            .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
+            .subject(userEmail)
+            .issuedAt(Date())
+            .expiration(Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
             .signWith(secretKey)
             .compact()
     }
     fun isValidToken(token: String): Boolean {
         return try {
-            Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+            Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
             true
         } catch (e: Exception) {
             false
@@ -45,11 +45,11 @@ object JwtUtil {
 
     fun extractUserEmail(token: String): String? {
         return try {
-            val claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+            val claims = Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .body
+                .parseSignedClaims(token)
+                .payload
             claims.subject
         } catch (e: Exception) {
             null
