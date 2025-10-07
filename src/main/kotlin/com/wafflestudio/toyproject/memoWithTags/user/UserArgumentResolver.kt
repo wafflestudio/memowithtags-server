@@ -34,7 +34,7 @@ class UserArgumentResolver(
 
             userService.authenticate(accessToken)
         }.getOrElse { _ ->
-            println("failed....")
+            println("[UserArgumentResolver] Failed to resolve Authorization header")
             throw AuthenticationFailedException()
         }
     }
