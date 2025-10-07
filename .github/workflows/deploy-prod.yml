@@ -51,7 +51,7 @@ jobs:
 
       # 5. Gradle 빌드
       - name: Build Project with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew clean build -x test --refresh-dependencies
         env:
           codeArtifactToken: ${{ env.CODEARTIFACT_AUTH_TOKEN }}
 
@@ -62,6 +62,6 @@ jobs:
       # 7. Docker 이미지 빌드 및 ECR로 푸시
       - name: Build and push Docker image
         run: |
-          docker build --build-arg JAR_FILE=build/libs/*.jar -t ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest .
+          docker build --no-cache --build-arg JAR_FILE=build/libs/*.jar -t ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest .
           docker tag ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:latest ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}
           docker push ${{ secrets.AWS_ECR_URI }}/memowithtags-prod/memowithtags-server:${{ github.run_number }}
