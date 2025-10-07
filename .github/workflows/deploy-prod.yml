@@ -59,6 +59,10 @@ jobs:
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      # TODO: 빌드 후 API 테스트 통과 시 지우기
+      - name: Remove old Docker context
+        run: docker builder prune -a -f
+
       # 7. Docker 이미지 빌드 및 ECR로 푸시
       - name: Build and push Docker image
         run: |
